@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "study", "study", "{AD3D26B3-9E1E-45B2-845C-EC815931252F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpSyntaxRewriter1", "study\Nemonuri.Study.CSharpSyntaxRewriter1\Nemonuri.Study.CSharpSyntaxRewriter1.csproj", "{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +14,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,13 @@
+    public static string ChangeExtension(string originalPath, string? extension)
+    {
+        int lastDotIndex = originalPath.LastIndexOf('.');
+        if (lastDotIndex == -1)
+        {
+            return string.Concat(originalPath, extension);
+        }
+        else
+        {
+            var v1 = originalPath.AsSpan(0, lastDotIndex);
+            return string.Concat(v1, extension);
+        }
+    }
