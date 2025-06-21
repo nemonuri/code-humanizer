@@ -1,0 +1,13 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
+          Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')) != ''" />
+  <PropertyGroup>
+    <NugetPropsDirectory>$(MSBuildThisFileDirectory)res/nuget-props/</NugetPropsDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ArtifactDirectory>$(MSBuildThisFileDirectory)artifact/</ArtifactDirectory>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(ArtifactDirectory)dotnet</ArtifactsPath>
+  </PropertyGroup>
+</Project>
