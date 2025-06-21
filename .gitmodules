@@ -1,0 +1,4 @@
+[submodule "nuget-props"]
+	path = res/nuget-props
+	url = https://github.com/nemonuri/nuget-config.git
+	branch = main
