@@ -10,7 +10,10 @@ public static class CommandParsingTheory
 {
     private readonly static StrongBox<CommandParsingResultData?> _itemBox = new();
 
-    private readonly static Argument<FileInfo> _targetFile = new Argument<FileInfo>("TargetFile").AcceptExistingOnly();
+    private readonly static Argument<FileInfo> _targetFile = new Argument<FileInfo>("TargetFile")
+    { 
+        Description = "분석할 C# 코드 파일 경로"
+    }.AcceptExistingOnly();
 
     private readonly static RootCommand _rootCommand = new RootCommand("Roslyn Quoter")
     {
@@ -39,10 +42,9 @@ public static class CommandParsingTheory
     /// </summary>
     /// <param name="args">주어진 명령어</param>
     /// <returns>구문 분석 결과</returns>
-    public static CommandParsingResultData Parse(string[] args)
+    public static CommandParsingResultData? Parse(string[] args)
     {
         _parser.Parse(args).Invoke();
-        Guard.IsNotNull(_itemBox.Value);
         return _itemBox.Value;
     }
 }

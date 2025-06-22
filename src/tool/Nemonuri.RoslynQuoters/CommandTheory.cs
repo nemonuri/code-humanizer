@@ -87,17 +87,9 @@ public static class CommandTheory
 
         int ActionCore(ParseResult parseResult)
         {
-            try
-            {
-                var exitCode = factory(parseResult, out TItem? item);
-                itemBox.Value = item;
-                return exitCode;
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e.ToString());
-                return 1;
-            }
+            var exitCode = factory(parseResult, out TItem? item);
+            itemBox.Value = item;
+            return exitCode;
         }
     }
 }

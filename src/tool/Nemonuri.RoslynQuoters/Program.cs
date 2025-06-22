@@ -1,4 +1,6 @@
-﻿namespace Nemonuri.RoslynQuoters;
+﻿using RoslynQuoter;
+
+namespace Nemonuri.RoslynQuoters;
 
 /// <summary>
 /// 프로그램
@@ -11,8 +13,13 @@ public static class Program
     /// <param name="args">명령어</param>
     public static void Main(string[] args)
     {
-        var parseResult = CommandParsingTheory.Parse(args);
+        if (CommandParsingTheory.Parse(args) is not { } parseResult) { return; }
 
-        Console.WriteLine(parseResult.TargetFile);
+        string csharpText = File.ReadAllText(parseResult.TargetFile.FullName);
+
+        Quoter quoter = new Quoter();
+        Quoter.ApiCall apiCall = quoter.Quote(csharpText);
+
+        Console.WriteLine(apiCall.ToString());
     }
 }
