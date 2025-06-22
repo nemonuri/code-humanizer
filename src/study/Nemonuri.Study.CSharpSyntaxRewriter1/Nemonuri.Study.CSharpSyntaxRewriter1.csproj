@@ -6,9 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  
+
+  <!-- NugetProps -->
+    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
+    <Import Project="$(NugetPropsDirectory)System.CommandLine.props" />
+  <!-- /NugetProps -->
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <ProjectReference Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />
   </ItemGroup>
 
 </Project>
