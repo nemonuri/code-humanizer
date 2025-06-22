@@ -5,10 +5,16 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="RoslynQuoter" Version="1.0.1" />  
   </ItemGroup>
+  
+  <!-- NugetProps -->
+    <Import Project="$(NugetPropsDirectory)System.CommandLine.props" />
+    <Import Project="$(NugetPropsDirectory)CommunityToolkit.Diagnostics.props" />
+  <!-- /NugetProps -->
 
 </Project>
