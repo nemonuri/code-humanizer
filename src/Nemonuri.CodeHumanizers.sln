@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tool", "tool", "{2B62B090-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.RoslynQuoters", "tool\Nemonuri.RoslynQuoters\Nemonuri.RoslynQuoters.csproj", "{21446A70-8B1E-4C82-86D2-A8B7B8F99FEA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{9EFC75CE-49CF-41D7-9E57-92E005AEA48E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.CommandLines.Common", "library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj", "{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +32,14 @@ Global
 		{21446A70-8B1E-4C82-86D2-A8B7B8F99FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21446A70-8B1E-4C82-86D2-A8B7B8F99FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21446A70-8B1E-4C82-86D2-A8B7B8F99FEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E9804CBA-2DDF-4B33-B8E4-F1C638CE84B9} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
 		{21446A70-8B1E-4C82-86D2-A8B7B8F99FEA} = {2B62B090-0B14-4FF1-981A-00EDEB5B5669}
+		{FB5BF212-5A0A-4744-BFCE-A8C93B2DFB28} = {9EFC75CE-49CF-41D7-9E57-92E005AEA48E}
 	EndGlobalSection
 EndGlobal

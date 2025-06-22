@@ -2,12 +2,12 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Runtime.CompilerServices;
 
-namespace Nemonuri.RoslynQuoters;
+namespace Nemonuri.CommandLines;
 
 /// <summary>
-/// <see cref="Command"/>에 대한 이론입니다.
+/// <see cref="Command"/>의 메서드를, 메서드 체인 형태로 사용하기 위한 이론입니다.
 /// </summary>
-public static class CommandTheory
+public static class CommandChainingTheory
 {
     /// <summary>
     /// 대상 커맨드 인스턴스에 인자를 추가합니다.
