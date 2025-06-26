@@ -15,7 +15,13 @@ if (CommandParsingTheory.Parse(args) is not { } parseResult) { return; }
 SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(parseResult.TargetFile.FullName));
 CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
 
-if (new ArgumentToLocalVarRewriter().Visit(root) is { } newRoot)
 {
-    Console.WriteLine(newRoot.NormalizeWhitespace().ToFullString());
+    var v1 = new CodeRewriter().Run(root);
+    var v2 = new TriviaAdder().Visit(v1);
+    if (v2 is { } newRoot)
+    {
+        Console.WriteLine(newRoot.NormalizeWhitespace().ToFullString());
+    }
 }
+
+
