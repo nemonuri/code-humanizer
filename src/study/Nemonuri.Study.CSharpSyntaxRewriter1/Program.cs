@@ -15,15 +15,7 @@ if (CommandParsingTheory.Parse(args) is not { } parseResult) { return; }
 SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(parseResult.TargetFile.FullName));
 CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
 
-var datas = CSharpSyntaxTransformTheory.GetExpressionInArgumentInBlockStructureRawDatas(root);
-
+if (new ArgumentToLocalVarRewriter().Visit(root) is { } newRoot)
 {
-    if
-    (
-        datas[0] is { ExpressionSyntax: { } e } and { ArgumentSyntax: { } a } and { BlockSyntax: { } b }
-    )
-    {
-        var newRoot = root.ReplaceNode(b, CSharpSyntaxTransformTheory.TransformToLocalDeclare(e, a, b));
-        Console.WriteLine(newRoot.NormalizeWhitespace().ToFullString());
-    }
+    Console.WriteLine(newRoot.NormalizeWhitespace().ToFullString());
 }

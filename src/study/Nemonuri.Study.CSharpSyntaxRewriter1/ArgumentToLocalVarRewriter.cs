@@ -1,65 +1,126 @@
-﻿
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using S = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Nemonuri.Study.CSharpSyntaxRewriter1;
 
 internal class ArgumentToLocalVarRewriter : CSharpSyntaxRewriter
 {
     private readonly Stack<BlockContext> _blockContextStack = new();
-    private readonly Stack<ArgumentContext> _argumentContextStack = new();
+    private int _currentBlockNumber = 0;
 
     public ArgumentToLocalVarRewriter() : base(visitIntoStructuredTrivia: false)
     { }
 
-    public override SyntaxNode? VisitBlock(BlockSyntax node)
+    public override SyntaxNode? VisitBlock(BlockSyntax block)
     {
-        return base.VisitBlock(node);
-    }
+        _blockContextStack.Push(new BlockContext(block));
+        var newSyntax = base.VisitBlock(block);
+        var blockContext = _blockContextStack.Pop();
 
-    public override SyntaxNode? VisitArgument(ArgumentSyntax node)
-    {
-        return base.VisitArgument(node);
-    }
-
-    [return: NotNullIfNotNull(nameof(node))]
-    public override SyntaxNode? Visit(SyntaxNode? node)
-    {
-        if
-        (
-            node is ExpressionSyntax expression &&
-            !CSharpSyntaxRelationTheory.IsIdentifierNameOrLiteralExpression(expression) &&
-
-            _argumentContextStack.TryPeek(out ArgumentContext? argumentContext) &&
-            argumentContext is not null &&
-            argumentContext.Argument.IsAncestorOf(expression) &&
-
-            _blockContextStack.TryPeek(out BlockContext? blockContext) &&
-            blockContext is not null &&
-            blockContext.Block.IsAncestorOf(argumentContext.Argument)
-        )
+        if (newSyntax is not BlockSyntax newBlock)
         {
-            //--- 트리 관계 형성 ---
-            if (argumentContext.ParentBlockContext is null)
-            {
-                argumentContext.ParentBlockContext = blockContext;
-                blockContext.ChildArgumentContexts.Add(argumentContext);
-            }
-            //---|
-
-            
+            return newSyntax;
         }
 
-        return base.Visit(node);
+        //--- apply Changes ---
+        foreach (CodeChangeData c in blockContext.CodeChangeDatas)
+        {
+            newBlock = newBlock.ReplaceNode(c.Argument.Expression, c.IdentifierNameAsNewArgumentExpression);
+
+            int insertingIndex = newBlock.GetInsertingIndex(c.Argument);
+            newBlock = newBlock.WithStatements(newBlock.Statements.Insert(insertingIndex, c.InsertingLocalDeclarationStatement));
+        }
+        //---|
+
+        return newBlock;
     }
 
+    public override SyntaxNode? VisitArgument(ArgumentSyntax argument)
+    {
+        if (IsSatisfyingCondition(this, argument, out var blockContext))
+        {
+            //--- blockContext 에 번호 할당 ---
+            blockContext.BlockNumber ??= Interlocked.Increment(ref _currentBlockNumber);
+            //---|
+
+            //--- Get block·argument number ---
+            if (blockContext.BlockNumber is not int blockNumber) { goto DefaultResult; }
+            int argumentNumber = blockContext.CodeChangeDatas.Count + 1;
+            //---|
+
+            //--- Create local varible name ---
+            string localVaribleName = $"v{blockNumber}_{argumentNumber}";
+            //---|
+
+            CodeChangeData codeChangeData = new()
+            {
+                Argument = argument,
+                IdentifierNameAsNewArgumentExpression = S.IdentifierName(localVaribleName),
+                InsertingLocalDeclarationStatement = S.LocalDeclarationStatement
+                (
+                    S.VariableDeclaration
+                    (
+                        S.IdentifierName("var"),
+                        S.SingletonSeparatedList
+                        (
+                            S.VariableDeclarator
+                            (
+                                S.Identifier(localVaribleName),
+                                default,
+                                S.EqualsValueClause(argument.Expression.WalkDownParentheses())
+                            )
+                        )
+                    )
+                )
+            };
+
+            blockContext.CodeChangeDatas.Add(codeChangeData);
+            return argument;
+        }
+
+DefaultResult:
+        return base.VisitArgument(argument);
+
+        static bool IsSatisfyingCondition
+        (
+            ArgumentToLocalVarRewriter self,
+            ArgumentSyntax argument,
+            [NotNullWhen(true)] out BlockContext? blockContext
+        )
+        {
+            var expression = argument.Expression;
+            blockContext = null;
+
+            if (CSharpSyntaxRelationTheory.IsIdentifierNameOrLiteralExpression(expression))
+            {
+                return false;
+            }
+
+            if
+            (
+                !self._blockContextStack.TryPeek(out blockContext) ||
+                blockContext is null
+            )
+            {
+                return false;
+            }
+
+            if (blockContext.Block != argument.FirstAncestorOrSelf<BlockSyntax>())
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
 
     private class BlockContext
     {
         public BlockSyntax Block { get; }
 
-        private readonly List<InsertingStatementRawData> _insertingStatementDatas = new();
+        public int? BlockNumber { get; set; }
 
-        public List<ArgumentContext> ChildArgumentContexts { get; } = new();
+        public List<CodeChangeData> CodeChangeDatas { get; } = new();
 
         public BlockContext(BlockSyntax block)
         {
@@ -67,21 +128,14 @@ internal class ArgumentToLocalVarRewriter : CSharpSyntaxRewriter
         }
     }
 
-    private class ArgumentContext
+    private class CodeChangeData
     {
-        public ArgumentSyntax Argument { get; }
+        public CodeChangeData() { }
 
-        public ArgumentContext(ArgumentSyntax argument)
-        {
-            Argument = argument;
-        }
+        public required ArgumentSyntax Argument;
 
-        public BlockContext? ParentBlockContext { get; set; }
-    }
+        public required IdentifierNameSyntax IdentifierNameAsNewArgumentExpression;
 
-    internal struct InsertingStatementRawData
-    {
-        public int OriginalStatementIndex;
-        public LocalDeclarationStatementSyntax? InsertingLocalDeclaration;
+        public required LocalDeclarationStatementSyntax InsertingLocalDeclarationStatement;
     }
 }

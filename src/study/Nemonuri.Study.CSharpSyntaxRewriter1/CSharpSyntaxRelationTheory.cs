@@ -38,7 +38,7 @@ public static class CSharpSyntaxRelationTheory
     /// <param name="maybeAncestor">조상으로 예상되는 구문</param>
     /// <param name="maybeDescendant">후손으로 예상되는 구문</param>
     /// <returns>확인 결과</returns>
-    public static bool IsAncestorOf(this CSharpSyntaxNode maybeAncestor, CSharpSyntaxNode maybeDescendant)
+    public static bool IsAncestorOf(this SyntaxNode maybeAncestor, SyntaxNode maybeDescendant)
     {
         SyntaxNode? currentNode = maybeDescendant;
         while ((currentNode = currentNode?.Parent) is not null)
