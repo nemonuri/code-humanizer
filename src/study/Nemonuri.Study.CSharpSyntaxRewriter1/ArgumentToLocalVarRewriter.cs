@@ -25,9 +25,18 @@ internal class ArgumentToLocalVarRewriter : CSharpSyntaxRewriter
         //--- apply Changes ---
         foreach (CodeChangeData c in blockContext.CodeChangeDatas)
         {
-            newBlock = newBlock.ReplaceNode(c.Argument.Expression, c.IdentifierNameAsNewArgumentExpression);
+            ArgumentSyntax? matchedArgument;
+            {
+                var a = c.Argument;
+                matchedArgument = newBlock.Contains(a) ?
+                    a :
+                    (newBlock.DescendantNodes().FirstOrDefault(n => n is ArgumentSyntax a1 && a1.IsEquivalentTo(a)) as ArgumentSyntax);
+            }
 
-            int insertingIndex = newBlock.GetInsertingIndex(c.Argument);
+            if (matchedArgument is null) { continue; }
+
+            int insertingIndex = newBlock.GetInsertingIndex(matchedArgument);
+            newBlock = newBlock.ReplaceNode(matchedArgument.Expression, c.IdentifierNameAsNewArgumentExpression);
             newBlock = newBlock.WithStatements(newBlock.Statements.Insert(insertingIndex, c.InsertingLocalDeclarationStatement));
         }
         //---|
