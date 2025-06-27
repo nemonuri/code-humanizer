@@ -1,0 +1,25 @@
+using RoslynQuoter;
+
+namespace Nemonuri.RoslynQuoters;
+
+/// <summary>
+/// 프로그램
+/// </summary>
+public static class Program
+{
+    /// <summary>
+    /// 이 프로그램의 진입점입니다.
+    /// </summary>
+    /// <param name="args">명령어</param>
+    public static void Main(string[] args)
+    {
+        if (CommandParsingTheory.Parse(args) is not { } parseResult) { return; }
+
+        string csharpText = File.ReadAllText(parseResult.TargetFile.FullName);
+
+        Quoter quoter = new Quoter();
+        Quoter.ApiCall apiCall = quoter.Quote(csharpText);
+
+        Console.WriteLine(apiCall.ToString());
+    }
+}
