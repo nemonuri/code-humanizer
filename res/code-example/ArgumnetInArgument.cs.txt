@@ -1,0 +1,19 @@
+using System;
+
+Console.WriteLine
+(
+    Calulate
+    (
+        (v1, v2) => 
+        {
+            return v1 * v1 + Add(v2,v2);
+        },
+        Add(1,2),
+        Add(3,Add(4,5))
+    )
+);
+
+
+static int Calulate(Func<int, int, int> calulator, int value1, int value2) => calulator(value1, value2);
+
+static int Add(int value1, int value2) => value1 + value2;
