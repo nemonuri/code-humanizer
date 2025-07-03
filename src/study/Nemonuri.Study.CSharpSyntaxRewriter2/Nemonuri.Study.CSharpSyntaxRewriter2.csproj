@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NugetProps -->
+    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
+    <Import Project="$(NugetPropsDirectory)System.CommandLine.props" />
+  <!-- /NugetProps -->
+
+  <ItemGroup>
+    <ProjectReference
+      Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />
+  </ItemGroup>
+
+</Project>
