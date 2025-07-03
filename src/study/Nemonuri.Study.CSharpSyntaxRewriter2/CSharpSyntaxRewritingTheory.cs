@@ -9,7 +9,8 @@ public static partial class CSharpSyntaxRewritingTheory
         static node => node switch
         {
             CompilationUnitSyntax or ArgumentSyntax => static n => n is BlockSyntax,
-            BlockSyntax => static n => n is ArgumentListSyntax,
+            BlockSyntax => static n => n is StatementSyntax,
+            StatementSyntax => static n => n is ArgumentListSyntax,
             ArgumentListSyntax => static n => n is ArgumentSyntax,
             _ => throw new InvalidOperationException($"Invalid syntax node type. {node.GetType()}")
         }

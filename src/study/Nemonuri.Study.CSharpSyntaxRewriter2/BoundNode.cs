@@ -8,6 +8,6 @@ public class BoundNode
     public BoundNode(SyntaxNode node, IEnumerable<BoundNode>? children)
     {
         Node = node;
-        Children = [..children ?? []];
+        Children = [.. children ?? []];
     }
 }
