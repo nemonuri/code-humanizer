@@ -4,7 +4,8 @@ public static class BoundNodeWalkTheory
 {
     public static void Walk(this BoundNode boundNode, BinderFactory binderFactory, IWalkContext walkContext, ReadOnlySpan<int> pausedAddress = default)
     {
-        boundNode.WalkCore(binderFactory, walkContext, pausedAddress, default);
+        WalkState walkState = WalkState.None;
+        boundNode.WalkCore(binderFactory, walkContext, pausedAddress, default, ref walkState);
     }
 
     internal static void WalkCore
@@ -13,11 +14,12 @@ public static class BoundNodeWalkTheory
         BinderFactory binderFactory,
         IWalkContext walkContext,
         ReadOnlySpan<int> pausedAddress,
-        ReadOnlySpan<int> currentAddress
+        ReadOnlySpan<int> currentAddress,
+        ref WalkState walkState
     )
     {
         if (CompareAddress(pausedAddress, currentAddress) >= 0)
-        { 
+        {
             walkContext.OnWalking(boundNode, binderFactory, currentAddress);
         }
 
@@ -26,15 +28,16 @@ public static class BoundNodeWalkTheory
             var (l, r) when l >= r + 1 => [.. pausedAddress[..r], (pausedAddress[r + 1] + 1)],
             _ => [.. currentAddress, 0]
         };
-        
+
         for (int i = childAddress[^1]; i < boundNode.Children.Length; i++)
         {
             BoundNode? child = boundNode.Children[i];
-            child.WalkCore(binderFactory, walkContext, pausedAddress, childAddress);
+            child.WalkCore(binderFactory, walkContext, pausedAddress, childAddress, ref walkState);
+            if (walkState == WalkState.Pause) { return; }
             childAddress[^1]++;
         }
 
-        walkContext.OnWalked(boundNode, binderFactory, currentAddress);
+        walkState = walkContext.OnWalked(boundNode, binderFactory, currentAddress);
     }
 
     private static int CompareAddress(ReadOnlySpan<int> lhs, ReadOnlySpan<int> rhs)

@@ -25,7 +25,7 @@ public class Binder
     public BoundNode Bind()
     {
         var childSyntaxes = Node.GetDescendantNodes(ChildPredicate);
-        var childBinders = childSyntaxes.Select(n => Factory.GetBinder(n, this));
+        var childBinders = childSyntaxes.Select(n => Factory.CreateOrGetBinder(n, this));
         return new BoundNode(Node, childBinders.Select(static b => b.Bind()));
     }
 }

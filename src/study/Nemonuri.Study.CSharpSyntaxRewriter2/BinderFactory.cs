@@ -13,7 +13,7 @@ public class BinderFactory
 
     public IReadOnlyDictionary<SyntaxNode, Binder> BinderMap => _binderMap;
 
-    public Binder GetBinder
+    public Binder CreateOrGetBinder
     (
         SyntaxNode syntax,
         Binder? nextBinder
@@ -25,5 +25,10 @@ public class BinderFactory
             _binderMap.Add(syntax, binder);
         }
         return binder;
+    }
+
+    public bool RemoveBinder(Binder binder)
+    {
+        return _binderMap.Remove(binder.Node);
     }
 }
