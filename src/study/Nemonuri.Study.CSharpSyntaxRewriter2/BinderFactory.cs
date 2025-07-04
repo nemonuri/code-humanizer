@@ -1,17 +1,27 @@
+
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
 public class BinderFactory
 {
-    private readonly Dictionary<SyntaxNode, Binder> _binderMap = new();
+    internal readonly Dictionary<SyntaxNode, Binder> _binderCacheMap = new();
 
+    private readonly BinderFactoryVisitor _binderFactoryVisitor;
+
+    public IReadOnlyDictionary<SyntaxNode, Binder> BinderCacheMap => _binderCacheMap;
+
+    public BinderFactory()
+    {
+        _binderFactoryVisitor = new(this);
+    }
+
+#if false
     public SyntaxNodePredicateFactory ChildPredicateFactory { get; }
 
     public BinderFactory(SyntaxNodePredicateFactory childPredicateFactory)
     {
         ChildPredicateFactory = childPredicateFactory;
+        _binderFactoryVisitor = new(this);
     }
-
-    public IReadOnlyDictionary<SyntaxNode, Binder> BinderMap => _binderMap;
 
     public Binder CreateOrGetBinder
     (
@@ -19,16 +29,22 @@ public class BinderFactory
         Binder? nextBinder
     )
     {
-        if (!_binderMap.TryGetValue(syntax, out Binder? binder))
+        if (!_binderCacheMap.TryGetValue(syntax, out Binder? binder))
         {
             binder = new Binder(this, syntax, nextBinder, ChildPredicateFactory(syntax));
-            _binderMap.Add(syntax, binder);
+            _binderCacheMap.Add(syntax, binder);
         }
         return binder;
     }
 
     public bool RemoveBinder(Binder binder)
     {
-        return _binderMap.Remove(binder.Node);
+        return _binderCacheMap.Remove(binder.Node);
+    }
+#endif
+
+    public Binder? GetBinder(SyntaxNode node)
+    {
+        return _binderFactoryVisitor.Visit(node);
     }
 }

@@ -2,11 +2,10 @@ namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
 public class Binder
 {
-    public BinderFactory Factory { get; }
-    public SyntaxNode Node { get; }
-    public Binder? Next { get; }
-    
+#if false
     public SyntaxNodePredicate ChildPredicate { get; }
+
+    public SyntaxNode Node { get; }
 
     internal Binder
     (
@@ -27,6 +26,27 @@ public class Binder
         var childSyntaxes = Node.GetDescendantNodes(ChildPredicate);
         var childBinders = childSyntaxes.Select(n => Factory.CreateOrGetBinder(n, this));
         return new BoundNode(Node, childBinders.Select(static b => b.Bind()));
+    }
+#endif
+
+    internal Binder(BinderFactory factory)
+    {
+        Next = null;
+        Factory = factory;
+    }
+
+    internal Binder(Binder next)
+    {
+        Next = next;
+        Factory = Next.Factory;
+    }
+
+    public BinderFactory Factory { get; }
+    public Binder? Next { get; }
+
+    public IBoundNode Bind(SyntaxNode node)
+    {
+        throw new NotImplementedException();
     }
 }
 

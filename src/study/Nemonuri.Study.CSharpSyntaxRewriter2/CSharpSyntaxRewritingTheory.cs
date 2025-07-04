@@ -23,14 +23,14 @@ public static partial class CSharpSyntaxRewritingTheory
         BoundNode boundTree = BinderFactory.CreateOrGetBinder(tree.GetCompilationUnitRoot(), null).Bind();
 
         int vNumber = 0;
-        BoundNodeFindingWalkContext WalkContext = new(static (boundNode, _) => boundNode.Node.IsKind(SyntaxKind.Argument) && boundNode.Children.IsEmpty);
+        BoundNodeFindingWalkContext WalkContext = new(static (boundNode, _) => boundNode.Syntax.IsKind(SyntaxKind.Argument) && boundNode.Children.IsEmpty);
         boundTree.Walk(BinderFactory, WalkContext, WalkContext.PausedAddress.AsSpan());
 
         if
         (
-            WalkContext.PausedBoundNode is { Node: ArgumentSyntax argument } bound &&
+            WalkContext.PausedBoundNode is { Syntax: ArgumentSyntax argument } bound &&
             WalkContext.PausedBinderFactory is { } factory &&
-            factory.BinderMap.TryGetValue(argument, out Binder? binder) &&
+            factory.BinderCacheMap.TryGetValue(argument, out Binder? binder) &&
             argument.Expression.WalkDownParentheses() is var originalExpression &&
             originalExpression is not (IdentifierNameSyntax or LiteralExpressionSyntax)
         )
