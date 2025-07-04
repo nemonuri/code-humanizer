@@ -1,6 +1,7 @@
 
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
+#if false
 internal class BinderFactoryVisitor : CSharpSyntaxVisitor<Binder>
 {
     public BinderFactory BinderFactory { get; }
@@ -26,3 +27,4 @@ internal class BinderFactoryVisitor : CSharpSyntaxVisitor<Binder>
         return result;
     }
 }
+#endif

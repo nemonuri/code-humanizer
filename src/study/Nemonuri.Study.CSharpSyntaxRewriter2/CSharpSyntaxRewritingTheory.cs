@@ -2,24 +2,36 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
+using BoundNodes;
+
 public static partial class CSharpSyntaxRewritingTheory
 {
-    private static volatile BinderFactory? _binderFactory = null;
-
-    private static BinderFactory BinderFactory => _binderFactory ??= new BinderFactory
-    (
-        static node => node switch
-        {
-            CompilationUnitSyntax or ArgumentSyntax => static n => n is BlockSyntax,
-            BlockSyntax => static n => n is StatementSyntax,
-            StatementSyntax => static n => n is ArgumentListSyntax,
-            ArgumentListSyntax => static n => n is ArgumentSyntax,
-            _ => throw new InvalidOperationException($"Invalid syntax node type. {node.GetType()}")
-        }
-    );
-
     public static CSharpSyntaxTree ConvertComplexArgumentExpressionsToLocalDeclareStatements(CSharpSyntaxTree tree)
     {
+        PauseStateProvidingWalkContext walkContext = new PauseStateProvidingWalkContext
+        (
+            new RawWalkContext()
+            {
+                GetRequiredStateDelegate = static (b, _) =>
+                    b is ArgumentBoundNode argumentBoundNode &&
+                    argumentBoundNode.Syntax.Expression is var e &&
+                    e.WalkDownParentheses() != e ?
+                        WalkState.Pause : WalkState.None
+            }
+        );
+        CompilationUnitBoundNode boundTree = new(tree.GetCompilationUnitRoot());
+
+        do
+        {
+            boundTree.Walk(walkContext, walkContext.Address);
+            if (walkContext.WalkState == WalkState.Pause)
+            {
+
+            }
+        }
+        while (walkContext.Address.IsEmpty);
+
+#if false
         BoundNode boundTree = BinderFactory.CreateOrGetBinder(tree.GetCompilationUnitRoot(), null).Bind();
 
         int vNumber = 0;
@@ -44,7 +56,10 @@ public static partial class CSharpSyntaxRewritingTheory
             //---|
 
         }
+#endif
 
+        throw new NotImplementedException();
     }
+
 
 }

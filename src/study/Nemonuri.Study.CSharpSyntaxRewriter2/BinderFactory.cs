@@ -1,6 +1,7 @@
 
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
+#if false
 public class BinderFactory
 {
     internal readonly Dictionary<SyntaxNode, Binder> _binderCacheMap = new();
@@ -14,7 +15,6 @@ public class BinderFactory
         _binderFactoryVisitor = new(this);
     }
 
-#if false
     public SyntaxNodePredicateFactory ChildPredicateFactory { get; }
 
     public BinderFactory(SyntaxNodePredicateFactory childPredicateFactory)
@@ -41,10 +41,11 @@ public class BinderFactory
     {
         return _binderCacheMap.Remove(binder.Node);
     }
-#endif
+
 
     public Binder? GetBinder(SyntaxNode node)
     {
         return _binderFactoryVisitor.Visit(node);
     }
 }
+#endif

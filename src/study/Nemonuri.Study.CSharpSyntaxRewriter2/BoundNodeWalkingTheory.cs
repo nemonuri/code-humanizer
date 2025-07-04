@@ -1,43 +1,58 @@
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
+using BoundNodes;
+
 public static class BoundNodeWalkTheory
 {
-    public static void Walk(this BoundNode boundNode, BinderFactory binderFactory, IWalkContext walkContext, ReadOnlySpan<int> pausedAddress = default)
+    public static void Walk<TWalkContext>(this IBoundNode boundNode, TWalkContext walkContext, ReadOnlySpan<int> pausedAddress = default)
+        where TWalkContext : IWalkContext
     {
         WalkState walkState = WalkState.None;
-        boundNode.WalkCore(binderFactory, walkContext, pausedAddress, default, ref walkState);
+        boundNode.WalkCore(walkContext, pausedAddress, default, ref walkState);
     }
 
-    internal static void WalkCore
+    internal static void WalkCore<TWalkContext>
     (
-        this BoundNode boundNode,
-        BinderFactory binderFactory,
-        IWalkContext walkContext,
+        this IBoundNode boundNode,
+        TWalkContext walkContext,
         ReadOnlySpan<int> pausedAddress,
         ReadOnlySpan<int> currentAddress,
         ref WalkState walkState
     )
+        where TWalkContext : IWalkContext
     {
-        if (CompareAddress(pausedAddress, currentAddress) >= 0)
+        if (boundNode is IChildBoundNodeProvider { ChildBoundNodes: { } childBoundNodes })
         {
-            walkContext.OnWalking(boundNode, binderFactory, currentAddress);
+            int pl = pausedAddress.Length;
+            int cl = currentAddress.Length;
+
+            Span<int> childAddress = stackalloc int[cl + 1];
+            if (pl >= cl + 1)
+            {
+                pausedAddress[..cl].CopyTo(childAddress);
+                childAddress[^1] = pausedAddress[cl + 1] + 1;
+            }
+            else
+            {
+                currentAddress.CopyTo(childAddress);
+                childAddress[^1] = 0;
+            }
+
+            for (int i = childAddress[^1]; i < childBoundNodes.Count; i++)
+            {
+                IBoundNode child = childBoundNodes[i];
+                child.WalkCore(walkContext, pausedAddress, childAddress, ref walkState);
+                if (walkState == WalkState.Pause) { return; }
+                childAddress[^1]++;
+            }
         }
 
-        Span<int> childAddress = (pausedAddress.Length, currentAddress.Length) switch
-        {
-            var (l, r) when l >= r + 1 => [.. pausedAddress[..r], (pausedAddress[r + 1] + 1)],
-            _ => [.. currentAddress, 0]
-        };
-
-        for (int i = childAddress[^1]; i < boundNode.Children.Length; i++)
-        {
-            BoundNode? child = boundNode.Children[i];
-            child.WalkCore(binderFactory, walkContext, pausedAddress, childAddress, ref walkState);
-            if (walkState == WalkState.Pause) { return; }
-            childAddress[^1]++;
+        walkContext.OnWalked(boundNode, currentAddress);
+        walkState = walkContext.GetRequiredState(boundNode, currentAddress);
+        if (walkState == WalkState.Pause)
+        { 
+            walkContext.OnPaused(boundNode, currentAddress);
         }
-
-        walkState = walkContext.OnWalked(boundNode, binderFactory, currentAddress);
     }
 
     private static int CompareAddress(ReadOnlySpan<int> lhs, ReadOnlySpan<int> rhs)
@@ -53,7 +68,7 @@ public static class BoundNodeWalkTheory
         return lhs.Length.CompareTo(rhs.Length);
     }
 
-    public static bool TryFindDescendantByRelativeAdress(this BoundNode boundNode, ReadOnlySpan<int> relativeAddress, [NotNullWhen(true)] out BoundNode? found)
+    public static bool TryFindDescendantByRelativeAdress(this IBoundNode boundNode, ReadOnlySpan<int> relativeAddress, [NotNullWhen(true)] out IBoundNode? found)
     {
         if (relativeAddress.IsEmpty)
         {
@@ -61,13 +76,19 @@ public static class BoundNodeWalkTheory
             return true;
         }
 
-        int index = relativeAddress[0];
-        if (boundNode.Children.Length <= index)
+        if (!(boundNode is IChildBoundNodeProvider { ChildBoundNodes: { } childBoundNodes }))
         {
             found = null;
             return false;
         }
 
-        return boundNode.Children[index].TryFindDescendantByRelativeAdress(relativeAddress[1..], out found);
+        int index = relativeAddress[0];
+        if (childBoundNodes.Count <= index)
+        {
+            found = null;
+            return false;
+        }
+
+        return childBoundNodes[index].TryFindDescendantByRelativeAdress(relativeAddress[1..], out found);
     }
 }

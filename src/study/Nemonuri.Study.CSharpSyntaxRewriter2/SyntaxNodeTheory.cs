@@ -51,7 +51,7 @@ internal static class SyntaxNodeTheory
             if (_predicate is not null && _syntaxNodes is not null)
             {
                 if (_rootNode != node || _includeSelf)
-                { 
+                {
                     if (_predicate(node))
                     {
                         _syntaxNodes.Add(node);
@@ -64,3 +64,5 @@ internal static class SyntaxNodeTheory
         }
     }
 }
+
+public delegate bool SyntaxNodePredicate(SyntaxNode node);

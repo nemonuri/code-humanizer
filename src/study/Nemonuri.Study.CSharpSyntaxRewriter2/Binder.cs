@@ -1,8 +1,9 @@
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
+#if false
 public class Binder
 {
-#if false
+
     public SyntaxNodePredicate ChildPredicate { get; }
 
     public SyntaxNode Node { get; }
@@ -27,7 +28,7 @@ public class Binder
         var childBinders = childSyntaxes.Select(n => Factory.CreateOrGetBinder(n, this));
         return new BoundNode(Node, childBinders.Select(static b => b.Bind()));
     }
-#endif
+
 
     internal Binder(BinderFactory factory)
     {
@@ -50,6 +51,5 @@ public class Binder
     }
 }
 
-public delegate bool SyntaxNodePredicate(SyntaxNode node);
-
 public delegate SyntaxNodePredicate SyntaxNodePredicateFactory(SyntaxNode node);
+#endif

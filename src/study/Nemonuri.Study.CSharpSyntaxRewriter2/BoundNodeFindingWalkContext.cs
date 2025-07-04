@@ -1,3 +1,4 @@
+#if false
 namespace Nemonuri.Study.CSharpSyntaxRewriter2;
 
 public class BoundNodeFindingWalkContext : IWalkContext
@@ -37,3 +38,4 @@ public class BoundNodeFindingWalkContext : IWalkContext
         }
     }
 }
+#endif
