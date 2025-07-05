@@ -10,8 +10,7 @@ public class StatementBoundNode : IBoundNode<StatementSyntax>,
         Syntax = syntax;
         ParentBoundNode = parent;
         ChildBoundNodes = Syntax
-            .GetDescendantNodes(static n => n is ArgumentListSyntax)
-            .OfType<ArgumentListSyntax>()
+            .GetDescendantNodes<ArgumentListSyntax>()
             .Select(n => new ArgumentListBoundNode(n, this))
             .ToImmutableArray();
     }
@@ -20,8 +19,7 @@ public class StatementBoundNode : IBoundNode<StatementSyntax>,
 
     IBoundNode IParentBoundNodeProvider.ParentBoundNode => ParentBoundNode;
 
-    public ImmutableArray<ArgumentListBoundNode> ChildBoundNodes { get; }
-
+    public IReadOnlyList<ArgumentListBoundNode> ChildBoundNodes { get; }
 
     IReadOnlyList<IBoundNode> IChildBoundNodeProvider.ChildBoundNodes => ChildBoundNodes;
 

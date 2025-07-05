@@ -14,6 +14,16 @@ internal static class SyntaxNodeTheory
         return _walker.GetDescendantNodes(node, predicate, includeSelf);
     }
 
+    public static IEnumerable<TSyntaxNode> GetDescendantNodes<TSyntaxNode>
+    (
+        this SyntaxNode node,
+        bool includeSelf = false
+    )
+        where TSyntaxNode : SyntaxNode
+    {
+        return node.GetDescendantNodes(static n => n is TSyntaxNode, includeSelf).OfType<TSyntaxNode>();
+    }
+
     private class Walker : CSharpSyntaxWalker
     {
         private SyntaxNode? _rootNode = null;
