@@ -20,3 +20,7 @@ statement
 argument
   : block*
   ;
+
+argument
+  : expression
+  ;

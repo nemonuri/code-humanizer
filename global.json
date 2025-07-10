@@ -1,0 +1,9 @@
+{
+  "sdk": {
+    "version": "9.0.107",
+    "rollForward": "latestFeature"
+  },
+  "msbuild-sdks": {
+    "FStarLang.Sdk": "0.2.0"
+  }
+}
