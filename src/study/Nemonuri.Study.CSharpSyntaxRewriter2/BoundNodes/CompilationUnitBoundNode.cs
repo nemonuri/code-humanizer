@@ -14,7 +14,7 @@ public class CompilationUnitBoundNode : IBoundNode<CompilationUnitSyntax>, IChil
             .ToImmutableArray();
     }
 
-    public ImmutableArray<BlockBoundNode> ChildBoundNodes { get; }
+    public IReadOnlyList<BlockBoundNode> ChildBoundNodes { get; }
 
     IReadOnlyList<IBoundNode> IChildBoundNodeProvider.ChildBoundNodes => ChildBoundNodes;
 

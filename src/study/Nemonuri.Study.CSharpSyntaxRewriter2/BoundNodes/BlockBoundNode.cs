@@ -15,7 +15,7 @@ public class BlockBoundNode : IBoundNode<BlockSyntax>, IChildBoundNodeProvider<S
         ParentBoundNode = parent;
     }
 
-    public ImmutableArray<StatementBoundNode> ChildBoundNodes { get; }
+    public IReadOnlyList<StatementBoundNode> ChildBoundNodes { get; }
 
     public BlockSyntax Syntax { get; }
 
