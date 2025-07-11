@@ -21,13 +21,15 @@ let is_stratified (#t:Type) (gns:green_node_schema #t) : Tot bool =
     L.isEmpty gns.children
   else
     (LT.has_type_unempty_list gns.children) &&
-    L.for_all (fun (gns2:green_node_schema #t) -> gns2.level = gns.level - 1) gns.children
+    (
+      let v1 = L.map (fun (v2:green_node_schema #t) -> v2.level) gns.children in
+      let v3 = LT.max_for_unempty_list v1 LT.default_int_comparer in
+      v3 = gns.level - 1
+    )
+//    L.for_all (fun (gns2:green_node_schema #t) -> gns2.level < gns.level) gns.children
 
 let has_type_green_node (#t:Type) (gns:green_node_schema #t) : Tot bool = is_stratified gns
 let green_node (#t:Type) = gns:(green_node_schema #t){has_type_green_node gns}
-  
-
-
 
 (*
 type leveled_green_node (#t:Type) : t -> nat -> Type =
