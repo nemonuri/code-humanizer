@@ -9,12 +9,103 @@ type green_node_schema (#t:Type) = {
   children:(list (green_node_schema #t))
 }
 
-let is_valid_level_and_children_length (#t:Type) (gns:green_node_schema #t) : Tot bool =
+let green_node_schema_list (#t:Type) = list (green_node_schema #t)
+
+
+let rec get_max_level_with_seed (#t:Type) (l:green_node_schema_list #t) (seed:nat) 
+  : Tot nat 
+  = match l with
+  | [] -> seed
+  | hd::tl -> 
+    let v1 = (if seed < hd.level then hd.level else seed) in
+    get_max_level_with_seed tl v1
+
+let get_max_level (#t:Type) (l:green_node_schema_list #t) = get_max_level_with_seed l 0
+
+
+let rec append_children_with_seed 
+  (#t:Type) (l:green_node_schema_list #t) (seed:green_node_schema_list #t)
+  : Tot (green_node_schema_list #t)
+  = match l with
+  | [] -> seed
+  | hd::tl -> append_children_with_seed #t tl (L.append seed hd.children)
+
+let append_children (#t:Type) (l:green_node_schema_list #t) = append_children_with_seed l []
+
+let rec try_get_height_with_seed 
+  (#t:Type) 
+  (prev_max_level:nat) 
+  (prev_l:green_node_schema_list #t{ prev_max_level = (get_max_level prev_l) })
+  (seed:nat)
+  : Tot (option nat) (decreases prev_max_level) =
+  let l = (append_children prev_l) in
+  let max_level = (get_max_level l) in
+  if (L.isEmpty l) || (max_level >= prev_max_level) then
+    None
+  else
+    try_get_height_with_seed #t max_level l (seed + 1)
+
+let try_get_height 
+  (#t:Type) 
+  (gn:green_node_schema #t) 
+  : Tot (option nat) =
+  try_get_height_with_seed #t gn.level [gn] 0
+
+let has_height (#t:Type) (gn:green_node_schema #t) 
+  : Tot bool 
+  = match (try_get_height gn) with
+  | None -> false
+  | Some _ -> true
+
+(*
+let rec has_type_finite_green_node_schema_core (#t:Type) (l:green_node_schema_list #t)
+  : Tot bool 
+  = 
+*)
+  
+
+// let finite_green_node_schema (#t:Type) = gn:green_node_schema #t{ has_type_finite_green_node_schema gn }
+  
+
+(*
+let rec try_get_height (#t:Type) (gn:green_node_schema #t)
+  : Tot (option nat)
+  = 
+*)
+
+(*
+let has_type_valid_green_node_schema (#t:Type) (gns:green_node_schema #t) : Tot bool =
   if L.isEmpty gns.children then
     gns.level = 0
   else
     gns.level > 0
 
+let valid_green_node_schema (#t:Type) = gns:green_node_schema #t{has_type_valid_green_node_schema gns}
+*)
+
+(*
+let rec try_count_nodes_core 
+  (#t:Type) (vgns:valid_green_node_schema #t) (prev_count:nat)
+  : Tot (option nat)
+  = let current_count = prev_count + 1 in
+    try_count_nodes_list_core vgns vgns.children current_count
+
+and try_count_nodes_list_core
+  (#t:Type) (parent:valid_green_node_schema #t) (children:list (green_node_schema #t)) (prev_count:nat)
+  : Tot (option nat)
+  = match children with
+  | [] -> Some prev_count
+  | hd::tl -> 
+    if not (has_type_valid_green_node_schema hd) then None
+    else if not (hd.level < parent.level) then None
+    else
+      let v1 = try_count_nodes_core hd prev_count in
+      match v1 with
+      | None -> None
+      | Some v2 -> try_count_nodes_list_core parent tl v2
+*)
+
+(*
 let has_type_green_leaf_schema (#t:Type) (gns:green_node_schema #t) : Tot bool =
   (L.isEmpty gns.children) && 
   (gns.level = 0) &&
@@ -40,6 +131,7 @@ let has_type_green_branch_schema (#t:Type) (gns:green_node_schema #t)
     (is_valid_level_and_children_length gns) &&
     (L.for_all is_valid_level_and_children_length gns.children)
 let green_branch_schema (#t:Type) = gns:green_node_schema #t{has_type_green_branch_schema gns}
+*)
 
 (*
 let assert1 = assert (
@@ -59,6 +151,7 @@ let rec lemma1 (#t:Type) (gbs_hd:green_node_schema #t) (gbs_tl:(list (green_node
     | (hd1::tl1, hd2::tl2) -> lemma1 hd1 (L.append tl1 gbs_tl)
 *)
 
+(*
 type top_level_strict_green_node (#t:Type) : nat -> Type =
   | Leaf : inner_leaf:green_leaf_schema #t -> top_level_strict_green_node #t inner_leaf.level
   | Branch : inner_branch:green_branch_schema #t -> top_level_strict_green_node #t ( (get_max_level inner_branch.children) + 1 )
@@ -93,6 +186,7 @@ let loose_top_level_strict_green_node
 let rec has_type_green_node (#t:Type) (#limit_level:nat) (tlgn:top_level_green_node #t limit_level)
   : Tot bool
   = 
+*)
 
 (*
 let rec has_type_strict_green_node (#t:Type) (#n:nat) (tlsgn:top_level_strict_green_node #t n)
