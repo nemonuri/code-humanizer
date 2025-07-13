@@ -11,16 +11,29 @@ type green_node_schema (#t:Type) = {
 
 let green_node_schema_list (#t:Type) = list (green_node_schema #t)
 
+let has_zero_level_zero_children_relation (#t:Type) (gn:green_node_schema #t) : Type =
+  let v_level, v_children = gn.level, gn.children in
+  (v_level == 0) <==> (v_children == [])
 
-let rec get_max_level_with_seed (#t:Type) (l:green_node_schema_list #t) (seed:nat) 
-  : Tot nat 
-  = match l with
-  | [] -> seed
-  | hd::tl -> 
-    let v1 = (if seed < hd.level then hd.level else seed) in
-    get_max_level_with_seed tl v1
+let rec node_level_is_greater_than_nodes (#t:Type) (node:green_node_schema #t) (nodes:green_node_schema_list #t)
+  : Type 
+  = match nodes with
+  | [] -> True
+  | hd::tl -> (node.level > hd.level) /\ (node_level_is_greater_than_nodes node tl)
+  
+let node_level_is_greater_than_children (#t:Type) (node:green_node_schema #t) : Type =
+  node_level_is_greater_than_nodes node node.children
 
-let get_max_level (#t:Type) (l:green_node_schema_list #t) = get_max_level_with_seed l 0
+let node_is_partial_green_node_type (#t:Type) (node:green_node_schema #t)
+  : Type
+  = (has_zero_level_zero_children_relation node) /\
+    (node_level_is_greater_than_children node)
+
+let rec nodes_are_partial_green_node_type (#t:Type) (nodes:green_node_schema_list #t)
+  : Type
+  = match nodes with
+  | [] -> True
+  | hd::tl -> (node_is_partial_green_node_type hd) /\ (nodes_are_partial_green_node_type tl)
 
 
 let rec append_children_with_seed 
@@ -31,6 +44,17 @@ let rec append_children_with_seed
   | hd::tl -> append_children_with_seed #t tl (L.append seed hd.children)
 
 let append_children (#t:Type) (l:green_node_schema_list #t) = append_children_with_seed l []
+
+
+let rec get_max_level_with_seed (#t:Type) (l:green_node_schema_list #t) (seed:nat) 
+  : Tot nat 
+  = match l with
+  | [] -> seed
+  | hd::tl -> 
+    let v1 = (if seed < hd.level then hd.level else seed) in
+    get_max_level_with_seed tl v1
+
+let get_max_level (#t:Type) (l:green_node_schema_list #t) = get_max_level_with_seed l 0
 
 let rec try_get_height_with_seed 
   (#t:Type) 
@@ -45,7 +69,7 @@ let rec try_get_height_with_seed
   else
     try_get_height_with_seed #t max_level l (seed + 1)
 
-let try_get_height 
+let try_get_height
   (#t:Type) 
   (gn:green_node_schema #t) 
   : Tot (option nat) =
@@ -56,6 +80,43 @@ let has_height (#t:Type) (gn:green_node_schema #t)
   = match (try_get_height gn) with
   | None -> false
   | Some _ -> true
+
+let node_is_green_node_type (#t:Type) (node:green_node_schema #t) 
+  : Type
+  = b2t (has_height node)
+
+let rec nodes_are_green_node_type (#t:Type) (nodes:green_node_schema_list #t) 
+  : Type
+  = match nodes with
+  | [] -> True
+  | hd::tl -> (node_is_green_node_type hd) /\ (nodes_are_green_node_type tl)
+
+
+let rec green_node_type_lemma (#t:Type) (node:green_node_schema #t)
+  : Lemma (requires node_is_green_node_type node)
+          (ensures nodes_are_green_node_type node.children)
+  = if L.isEmpty node.children then ()
+    else green_nodes_type_lemma node node.children
+
+and green_nodes_type_lemma (#t:Type) (parent_node:green_node_schema #t) (nodes:green_node_schema_list #t)
+  : Lemma (requires (node_is_green_node_type parent_node) /\ (node_level_is_greater_than_nodes parent_node nodes))
+          (ensures (L.isEmpty nodes) \/ (node_is_green_node_type (L.hd nodes)))
+          (decreases nodes)
+  = match nodes with
+  | [] -> ()
+  | hd::tl ->
+      green_node_type_lemma hd;
+      green_nodes_type_lemma parent_node tl
+
+
+
+
+          
+
+
+
+
+
 
 (*
 let rec has_type_finite_green_node_schema_core (#t:Type) (l:green_node_schema_list #t)
