@@ -21,3 +21,15 @@ let stratified_node_is_leaf_is_equivalent_to_stratified_node_level_is_one
       (is_leaf sn) <==> ((get_level sn) = 1)
     )
   = ()
+
+let is_branch
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  : Tot bool
+  = not (is_leaf sn)
+
+let stratified_node_is_branch_is_equivalent_to_stratified_node_level_is_greater_than_one
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (
+      (is_branch sn) <==> ((get_level sn) > 1)
+    )
+  = ()
