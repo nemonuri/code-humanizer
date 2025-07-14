@@ -91,7 +91,7 @@ let rec nodes_are_green_node_type (#t:Type) (nodes:green_node_schema_list #t)
   | [] -> True
   | hd::tl -> (node_is_green_node_type hd) /\ (nodes_are_green_node_type tl)
 
-
+(*
 let rec green_node_type_lemma (#t:Type) (node:green_node_schema #t)
   : Lemma (requires node_is_green_node_type node)
           (ensures nodes_are_green_node_type node.children)
@@ -107,14 +107,7 @@ and green_nodes_type_lemma (#t:Type) (parent_node:green_node_schema #t) (nodes:g
   | hd::tl ->
       green_node_type_lemma hd;
       green_nodes_type_lemma parent_node tl
-
-
-
-
-          
-
-
-
+*)
 
 
 

@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Nemonuri.ListTheory.fst" />
     <Compile Include="Nemonuri.GreenNode.fst" />
+    <Compile Include="Nemonuri.BoundNode.fst" />
     <Compile Include="Nemonuri.Study.CSharpSyntaxRewriter2.Modifier.fst" />
   </ItemGroup>
 
