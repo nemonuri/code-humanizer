@@ -15,8 +15,8 @@
 
   <ItemGroup>
     <Compile Include="Nemonuri.StratifiedNode.fst" />
-    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.fst" />
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.fst" />
   </ItemGroup>
 
 </Project>

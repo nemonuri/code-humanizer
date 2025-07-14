@@ -65,7 +65,7 @@ let is_empty (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
   = SNil? snl
 
 let rec get_length (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv) 
-  : Tot nat
+  : Tot nat (decreases snl)
   = if is_empty snl then
       0
     else

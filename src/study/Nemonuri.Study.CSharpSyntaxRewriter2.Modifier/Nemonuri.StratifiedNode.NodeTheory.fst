@@ -1,10 +1,23 @@
 module Nemonuri.StratifiedNode.NodeTheory
 
 open Nemonuri.StratifiedNode
+open Nemonuri.StratifiedNode.ListTheory
 
 let get_level (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) : Tot pos = lv
 
 let stratified_node_level_is_children_level_plus_one
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
   : Lemma ((SNode?.children_level sn + 1) = (get_level sn))
+  = ()
+
+let is_leaf 
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  : Tot bool
+  = is_empty (SNode?.children sn)
+
+let stratified_node_is_leaf_is_equivalent_to_stratified_node_level_is_one
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (
+      (is_leaf sn) <==> ((get_level sn) = 1)
+    )
   = ()
