@@ -97,3 +97,91 @@ let rec get_node
       get_hd snl
     else
       get_node (get_tl snl) (index - 1)
+
+let is_head 
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Tot bool
+  = ((get_hd_level snl) = lv) && ((get_hd snl) = sn)
+
+let rec contains
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Tot bool
+  = if is_empty snl then
+      false
+    else
+      if is_head snl sn then 
+        true
+      else
+        contains (get_tl snl) sn
+
+let lemma_head_level_is_less_or_equal_then_list_max_level
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (requires is_head snl sn)
+          (ensures lv <= mlv)
+  = ()
+
+let lemma_node_is_head_implies_node_is_element
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (ensures ((is_head snl sn) ==> (contains snl sn)))
+  = ()
+
+let rec lemma_node_is_element_implies_node_level_is_less_or_equal_than_list_max_level
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (ensures (contains snl sn) ==> (lv <= mlv)) (decreases snl)
+  = if (is_head snl sn) then
+      (
+        (* 음...둘 중 하나만 있어도 되네? *)
+        //lemma_head_level_is_less_or_equal_then_list_max_level snl sn
+        lemma_node_is_head_implies_node_is_element snl sn
+      )
+    else
+      let tl = get_tl snl in
+      let tl_level = get_max_level tl in
+      if tl_level = 0 then ()
+      else lemma_node_is_element_implies_node_level_is_less_or_equal_than_list_max_level tl sn
+
+let lemma_element_level_is_less_or_equal_than_list_max_level
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (requires contains snl sn)
+          (ensures lv <= mlv)
+  = lemma_node_is_element_implies_node_level_is_less_or_equal_than_list_max_level snl sn
+
+
+(*
+let stratified_node_head_level_is_less_or_equal_than_list_max_level
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
+  : prop
+  = (get_hd_level snl) <= (mlv)
+
+let stratified_node_max_level_is_greater_or_equal_than_tail_max_level
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
+  : prop
+  = (get_tl_level snl) <= (mlv)
+
+let rec lemma_stratified_node_list_max_level_is_greater_or_equal_than_list_element_level
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
+  : Lemma (
+      (stratified_node_head_level_is_less_or_equal_than_list_max_level snl) /\
+      (stratified_node_max_level_is_greater_or_equal_than_tail_max_level snl) /\
+      (contains snl (get_hd snl))
+    )
+  = let tl = (get_tl snl) in
+    if is_empty tl then ()
+    else (lemma_stratified_node_list_max_level_is_greater_or_equal_than_list_element_level tl)
+*)
+
+
+(*
+let stratified_node_level_is_less_or_equal_than_list_max_level
+  (#t:eqtype) (#mlv:pos) (snl:stratified_node_list t mlv)
+  (#lv:pos) (sn:stratified_node t lv)
+  : Lemma (requires (get_hd snl) = sn)
+          (ensures lv <= mlv)
+  = ()
+*)
