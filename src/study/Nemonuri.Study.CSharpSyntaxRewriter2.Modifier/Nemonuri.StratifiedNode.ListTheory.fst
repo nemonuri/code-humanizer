@@ -1,5 +1,6 @@
 module Nemonuri.StratifiedNode.ListTheory
 
+module L = FStar.List.Tot.Base
 open Nemonuri.StratifiedNode
 
 let get_max_level (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv) : Tot nat = mlv
@@ -70,3 +71,29 @@ let rec get_length (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
       0
     else
       1 + (get_length (get_tl snl))
+
+// 오, 그러고보니 'L.length x = get_length snl' 이게 증명이 되네!
+let rec select 
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv) 
+  (#t2:Type) (selector:(#lv:pos -> stratified_node t lv -> Tot t2))
+  : Tot (x:(list t2){ L.length x = get_length snl }) (decreases snl)
+  = if is_empty snl then []
+    else (selector (get_hd snl))::(select (get_tl snl) selector)
+
+let rec get_node_level
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
+  (index:nat{index < (get_length snl)})
+  : Tot pos
+  = if index = 0 then
+      get_hd_level snl
+    else
+      get_node_level (get_tl snl) (index - 1)
+
+let rec get_node
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
+  (index:nat{index < (get_length snl)})
+  : Tot (stratified_node t (get_node_level snl index))
+  = if index = 0 then
+      get_hd snl
+    else
+      get_node (get_tl snl) (index - 1)

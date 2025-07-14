@@ -1,5 +1,6 @@
 module Nemonuri.StratifiedNode.NodeTheory
 
+module L = FStar.List.Tot.Base
 open Nemonuri.StratifiedNode
 open Nemonuri.StratifiedNode.ListTheory
 
@@ -33,3 +34,16 @@ let stratified_node_is_branch_is_equivalent_to_stratified_node_level_is_greater_
       (is_branch sn) <==> ((get_level sn) > 1)
     )
   = ()
+
+(*
+let rec get_count
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  : Tot pos (decreases (get_level sn))
+  = if is_leaf sn then 
+      1
+    else 
+      L.length (
+        stratified_node_level_is_children_level_plus_one sn;
+        select (SNode?.children sn) get_count
+      )
+*)
