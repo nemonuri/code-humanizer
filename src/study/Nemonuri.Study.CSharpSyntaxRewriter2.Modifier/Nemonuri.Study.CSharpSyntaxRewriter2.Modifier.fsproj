@@ -6,11 +6,17 @@
     <LangVersion>5.0</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="false">
     <Compile Include="Nemonuri.ListTheory.fst" />
     <Compile Include="Nemonuri.GreenNode.fst" />
     <Compile Include="Nemonuri.BoundNode.fst" />
     <Compile Include="Nemonuri.Study.CSharpSyntaxRewriter2.Modifier.fst" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Nemonuri.StratifiedNode.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.ListTheory.fst" />
   </ItemGroup>
 
 </Project>
