@@ -62,7 +62,7 @@ let lemma_element_level_is_less_or_equal_than_list_max_level
           (ensures lv <= mlv)
   = lemma_node_is_element_implies_node_level_is_less_or_equal_than_list_max_level snl sn
 
-let lemma_two_list_are_equal_is_equivalent_to_two_heads_are_equal
+let lemma_two_list_are_equal_means_two_heads_are_equal
   (#t:eqtype) (#l_mlv:nat) (l_snl:stratified_node_list t l_mlv{SCons? l_snl})
   (#r_mlv:nat) (r_snl:stratified_node_list t r_mlv{SCons? r_snl})
   : Lemma (requires is_equal l_snl r_snl)
@@ -78,7 +78,7 @@ let rec lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head
           (decreases snl1)
   = if (is_equal snl1 snl2) then
       (
-        lemma_two_list_are_equal_is_equivalent_to_two_heads_are_equal snl1 snl2
+        lemma_two_list_are_equal_means_two_heads_are_equal snl1 snl2
       )
     else
       lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head (get_tl snl1) snl2

@@ -52,12 +52,6 @@ let stratified_node_is_branch_is_equivalent_to_stratified_node_level_is_greater_
     )
   = ()
 
-let rec sum (l:list nat)
-  : Tot nat
-  = match l with
-  | [] -> 0
-  | hd::tl -> hd + (sum tl)
-
 let is_shorter_or_equal_than_children 
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
   (#mlv:nat) (snl:stratified_node_list t mlv)
@@ -76,13 +70,21 @@ let is_subchildren
   : Tot bool
   = (is_shorter_or_equal_than_children parent snl) && (ends_with_children parent snl)
 
-let lemma_subchilren_hd_is_child
+let lemma_subchildren_hd_is_child
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
   (#children_mlv:nat)
-  (subchildren:stratified_node_list t children_mlv)
-  : Lemma (requires (not (is_empty subchildren)) && (is_subchildren parent subchildren))
+  (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
+  : Lemma (requires is_subchildren parent subchildren)
           (ensures is_child parent (get_hd subchildren))
-  = ()
+  = lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head parent.children subchildren
+
+let lemma_subchildren_tl_is_subchildren
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
+  (#children_mlv:nat) 
+  (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
+  : Lemma (requires is_subchildren parent subchildren)
+          (ensures is_subchildren parent (get_tl subchildren))
+  = admit()
 
 private let rec select_in_children_core
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
@@ -95,43 +97,44 @@ private let rec select_in_children_core
       []
     else
       (
-        //assert ( is_child parent (get_hd subchildren) );
+        lemma_subchildren_hd_is_child parent subchildren;
+        lemma_subchildren_tl_is_subchildren parent subchildren;
         let hd = get_hd subchildren in
         (selector #(get_level hd) hd)::
         (select_in_children_core parent (get_tl subchildren) selector)
       )
 
+let select_in_children
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
+  (#t2:Type) (selector:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot t2))
+  : Tot (x:(list t2){ L.length x = get_length parent.children })
+  = select_in_children_core parent parent.children selector
 
-(*
-let rec select_in_children
-  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
-  (#t2:Type) 
-  (selector:(#clv:pos -> csn:(stratified_node t lv){ is_child csn sn } -> Tot t2))
-  : Tot (x:(list t2){ L.length x = get_length sn.children })
-  = let children = sn.children in
-    if is_empty sn.children then []
-    else
-      (selector (get_hd children))::
-      (select )
-*)
-  
-//select sn.children selector
+private let rec sum (l:list nat)
+  : Tot nat
+  = match l with
+  | [] -> 0
+  | hd::tl -> hd + (sum tl)
 
+private let sum_for_get_count
+  (#t:eqtype) (#lv:pos) (#sn:stratified_node t lv)
+  (l:list pos{ L.length l = get_length sn.children })
+  : Tot nat
+  = sum (L.map (fun (v1:pos) -> v1 <: nat) l)
 
-(*
 let rec get_count
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
   : Tot pos (decreases lv)
   = if is_leaf sn then 
       1
     else 
-      sum (
-        select sn.children (
-          fun (#lv2:pos) (sn2:stratified_node t lv2) -> (
-            assert (is_child sn2 sn);
-            lemma_child_node_level_is_lower_than_parent sn2 sn;
-            get_count #t #lv2 sn2
+      sum_for_get_count #t #lv #sn (
+        select_in_children sn (
+          fun csn -> (
+            (
+              lemma_child_node_level_is_lower_than_parent sn csn;
+              get_count #t #(get_level csn) csn
+            )
           )
         )
       )
-*)
