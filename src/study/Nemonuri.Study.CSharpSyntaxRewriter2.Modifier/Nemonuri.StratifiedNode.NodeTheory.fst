@@ -76,7 +76,7 @@ let lemma_subchildren_hd_is_child
   (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
   : Lemma (requires is_subchildren parent subchildren)
           (ensures is_child parent (get_hd subchildren))
-  = lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head parent.children subchildren
+  = lemma_snl1_ends_with_snl2_means_snl1_contains_snl2_head parent.children subchildren
 
 let lemma_subchildren_tl_is_subchildren
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
@@ -84,7 +84,7 @@ let lemma_subchildren_tl_is_subchildren
   (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
   : Lemma (requires is_subchildren parent subchildren)
           (ensures is_subchildren parent (get_tl subchildren))
-  = admit()
+  = lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl parent.children subchildren
 
 private let rec select_in_children_core
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
@@ -118,9 +118,9 @@ private let rec sum (l:list nat)
 
 private let sum_for_get_count
   (#t:eqtype) (#lv:pos) (#sn:stratified_node t lv)
-  (l:list pos{ L.length l = get_length sn.children })
+  (l:list nat{ L.length l = get_length sn.children })
   : Tot nat
-  = sum (L.map (fun (v1:pos) -> v1 <: nat) l)
+  = sum l
 
 let rec get_count
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
@@ -133,7 +133,7 @@ let rec get_count
           fun csn -> (
             (
               lemma_child_node_level_is_lower_than_parent sn csn;
-              get_count #t #(get_level csn) csn
+              get_count #t #(get_level csn) csn <: nat
             )
           )
         )

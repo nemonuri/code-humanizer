@@ -69,7 +69,7 @@ let lemma_two_list_are_equal_means_two_heads_are_equal
           (ensures (get_hd l_snl) = (get_hd r_snl))
   = ()
 
-let rec lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head
+let rec lemma_snl1_ends_with_snl2_means_snl1_contains_snl2_head
   (#t:eqtype) (#mlv1:nat) (snl1:stratified_node_list t mlv1{SCons? snl1})
   (#mlv2:nat) (snl2:stratified_node_list t mlv2{SCons? snl2})
   : Lemma (requires (is_left_shorter_or_equal_than_right snl2 snl1) &&
@@ -81,27 +81,26 @@ let rec lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head
         lemma_two_list_are_equal_means_two_heads_are_equal snl1 snl2
       )
     else
-      lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head (get_tl snl1) snl2
+      lemma_snl1_ends_with_snl2_means_snl1_contains_snl2_head (get_tl snl1) snl2
 
-(*
-let rec lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head
-  (#t:eqtype) (#mlv1:nat) (snl1:stratified_node_list t mlv1)
-  (#mlv2:nat) (snl2:stratified_node_list t mlv2)
-  : Lemma (ensures 
-            (
-              (not (is_empty snl2)) &&
-              (is_left_shorter_or_equal_than_right snl2 snl1) && 
-              (ends_with snl1 snl2)
-            ) ==>
-            (contains snl1 (get_hd snl2))
-          )
-          (decreases snl2)
-  = if (is_empty snl2) then ()
-    else if not (
-      (not (is_empty snl2)) &&
-      (is_left_shorter_or_equal_than_right snl2 snl1) && 
-      (ends_with snl1 snl2)
-    ) 
-    then (lemma_ends_with_snl1_snl2_implies_snl1_contains_snl2_head snl1 (get_tl snl2))
+let lemma_two_list_are_equal_means_two_tails_are_equal
+  (#t:eqtype) (#l_mlv:nat) (l_snl:stratified_node_list t l_mlv{SCons? l_snl})
+  (#r_mlv:nat) (r_snl:stratified_node_list t r_mlv{SCons? r_snl})
+  : Lemma (requires is_equal l_snl r_snl)
+          (ensures (get_tl l_snl) = (get_tl r_snl))
+  = ()
+
+let rec lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl
+  (#t:eqtype) (#mlv1:nat) (snl1:stratified_node_list t mlv1{SCons? snl1})
+  (#mlv2:nat) (snl2:stratified_node_list t mlv2{SCons? snl2})
+  : Lemma (requires (is_left_shorter_or_equal_than_right snl2 snl1) &&
+                    (ends_with snl1 snl2) )
+          (ensures ends_with snl1 (get_tl snl2))
+          (decreases snl1)
+  = if (is_equal snl1 snl2) then
+      (
+        lemma_two_list_are_equal_means_two_tails_are_equal snl1 snl2
+      )
     else
-*)
+      lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl (get_tl snl1) snl2
+
