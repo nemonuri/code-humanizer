@@ -131,3 +131,13 @@ let rec ends_with
         ends_with next_snl end_snl
       else
         false
+
+let rec for_all
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
+  (predicate:(#lv:pos -> stratified_node t lv -> Tot bool))
+  : Tot bool (decreases snl)
+  = if is_empty snl then 
+      true
+    else
+      (predicate (get_hd snl)) && (for_all (get_tl snl) predicate)
+

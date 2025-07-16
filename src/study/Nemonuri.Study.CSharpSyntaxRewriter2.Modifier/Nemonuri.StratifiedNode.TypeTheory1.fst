@@ -74,6 +74,12 @@ let is_kind_argument_s1 (#lv:pos) (sn:node lv)
     (is_kind_blockless_expression (get_child_at sn 0))
 
 (*
+let is_kind_statement (#lv:pos) (sn:node lv)
+  : Tot bool
+  = 
+*)
+
+(*
 let is_kind_argument_s1 (#lv:pos) (sn:node lv)
   : Tot bool
   = (is_branch sn) && (Blockless_expression? sn.value.kind)
