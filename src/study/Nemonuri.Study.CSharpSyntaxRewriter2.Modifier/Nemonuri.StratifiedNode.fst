@@ -23,4 +23,8 @@ and stratified_node_list (t:eqtype) : nat -> Type =
       stratified_node_list t (if hd_level >= tl_level then hd_level else tl_level)
 
 
+let stratified_node_func (t:eqtype) (t2:Type) =
+  #lv:pos -> stratified_node t lv -> Tot t2
 
+let stratified_node_predicate (t:eqtype) =
+  stratified_node_func t bool

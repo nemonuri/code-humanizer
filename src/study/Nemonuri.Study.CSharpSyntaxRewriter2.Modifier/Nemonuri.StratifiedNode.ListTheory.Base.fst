@@ -51,7 +51,7 @@ let rec get_length (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
 // 오, 그러고보니 'L.length x = get_length snl' 이게 증명이 되네!
 let rec select 
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv) 
-  (#t2:Type) (selector:(#lv:pos -> stratified_node t lv -> Tot t2))
+  (#t2:Type) (selector:stratified_node_func t t2)
   : Tot (x:(list t2){ L.length x = get_length snl }) (decreases snl)
   = if is_empty snl then []
     else (selector (get_hd snl))::(select (get_tl snl) selector)
@@ -134,7 +134,7 @@ let rec ends_with
 
 let rec for_all
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv)
-  (predicate:(#lv:pos -> stratified_node t lv -> Tot bool))
+  (predicate:stratified_node_predicate t)
   : Tot bool (decreases snl)
   = if is_empty snl then 
       true

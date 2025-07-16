@@ -106,7 +106,7 @@ let rec lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl
 
 let rec list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
-  (predicate:(#lv:pos -> stratified_node t lv -> Tot bool))
+  (predicate:stratified_node_predicate t)
   : Lemma (requires for_all snl predicate)
           (ensures (predicate (get_hd snl)) && (for_all (get_tl snl) predicate))
           (decreases snl)
@@ -117,7 +117,7 @@ let rec list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate
 let rec list_satisfies_for_all_predicate_means_element_satisfies_predicate
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
   (#lv:pos) (sn:stratified_node t lv)
-  (predicate:(#lv:pos -> stratified_node t lv -> Tot bool))
+  (predicate:stratified_node_predicate t)
   : Lemma (requires (for_all snl predicate) && (contains snl sn))
           (ensures predicate sn)
           (decreases snl)
