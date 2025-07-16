@@ -66,16 +66,12 @@ let is_kind_argument_s0 (#lv:pos) (sn:node lv)
   : Tot bool
   = (is_kind_argument sn) && (Argument_s0? (get_argument_sum_kind sn)) //TODO: block block*
 
-(*
-오오, 그래. 이거야! 이렇게 하는거야!
-이제 helper method 들만 만들면 되겠는데!
-*)
 let is_kind_argument_s1 (#lv:pos) (sn:node lv)
   : Tot bool
   = (is_kind_argument sn) && 
     (Argument_s1? (get_argument_sum_kind sn)) &&
-    (get_length sn.children = 1) &&
-    (is_kind_blockless_expression (get_node sn.children 0))
+    (get_children_length sn = 1) &&
+    (is_kind_blockless_expression (get_child_at sn 0))
 
 (*
 let is_kind_argument_s1 (#lv:pos) (sn:node lv)

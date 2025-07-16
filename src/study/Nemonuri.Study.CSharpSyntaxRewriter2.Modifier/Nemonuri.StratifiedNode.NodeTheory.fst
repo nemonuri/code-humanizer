@@ -139,3 +139,19 @@ let rec get_count
         )
       )
 
+let get_children_length
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  : Tot nat
+  = get_length sn.children
+
+let get_child_level_at
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  (index:nat{index < (get_children_length sn)})
+  : Tot pos
+  = get_node_level sn.children index
+
+let get_child_at
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  (index:nat{index < (get_children_length sn)})
+  : Tot (stratified_node t (get_child_level_at sn index))
+  = get_node sn.children index
