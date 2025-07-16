@@ -104,7 +104,7 @@ let rec lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl
     else
       lemma_snl1_ends_with_snl2_means_snl1_ends_with_snl2_tl (get_tl snl1) snl2
 
-let rec list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate
+let rec lemma_list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
   (predicate:stratified_node_predicate t)
   : Lemma (requires for_all snl predicate)
@@ -112,20 +112,18 @@ let rec list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate
           (decreases snl)
   = if (get_length snl = 1) then ()
     else
-      list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate (get_tl snl) predicate
+      lemma_list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate (get_tl snl) predicate
 
-let rec list_satisfies_for_all_predicate_means_element_satisfies_predicate
+let rec lemma_list_satisfies_for_all_predicate_means_element_satisfies_predicate
   (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
   (#lv:pos) (sn:stratified_node t lv)
   (predicate:stratified_node_predicate t)
   : Lemma (requires (for_all snl predicate) && (contains snl sn))
           (ensures predicate sn)
           (decreases snl)
-  = list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate snl predicate;
+  = lemma_list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate snl predicate;
     if (get_hd_level snl) = lv && (get_hd snl) = sn then ()
     else
-      list_satisfies_for_all_predicate_means_element_satisfies_predicate (get_tl snl) sn predicate
+      lemma_list_satisfies_for_all_predicate_means_element_satisfies_predicate (get_tl snl) sn predicate
       
   
-  
-  //list_satisfies_for_all_predicate_means_head_and_tail_satisfy_predicate snl predicate
