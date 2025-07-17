@@ -19,6 +19,9 @@
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.Properties.fst" />
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.fst" />
     <Compile Include="Nemonuri.StratifiedNode.NodeTheory.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.IndexTheory.Base.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.IndexTheory.Properties.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.IndexTheory.fst" />
     <Compile Include="Nemonuri.StratifiedNode.TypeTheory1.fst" />
   </ItemGroup>
 

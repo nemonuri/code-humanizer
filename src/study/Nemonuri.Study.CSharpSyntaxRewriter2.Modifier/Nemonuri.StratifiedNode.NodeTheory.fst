@@ -6,6 +6,12 @@ open Nemonuri.StratifiedNode.ListTheory
 
 let get_level (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) : Tot pos = lv
 
+let is_equal_node 
+  (#t:eqtype) (#lv1:pos) (sn1:stratified_node t lv1)
+  (#lv2:pos) (sn2:stratified_node t lv2)
+  : Tot bool
+  = (lv1 = lv2) && (sn1 = sn2)
+
 let is_child 
   (#t:eqtype) 
   (#parent_level:pos) (parent:stratified_node t parent_level)
@@ -131,10 +137,8 @@ let rec get_count
       sum_for_get_count #t #lv #sn (
         select_in_children sn (
           fun csn -> (
-            (
-              lemma_child_node_level_is_lower_than_parent sn csn;
-              get_count #t #(get_level csn) csn <: nat
-            )
+            lemma_child_node_level_is_lower_than_parent sn csn;
+            get_count #t #(get_level csn) csn <: nat
           )
         )
       )
@@ -155,3 +159,48 @@ let get_child_at
   (index:nat{index < (get_children_length sn)})
   : Tot (stratified_node t (get_child_level_at sn index))
   = get_node sn.children index
+
+private let rec exists_in_children_core
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
+  (#children_mlv:nat)
+  (subchildren:stratified_node_list t children_mlv{ is_subchildren parent subchildren })
+  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
+  : Tot bool (decreases subchildren)
+  = if is_empty subchildren then 
+      false
+    else
+      (
+        lemma_subchildren_hd_is_child parent subchildren;
+        lemma_subchildren_tl_is_subchildren parent subchildren;
+        if predicate (get_hd subchildren) then 
+          true
+        else 
+          exists_in_children_core parent (get_tl subchildren) predicate
+      )
+
+let exists_in_children
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
+  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
+  : Tot bool
+  = exists_in_children_core parent parent.children predicate
+      
+let rec exists_in_descendant_or_self
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  (predicate:stratified_node_predicate t)
+  : Tot bool (decreases lv)
+  = if is_leaf sn then
+      false
+    else
+      exists_in_children sn (
+        fun csn -> (
+          lemma_child_node_level_is_lower_than_parent sn csn;
+          exists_in_descendant_or_self #t #(get_level csn) csn predicate
+        )
+      )
+
+let is_descendant_or_self
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
+  (#descendant_lv:pos) (descendant:stratified_node t descendant_lv)
+  : Tot bool
+  = exists_in_descendant_or_self sn (fun (#clv:pos) (csn:stratified_node t clv) -> is_equal_node descendant csn)
+

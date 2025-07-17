@@ -1,4 +1,5 @@
-module Nemonuri.StratifiedNodeIndexes
+module Nemonuri.StratifiedNode.IndexTheory.Base
+
 
 module L = FStar.List.Tot
 open Nemonuri.StratifiedNode
@@ -58,3 +59,45 @@ let rec get_node_from_indexes
       let child_index::next_sni = sni in
       let next_sn = get_child_at sn child_index in
       get_node_from_indexes next_sn next_sni
+
+private let rec try_get_index_in_children_core
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
+  (#children_mlv:nat)
+  (subchildren:stratified_node_list t children_mlv{ is_subchildren parent subchildren })
+  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
+  : Tot (option (nat1:nat{ nat1 < (get_children_length parent) })) 
+        (decreases subchildren)
+  = if is_empty subchildren then 
+      None
+    else
+      (
+        lemma_subchildren_hd_is_child parent subchildren;
+        lemma_subchildren_tl_is_subchildren parent subchildren;
+        if predicate (get_hd subchildren) then 
+          Some ((get_children_length parent) - (get_length subchildren))
+        else 
+          try_get_index_in_children_core parent (get_tl subchildren) predicate
+      )
+
+let try_get_index_in_children
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
+  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
+  : Tot (option (nat1:nat{ nat1 < (get_children_length parent) })) 
+  = try_get_index_in_children_core parent parent.children predicate
+
+
+(*
+let rec try_get_indexes_from_predicate
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
+  (predicate:stratified_node_predicate t)
+  : Tot (option (sni:stratified_node_indexes{ contains_indexes sn sni }))
+  = 
+*)
+
+(*
+let rec get_indexes_from_node
+  (#t:eqtype) (#root_lv:pos) (root:stratified_node t root_lv)
+  (#lv:pos) (sn:stratified_node t lv{is_descendant_or_self root sn})
+  : Tot (sni:stratified_node_indexes{ contains_indexes root sni })
+  =
+*)
