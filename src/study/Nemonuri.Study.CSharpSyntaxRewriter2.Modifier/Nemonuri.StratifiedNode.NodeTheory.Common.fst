@@ -109,3 +109,18 @@ let get_child_at
   (index:nat{index < (get_children_length sn)})
   : Tot (stratified_node t (get_child_level_at sn index))
   = get_node sn.children index
+
+let lemma_for_subchildren
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
+  (#children_mlv:nat)
+  (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
+  : Lemma (requires is_subchildren parent subchildren)
+          (ensures 
+            (is_child parent (get_hd subchildren)) /\
+            (is_subchildren parent (get_tl subchildren)) /\
+            (get_hd_level subchildren < lv)
+          ) =
+  lemma_subchildren_hd_is_child parent subchildren;
+  lemma_subchildren_tl_is_subchildren parent subchildren;
+  lemma_child_node_level_is_lower_than_parent parent (get_hd subchildren)
+

@@ -13,6 +13,10 @@ let child_node
   (clv:(child_level parent_level)) =
     (cn:(stratified_node t clv){ is_child parent cn })
 
+let child_node_index 
+  (#t:eqtype) (#parent_level:pos) (parent:stratified_node t parent_level) =
+  nat1:nat{ nat1 < (get_children_length parent) }
+
 let child_node_func
   (#t:eqtype) (#parent_level:pos) (parent:stratified_node t parent_level) (t2:Type) =
     (#clv:(child_level parent_level)) ->
@@ -34,10 +38,8 @@ private let rec select_in_children_core
       []
     else
       (
-        lemma_subchildren_hd_is_child parent subchildren;
-        lemma_subchildren_tl_is_subchildren parent subchildren;
+        lemma_for_subchildren parent subchildren;
         let hd = get_hd subchildren in
-        lemma_child_node_level_is_lower_than_parent parent hd;
         (selector #(get_level hd) hd)::
         (select_in_children_core parent (get_tl subchildren) selector)
       )
@@ -58,9 +60,7 @@ private let rec exists_in_children_core
       false
     else
       (
-        lemma_subchildren_hd_is_child parent subchildren;
-        lemma_subchildren_tl_is_subchildren parent subchildren;
-        lemma_child_node_level_is_lower_than_parent parent (get_hd subchildren);
+        lemma_for_subchildren parent subchildren;
         if predicate (get_hd subchildren) then 
           true
         else 

@@ -64,15 +64,14 @@ private let rec try_get_index_in_children_core
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
   (#children_mlv:nat)
   (subchildren:stratified_node_list t children_mlv{ is_subchildren parent subchildren })
-  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
-  : Tot (option (nat1:nat{ nat1 < (get_children_length parent) })) 
+  (predicate:(child_node_predicate parent))
+  : Tot (option (child_node_index parent)) 
         (decreases subchildren)
   = if is_empty subchildren then 
       None
     else
       (
-        lemma_subchildren_hd_is_child parent subchildren;
-        lemma_subchildren_tl_is_subchildren parent subchildren;
+        lemma_for_subchildren parent subchildren;
         if predicate (get_hd subchildren) then 
           Some ((get_children_length parent) - (get_length subchildren))
         else 
@@ -81,8 +80,8 @@ private let rec try_get_index_in_children_core
 
 let try_get_index_in_children
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
-  (predicate:(#clv:pos -> csn:(stratified_node t clv){ is_child parent csn } -> Tot bool))
-  : Tot (option (nat1:nat{ nat1 < (get_children_length parent) })) 
+  (predicate:(child_node_predicate parent))
+  : Tot (option (child_node_index parent)) 
   = try_get_index_in_children_core parent parent.children predicate
 
 
