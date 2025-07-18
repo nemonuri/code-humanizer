@@ -18,6 +18,9 @@
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.Base.fst" />
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.Properties.fst" />
     <Compile Include="Nemonuri.StratifiedNode.ListTheory.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.Common.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.Child.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.NodeTheory.Descendant.fst" />
     <Compile Include="Nemonuri.StratifiedNode.NodeTheory.fst" />
     <Compile Include="Nemonuri.StratifiedNode.IndexTheory.Base.fst" />
     <Compile Include="Nemonuri.StratifiedNode.IndexTheory.Properties.fst" />
