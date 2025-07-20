@@ -28,3 +28,9 @@ let stratified_node_func (t:eqtype) (t2:Type) =
 
 let stratified_node_predicate (t:eqtype) =
   stratified_node_func t bool
+
+let refined_stratified_node_func
+  (t:eqtype) (t2:Type) 
+  (predicate:stratified_node_predicate t) =
+  #lv:pos -> (sn:stratified_node t lv{predicate sn}) -> Tot t2
+  

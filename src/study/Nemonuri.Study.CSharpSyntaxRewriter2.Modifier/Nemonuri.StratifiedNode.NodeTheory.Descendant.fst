@@ -27,9 +27,9 @@ let rec get_count
     else 
       sum_for_get_count #t #lv #sn (
         select_in_children sn (
-          fun csn -> (
-            lemma_child_node_level_is_lower_than_parent sn csn;
-            get_count #t #(get_level csn) csn <: nat
+          fun psn csn -> (
+            lemma_child_node_level_is_lower_than_parent psn csn;
+            get_count csn <: nat
           )
         )
       )
@@ -42,9 +42,9 @@ let rec exists_in_descendant_or_self
       false
     else
       exists_in_children sn (
-        fun csn -> (
-          lemma_child_node_level_is_lower_than_parent sn csn;
-          exists_in_descendant_or_self #t #(get_level csn) csn predicate
+        fun psn csn -> (
+          lemma_child_node_level_is_lower_than_parent psn csn;
+          exists_in_descendant_or_self csn predicate
         )
       )
 

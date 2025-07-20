@@ -141,3 +141,18 @@ let rec for_all
     else
       (predicate (get_hd snl)) && (for_all (get_tl snl) predicate)
 
+private let rec index_of_core
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
+  (#lv:pos) (sn:stratified_node t lv{contains snl sn})
+  (seed:nat)
+  : Tot (nat1:nat{nat1 < ((get_length snl) + seed)})
+  = if is_head snl sn then
+      seed
+    else
+      index_of_core (get_tl snl) sn (seed + 1)
+
+let index_of
+  (#t:eqtype) (#mlv:nat) (snl:stratified_node_list t mlv{SCons? snl})
+  (#lv:pos) (sn:stratified_node t lv{contains snl sn})
+  : Tot (nat1:nat{nat1 < (get_length snl)})
+  = index_of_core snl sn 0
