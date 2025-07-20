@@ -100,7 +100,7 @@ let rec try_get_indexes_of_descendant_or_self_from_predicate_core
     let v2 =
       select_in_children parent (
         fun psn csn -> (
-          lemma_child_node_level_is_lower_than_parent psn csn;
+          //lemma_child_node_level_is_lower_than_parent psn csn;
           assert (lv > (get_level csn));
           let cni = get_child_node_index csn in
           let new_parent_indexes = add_index parent_indexes cni in

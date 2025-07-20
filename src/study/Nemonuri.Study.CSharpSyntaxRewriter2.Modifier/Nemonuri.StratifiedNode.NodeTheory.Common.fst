@@ -37,7 +37,7 @@ let stratified_node_is_branch_is_equivalent_to_stratified_node_level_is_greater_
     )
   = ()
 
-let is_child 
+let children_contains
   (#t:eqtype) 
   (#parent_level:pos) (parent:stratified_node t parent_level)
   (#child_level:pos) (child:stratified_node t child_level) 
@@ -49,14 +49,21 @@ let stratified_node_level_is_children_level_plus_one
   : Lemma ((SNode?.children_level sn + 1) = (get_level sn))
   = ()
 
-let lemma_child_node_level_is_lower_than_parent
+let lemma_children_contained_node_level_is_lower_than_parent
   (#t:eqtype) 
   (#parent_level:pos) (parent:stratified_node t parent_level)
   (#child_level:pos) (child:stratified_node t child_level) 
-  : Lemma (requires is_child parent child)
+  : Lemma (requires children_contains parent child)
           (ensures (child_level < parent_level))
   = let children = parent.children in
     lemma_node_is_element_implies_node_level_is_less_or_equal_than_list_max_level children child
+
+let is_child
+  (#t:eqtype) 
+  (#parent_level:pos) (parent:stratified_node t parent_level)
+  (#child_level:pos) (child:stratified_node t child_level) 
+  : Tot bool
+  = (children_contains parent child) && (child_level < parent_level)
 
 let is_shorter_or_equal_than_children 
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
@@ -82,7 +89,8 @@ let lemma_subchildren_hd_is_child
   (subchildren:stratified_node_list t children_mlv{SCons? subchildren})
   : Lemma (requires is_subchildren parent subchildren)
           (ensures is_child parent (get_hd subchildren))
-  = lemma_snl1_ends_with_snl2_means_snl1_contains_snl2_head parent.children subchildren
+  = lemma_snl1_ends_with_snl2_means_snl1_contains_snl2_head parent.children subchildren;
+    lemma_children_contained_node_level_is_lower_than_parent parent (get_hd subchildren)
 
 let lemma_subchildren_tl_is_subchildren
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
@@ -122,5 +130,5 @@ let lemma_for_subchildren
           ) =
   lemma_subchildren_hd_is_child parent subchildren;
   lemma_subchildren_tl_is_subchildren parent subchildren;
-  lemma_child_node_level_is_lower_than_parent parent (get_hd subchildren)
+  lemma_children_contained_node_level_is_lower_than_parent parent (get_hd subchildren)
 
