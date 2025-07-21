@@ -1,0 +1,391 @@
+fstar.exe [options] file[s] [@respfile...]
+  @respfile: read command-line options from respfile
+
+--abort_on <non-negative integer>
+    Abort on the n-th error or warning raised. Useful in combination with
+    --trace_error. Count starts at 1, use 0 to disable. (default 0)
+--admit_smt_queries <true|false>
+    Admit SMT queries, unsafe! (default 'false')
+--admit_except <[symbol|(symbol, id)]>
+    Admit all queries, except those with label ( symbol, id))(e.g.
+    --admit_except '(FStar.Fin.pigeonhole, 1)' or --admit_except
+    FStar.Fin.pigeonhole)
+--compat_pre_core <0, 1, 2>
+    Retain behavior of the tactic engine prior to the introduction of
+    FStar.TypeChecker.Core (0 is most permissive, 2 is least permissive)
+--compat_pre_typed_indexed_effects
+    Retain untyped indexed effects implicits
+--disallow_unification_guards <true|false>
+    Fail if the SMT guard are produced when the tactic engine re-checks
+    solutions produced by the unifier (default 'false')
+--already_cached <One or more space-separated occurrences of '[+|-]( * | namespace | module)'>
+    Expects all modules whose names or namespaces match the provided options to
+    already have valid .checked files in the include path
+--cache_checked_modules
+    Write a '.checked' file for each module after verification and read from it
+    if present, instead of re-verifying
+--cache_dir <dir>
+    Read and write .checked and .checked.lax in directory dir
+--cache_off
+    Do not read or write any .checked files
+--print_cache_version
+    Print the version for .checked files and exit.
+--cmi
+    Inline across module interfaces during extraction (aka. cross-module
+    inlining)
+--codegen <OCaml|FSharp|krml|Plugin|Extension>
+    Generate code for further compilation to executable code, or build a
+    compiler plugin
+--codegen-lib <namespace>
+    External runtime library (i.e. M.N.x extracts to M.N.X instead of M_N.x)
+--debug <debug toggles>
+    Debug toggles (comma-separated list of debug keys)
+--debug_all
+    Enable all debug toggles. WARNING: this will cause a lot of output!
+--debug_all_modules
+    Enable to make the effect of --debug apply to every module processed by the
+    compiler, including dependencies.
+--defensive <no|warn|error|abort>
+    Enable several internal sanity checks, useful to track bugs and report
+    issues.
+      - if 'no', no checks are performed
+      - if 'warn', checks are performed and raise a warning when they fail
+      - if 'error, like 'warn', but the compiler raises a hard error instead
+      - if 'abort, like 'warn', but the compiler immediately aborts on an error
+    (default 'no')
+--dep <make|graph|full|raw>
+    Output the transitive closure of the full dependency graph in three formats:
+      - 'graph': a format suitable the 'dot' tool from 'GraphViz'
+      - 'full': a format suitable for 'make', including dependences for
+      producing .ml and .krml files
+      - 'make': (deprecated) a format suitable for 'make', including only
+      dependences among source files
+--detail_errors
+    Emit a detailed error report by asking the SMT solver many queries; will
+    take longer
+--detail_hint_replay
+    Emit a detailed report for proof whose unsat core fails to replay
+--dump_module <module_name>
+    Print out this module as it passes through the compiler pipeline
+--eager_subtyping
+    Try to solve subtyping constraints at each binder (loses precision but may
+    be slightly more efficient)
+--error_contexts <true|false>
+    Print context information for each error or warning raised (default false)
+--ext <One or more semicolon separated occurrences of key-value pairs>
+    These options are set in extensions option map. Keys are usually namespaces
+    separated by ":". E.g.,
+    'pulse:verbose=1;my:extension:option=xyz;foo:bar=baz'. These options are
+    typically interpreted by extensions. Any later use of --ext over the same
+    key overrides the old value. An entry 'e' that is not of the form 'a=b' is
+    treated as 'e=1', i.e., 'e' associated with string "1".
+--extract <One or more semicolon separated occurrences of '[TargetName:]ModuleSelector'>
+    Extract only those modules whose names or namespaces match the provided
+    options. 'TargetName' ranges over {OCaml, krml, FSharp, Plugin, Extension}.
+    A 'ModuleSelector' is a space or comma-separated list of '[+|-]( * |
+    namespace | module)'. For example --extract 'OCaml:A -A.B' --extract 'krml:A
+    -A.C' --extract '*' means for OCaml, extract everything in the A namespace
+    only except A.B; for krml, extract everything in the A namespace only except
+    A.C; for everything else, extract everything. Note, the '+' is optional:
+    --extract '+A' and --extract 'A' mean the same thing. Note also that
+    '--extract A' applies both to a module named 'A' and to any module in the
+    'A' namespace Multiple uses of this option accumulate, e.g., --extract A
+    --extract B is interpreted as --extract 'A B'.
+--extract_module <module_name>
+    Deprecated: use --extract instead; Only extract the specified modules
+    (instead of the possibly-partial dependency graph)
+--extract_namespace <namespace name>
+    Deprecated: use --extract instead; Only extract modules in the specified
+    namespace
+--expose_interfaces
+    Explicitly break the abstraction imposed by the interface of any
+    implementation file that appears on the command line (use with care!)
+--hide_uvar_nums
+    Don't print unification variable numbers
+--hint_dir <dir>
+    Read/write hints to dir/module_name.hints (instead of placing hint-file
+    alongside source file)
+--hint_file <path>
+    Read/write hints to path (instead of module-specific hints files; overrides
+    hint_dir)
+--hint_hook <command>
+    Use <command> to generate hints for definitions which do not have them. The
+    command will receive a JSON representation of the query, the type of the
+    top-level definition involved, and the full SMT theory, and must output a
+    comma separated list of facts to be used.
+--hint_info
+    Print information regarding hints (deprecated; use --query_stats instead)
+--in
+    Legacy interactive mode; reads input from stdin
+--ide
+    JSON-based interactive mode for IDEs
+--ide_id_info_off
+    Disable identifier tables in IDE mode (temporary workaround useful in Steel)
+--lsp
+    Language Server Protocol-based interactive mode for IDEs
+--include <path>
+    A directory in which to search for files included on the command line
+--print
+    Parses and prettyprints the files included on the command line
+--print_in_place
+    Parses and prettyprints in place the files included on the command line
+--force
+    Force checking the files given as arguments even if they have valid checked
+    files
+--fuel <non-negative integer or pair of non-negative integers>
+    Set initial_fuel and max_fuel at once
+--ifuel <non-negative integer or pair of non-negative integers>
+    Set initial_ifuel and max_ifuel at once
+--initial_fuel <non-negative integer>
+    Number of unrolling of recursive functions to try initially (default 2)
+--initial_ifuel <non-negative integer>
+    Number of unrolling of inductive datatypes to try at first (default 1)
+--keep_query_captions <true|false>
+    Retain comments in the logged SMT queries (requires --log_queries or
+    --log_failing_queries; default true)
+--lax
+    Run the lax-type checker only (admit all verification conditions)
+--load <module>
+    Load OCaml module, compiling it if necessary
+--load_cmxs <module>
+    Load compiled module, fails hard if the module is not already compiled
+--log_types
+    Print types computed for data/val/let-bindings
+--log_queries
+    Log the Z3 queries in several queries-*.smt2 files, as we go
+--log_failing_queries
+    As --log_queries, but only save the failing queries. Each query is saved in
+    its own file regardless of whether they were checked during the same
+    invocation. The SMT2 file names begin with "failedQueries"
+--max_fuel <non-negative integer>
+    Number of unrolling of recursive functions to try at most (default 8)
+--max_ifuel <non-negative integer>
+    Number of unrolling of inductive datatypes to try at most (default 2)
+--MLish
+    Trigger various specializations for compiling the F* compiler itself (not
+    meant for user code)
+--no_default_includes
+    Ignore the default module search paths
+--no_extract <module name>
+    Deprecated: use --extract instead; Do not extract code from this module
+--no_location_info
+    Suppress location information in the generated OCaml output (only relevant
+    with --codegen OCaml)
+--no_smt
+    Do not send any queries to the SMT solver, and fail on them instead
+--normalize_pure_terms_for_extraction
+    Extract top-level pure terms after normalizing them. This can lead to very
+    large code, but can result in more partial evaluation and compile-time
+    specialization.
+--krmloutput <filename>
+    Place KaRaMeL extraction output in file <filename>. The path can be relative
+    or absolute and does not dependon the --odir option.
+--odir <dir>
+    Place output in directory dir
+--output_deps_to <file>
+    Output the result of --dep into this file instead of to standard output.
+--prims <file>
+    Use a custom prims.fst file. Do not use if you do not know exactly what
+    you're doing.
+--print_bound_var_types
+    Print the types of bound variables
+--print_effect_args
+    Print inferred predicate transformers for all computation types
+--print_expected_failures
+    Print the errors generated by declarations marked with expect_failure,
+    useful for debugging error locations
+--print_full_names
+    Print full names of variables
+--print_implicits
+    Print implicit arguments
+--print_universes
+    Print universes
+--print_z3_statistics
+    Print Z3 statistics for each SMT query (details such as relevant modules,
+    facts, etc. for each proof)
+--prn
+    Print full names (deprecated; use --print_full_names instead)
+--proof_recovery
+    Proof recovery mode: before failing an SMT query, retry 3 times, increasing
+    rlimits. If the query goes through after retrying, verification will
+    succeed, but a warning will be emitted. This feature is useful to restore a
+    project after some change to its libraries or F* upgrade. Importantly, then,
+    this option cannot be used in a pragma (#set-options, etc).
+--quake <positive integer or pair of positive integers>
+    Repeats SMT queries to check for robustness
+      - --quake N/M repeats each query checks that it succeeds at least N out of
+      M times, aborting early if possible
+      - --quake N/M/k works as above, except it will unconditionally run M times
+      - --quake N is an alias for --quake N/N
+      - --quake N/k is an alias for --quake N/N/kUsing --quake disables --retry.
+    When quake testing, queries are not splitted for error reporting unless
+    '--split_queries always' is given. Queries from the smt_sync tactic are not
+    quake-tested.
+--query_cache
+    Keep a running cache of SMT queries to make verification faster. Only
+    available in the interactive mode. NOTE: This feature is experimental and
+    potentially unsound! Hence why it is not allowed in batch mode (where it is
+    also less useful). If you find a query that is mistakenly accepted with the
+    cache, please report a bug to the F* issue tracker on GitHub.
+--query_stats
+    Print SMT query statistics
+--record_hints
+    Record a database of hints for efficient proof replay
+--record_options
+    Record the state of options used to check each sigelt, useful for the
+    `check_with` attribute and metaprogramming. Note that this implies a
+    performance hit and increases the size of checked files.
+--retry <positive integer>
+    Retry each SMT query N times and succeed on the first try. Using --retry
+    disables --quake.
+--reuse_hint_for <toplevel_name>
+    Optimistically, attempt using the recorded hint for toplevel_name (a
+    top-level name in the current module) when trying to verify some other term
+    'g'
+--report_assumes <warn|error>
+    Report every use of an escape hatch, include assume, admit, etc.
+--silent
+    Disable all non-critical output
+--smt <path>
+    Path to the Z3 SMT solver (we could eventually support other solvers)
+--smtencoding.elim_box <true|false>
+    Toggle a peephole optimization that eliminates redundant uses of
+    boxing/unboxing in the SMT encoding (default 'false')
+--smtencoding.nl_arith_repr <native|wrapped|boxwrap>
+    Control the representation of non-linear arithmetic functions in the SMT
+    encoding:
+      - if 'boxwrap' use 'Prims.op_Multiply, Prims.op_Division,
+      Prims.op_Modulus'
+      - if 'native' use '*, div, mod'
+      - if 'wrapped' use '_mul, _div, _mod : Int*Int -> Int'(default 'boxwrap')
+--smtencoding.l_arith_repr <native|boxwrap>
+    Toggle the representation of linear arithmetic functions in the SMT
+    encoding:
+      - if 'boxwrap', use 'Prims.op_Addition, Prims.op_Subtraction,
+      Prims.op_Minus'
+      - if 'native', use '+, -, -'(default 'boxwrap')
+--smtencoding.valid_intro <true|false>
+    Include an axiom in the SMT encoding to introduce proof-irrelevance from a
+    constructive proof
+--smtencoding.valid_elim <true|false>
+    Include an axiom in the SMT encoding to eliminate proof-irrelevance into the
+    existence of a proof witness
+--split_queries <no|on_failure|always>
+    Split SMT verification conditions into several separate queries, one per
+    goal. Helps with localizing errors.
+      - Use 'no' to disable (this may reduce the quality of error messages).
+      - Use 'on_failure' to split queries and retry when discharging fails (the
+      default)
+      - Use 'yes' to always split.
+--tactic_raw_binders
+    Do not use the lexical scope of tactics to improve binder names
+--tactics_failhard
+    Do not recover from metaprogramming errors, and abort if one occurs
+--tactics_info
+    Print some rough information on tactics, such as the time they take to run
+--tactic_trace
+    Print a depth-indexed trace of tactic execution (Warning: very verbose)
+--tactic_trace_d <positive_integer>
+    Trace tactics up to a certain binding depth
+--__tactics_nbe
+    Use NBE to evaluate metaprograms (experimental)
+--tcnorm <true|false>
+    Attempt to normalize definitions marked as tcnorm (default 'true')
+--timing
+    Print the time it takes to verify each top-level definition. This is just an
+    alias for an invocation of the profiler, so it may not work well if combined
+    with --profile. In particular, it implies --profile_group_by_decl.
+--trace_error
+    Attach stack traces on errors
+--ugly
+    Emit output formatted for debugging
+--unthrottle_inductives
+    Let the SMT solver unfold inductive types to arbitrary depths (may affect
+    verifier performance)
+--unsafe_tactic_exec
+    Allow tactics to run external processes. WARNING: checking an untrusted F*
+    file while using this option can have disastrous effects.
+--use_eq_at_higher_order
+    Use equality constraints when comparing higher-order types (Temporary)
+--use_hints
+    Use a previously recorded hints database for proof replay
+--use_hint_hashes
+    Admit queries if their hash matches the hash recorded in the hints database
+--use_native_tactics <path>
+    Use compiled tactics from path
+--no_plugins
+    Do not run plugins natively and interpret them as usual instead
+--no_tactics
+    Do not run the tactic engine before discharging a VC
+--using_facts_from <One or more space-separated occurrences of '[+|-]( * | namespace | fact id)'>
+    Prunes the context to include only the facts from the given namespace or
+    fact id. Facts can be include or excluded using the [+|-] qualifier. For
+    example --using_facts_from '* -FStar.Reflection +FStar.Compiler.List
+    -FStar.Compiler.List.Tot' will remove all facts from
+    FStar.Compiler.List.Tot.*, retain all remaining facts from
+    FStar.Compiler.List.*, remove all facts from FStar.Reflection.*, and retain
+    all the rest. Note, the '+' is optional: --using_facts_from
+    'FStar.Compiler.List' is equivalent to --using_facts_from
+    '+FStar.Compiler.List'. Multiple uses of this option accumulate, e.g.,
+    --using_facts_from A --using_facts_from B is interpreted as
+    --using_facts_from A^B.
+--__temp_fast_implicits
+    This does nothing and will be removed
+--version
+    Display version number
+--warn_default_effects
+    Warn when (a -> b) is desugared to (a -> Tot b)
+--z3cliopt <option>
+    Z3 command line options
+--z3smtopt <option>
+    Z3 options in smt2 format
+--z3refresh
+    Restart Z3 after each query; useful for ensuring proof robustness
+--z3rlimit <positive_integer>
+    Set the Z3 per-query resource limit (default 5 units, taking roughtly 5s)
+--z3rlimit_factor <positive_integer>
+    Set the Z3 per-query resource limit multiplier. This is useful when, say,
+    regenerating hints and you want to be more lax. (default 1)
+--z3seed <positive_integer>
+    Set the Z3 random seed (default 0)
+--z3version <version>
+    Set the version of Z3 that is to be used. Default: 4.8.5
+--__no_positivity
+    Don't check positivity of inductive types
+--warn_error <>
+    The [-warn_error] option follows the OCaml syntax, namely:
+      - [r] is a range of warnings (either a number [n], or a range [n..n])
+      - [-r] silences range [r]
+      - [+r] enables range [r] as warnings (NOTE: "enabling" an error will
+      downgrade it to a warning)
+      - [@r] makes range [r] fatal.
+--use_nbe <true|false>
+    Use normalization by evaluation as the default normalization strategy
+    (default 'false')
+--use_nbe_for_extraction <true|false>
+    Use normalization by evaluation for normalizing terms before extraction
+    (default 'false')
+--trivial_pre_for_unannotated_effectful_fns <true|false>
+    Enforce trivial preconditions for unannotated effectful functions (default
+    'true')
+--__debug_embedding
+    Debug messages for embeddings/unembeddings of natively compiled terms
+--eager_embedding
+    Eagerly embed and unembed terms to primitive operations and plugins: not
+    recommended except for benchmarking
+--profile_group_by_decl
+    Emit profiles grouped by declaration rather than by module
+--profile_component <One or more space-separated occurrences of '[+|-]( * | namespace | module | identifier)'>
+    Specific source locations in the compiler are instrumented with profiling
+    counters. Pass `--profile_component FStar.TypeChecker` to enable all
+    counters in the FStar.TypeChecker namespace. This option is a module or
+    namespace selector, like many other options (e.g., `--extract`)
+--profile <One or more space-separated occurrences of '[+|-]( * | namespace | module)'>
+    Profiling can be enabled when the compiler is processing a given set of
+    source modules. Pass `--profile FStar.Pervasives` to enable profiling when
+    the compiler is processing any module in FStar.Pervasives. This option is a
+    module or namespace selector, like many other options (e.g., `--extract`)
+--help
+    Display this information
+--list_debug_keys
+    List all debug keys and exit

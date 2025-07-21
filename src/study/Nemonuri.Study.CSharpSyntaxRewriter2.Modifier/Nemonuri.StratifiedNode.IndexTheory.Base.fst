@@ -104,10 +104,10 @@ private let rec try_get_indexes_of_descendant_or_self_from_predicate_core
           try_get_indexes_of_descendant_or_self_from_predicate_core csn new_parent_indexes predicate_builder
         )
       ) in
-    let v3 = L.find (Some?) v2 in
+    let v3 = L.filter (Some?) v2 in
     match v3 with
-    | None -> None
-    | Some v4 -> v4
+    | [] -> None
+    | v4::_ -> v4
 
 
 let try_get_indexes_of_descendant_or_self_from_predicate
