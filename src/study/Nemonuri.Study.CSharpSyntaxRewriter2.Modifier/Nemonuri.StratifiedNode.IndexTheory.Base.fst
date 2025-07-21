@@ -109,7 +109,6 @@ private let rec try_get_indexes_of_descendant_or_self_from_predicate_core
     | [] -> None
     | v4::_ -> v4
 
-
 let try_get_indexes_of_descendant_or_self_from_predicate
   (#t:eqtype) (#lv:pos) (root:stratified_node t lv)
   (predicate:stratified_node_predicate t)
@@ -121,6 +120,12 @@ let try_get_indexes_of_descendant_or_self_from_predicate
         (fun (#parent_level:pos) (parent:stratified_node t parent_level) ->
           (fun (#child_level:pos) (child:(child_node parent child_level)) -> predicate child)
         )
+
+let try_get_indexes_of_descendant_or_self
+  (#t:eqtype) (#root_lv:pos) (root:stratified_node t root_lv)
+  (#descendant_or_self_lv:pos) (descendant_or_self:stratified_node t descendant_or_self_lv)
+  : Tot (option (stratified_node_indexes))
+  = try_get_indexes_of_descendant_or_self_from_predicate root (is_equal_node descendant_or_self)
 
 (*
   = match (if (predicate parent) then (Some empty_stratified_node_indexes) else None) with

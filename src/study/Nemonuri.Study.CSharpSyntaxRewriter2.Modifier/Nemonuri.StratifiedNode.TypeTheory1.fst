@@ -41,12 +41,17 @@ type argument_sum_kind =
   | Argument_s0
   | Argument_s1
 
+type blockless_expression_sum_kind =
+  | Blockless_expression_normal
+  | Blockless_expression_complex
+  | Blockless_expression_substituted: var_index:nat -> blockless_expression_sum_kind
+
 type kind =
   | Compilation_unit
   | Block
   | Statement
   | Argument: argument_sum_kind -> kind
-  | Blockless_expression
+  | Blockless_expression: blockless_expression_sum_kind -> kind
 
 type data = { 
   kind: kind
@@ -62,6 +67,26 @@ let get_kind (#lv:pos) (sn:node lv)
 let is_kind_blockless_expression (#lv:pos) (sn:node lv)
   : Tot bool
   = (is_leaf sn) && (Blockless_expression? (get_kind sn))
+
+let get_blockless_expression_sum_kind (#lv:pos) (sn:node lv{ is_kind_blockless_expression sn })
+  : Tot blockless_expression_sum_kind
+  = let Blockless_expression v0 = (get_kind sn) in v0
+
+let is_kind_blockless_expression_normal (#lv:pos) (sn:node lv)
+  : Tot bool
+  = (is_kind_blockless_expression sn) && (Blockless_expression_normal? (get_blockless_expression_sum_kind sn))
+
+let is_kind_blockless_expression_complex (#lv:pos) (sn:node lv)
+  : Tot bool
+  = (is_kind_blockless_expression sn) && (Blockless_expression_complex? (get_blockless_expression_sum_kind sn))
+
+let is_kind_blockless_expression_substituted (#lv:pos) (sn:node lv)
+  : Tot bool
+  = (is_kind_blockless_expression sn) && (Blockless_expression_substituted? (get_blockless_expression_sum_kind sn))
+
+let get_var_index (#lv:pos) (sn:node lv{is_kind_blockless_expression_substituted sn})
+  : Tot nat
+  = (Blockless_expression_substituted?.var_index (get_blockless_expression_sum_kind sn))
 
 let is_kind_argument (#lv:pos) (sn:node lv)
   : Tot bool

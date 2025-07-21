@@ -110,7 +110,7 @@ let is_tail
   : Tot bool
   = ((get_tl_level snl) = tail_mlv) && ((get_tl snl) = tail_snl)
 
-let is_equal
+let is_equal_list
   (#t:eqtype) (#l_mlv:nat) (l_snl:stratified_node_list t l_mlv)
   (#r_mlv:nat) (r_snl:stratified_node_list t r_mlv)
   : Tot bool
@@ -121,7 +121,7 @@ let rec ends_with
   (#end_mlv:nat) (end_snl:stratified_node_list t end_mlv{ is_left_shorter_or_equal_than_right end_snl snl })
   : Tot bool (decreases snl)
   = if (is_empty end_snl) then true
-    else if (is_equal snl end_snl) then true
+    else if (is_equal_list snl end_snl) then true
     (* else
     if (is_left_length_is_right_length_minus_one end_snl snl) then 
       is_tail snl end_snl *)
