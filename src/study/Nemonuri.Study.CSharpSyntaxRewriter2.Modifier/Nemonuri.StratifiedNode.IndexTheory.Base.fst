@@ -90,10 +90,10 @@ let try_get_index_of_child_from_predicate
 
 private let rec try_get_indexes_of_descendant_or_self_from_predicate_core
   (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) (parent_indexes:stratified_node_indexes)
-  (predicate_builder:child_node_predicate_builder t)
+  (predicate:parent_and_child_node_predicate t)
   : Tot (option (stratified_node_indexes)) 
         (decreases lv)
-  = match (try_get_index_of_child_from_predicate #t #lv parent (predicate_builder parent)) with
+  = match (try_get_index_of_child_from_predicate #t #lv parent (predicate parent)) with
     | Some v1 -> Some (add_index parent_indexes v1)
     | None -> 
     let v2 =
@@ -101,7 +101,7 @@ private let rec try_get_indexes_of_descendant_or_self_from_predicate_core
         fun csn -> (
           let cni = get_child_node_index csn in
           let new_parent_indexes = add_index parent_indexes cni in
-          try_get_indexes_of_descendant_or_self_from_predicate_core csn new_parent_indexes predicate_builder
+          try_get_indexes_of_descendant_or_self_from_predicate_core csn new_parent_indexes predicate
         )
       ) in
     let v3 = L.filter (Some?) v2 in

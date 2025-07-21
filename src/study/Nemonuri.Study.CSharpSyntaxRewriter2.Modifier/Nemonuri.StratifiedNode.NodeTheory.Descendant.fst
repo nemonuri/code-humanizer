@@ -33,17 +33,16 @@ let rec get_count
           )
         )
       )
-      
+
 let rec exists_in_descendant_or_self
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
   (predicate:stratified_node_predicate t)
   : Tot bool (decreases lv)
   = if is_leaf sn then
-      false
+      (predicate sn)
     else
       exists_in_children sn (
         fun csn -> (
-          //lemma_child_node_level_is_lower_than_parent psn csn;
           exists_in_descendant_or_self csn predicate
         )
       )
@@ -54,3 +53,14 @@ let is_descendant_or_self
   : Tot bool
   = exists_in_descendant_or_self sn (is_equal_node descendant)
 
+let rec exists_in_descendant
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  (predicate:parent_and_child_node_predicate t)
+  : Tot bool (decreases lv)
+  = if (exists_in_children sn (predicate sn)) then true
+    else
+      exists_in_children sn (
+        fun csn -> (
+          exists_in_descendant csn predicate
+        )
+      )

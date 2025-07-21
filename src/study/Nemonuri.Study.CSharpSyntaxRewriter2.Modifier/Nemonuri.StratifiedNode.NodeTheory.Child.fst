@@ -45,6 +45,18 @@ let child_node_func
     Tot t2
 *)
 
+let parent_and_child_node_func (t:eqtype) (t2:Type) =
+  (#parent_level:pos) ->
+  (parent:stratified_node t parent_level) ->
+  (#child_level:pos) ->
+  (cn:(child_node parent child_level)) ->
+  Tot t2
+
+let to_parent_and_child_node_func (#t:eqtype) (#t2:Type) (func:stratified_node_func t t2) 
+  : Tot (parent_and_child_node_func t t2)
+  = fun (#parent_level:pos) (parent:stratified_node t parent_level) (#child_level:pos) (cn:(child_node parent child_level)) -> 
+      (func cn)
+
 let child_node_func
   (t:eqtype) (t2:Type)
   (#parent_level:pos) (parent:stratified_node t parent_level) =
@@ -52,10 +64,12 @@ let child_node_func
     (cn:(child_node parent child_level)) ->
     Tot t2
 
+(*
 let child_node_func_builder (t:eqtype) (t2:Type) =
   (#parent_level:pos) -> 
   (parent:stratified_node t parent_level) ->
   Tot (child_node_func t t2 parent)
+*)
 
 (*
 let bound_parent
@@ -91,6 +105,14 @@ let child_node_and_index_func
     Tot t2
 *)
 
+let parent_and_child_node_predicate (t:eqtype) =
+  parent_and_child_node_func t bool
+
+let to_parent_and_child_node_predicate (#t:eqtype) (predicate:stratified_node_predicate t)
+  : Tot (parent_and_child_node_predicate t)
+  = fun (#parent_level:pos) (parent:stratified_node t parent_level) (#child_level:pos) (cn:(child_node parent child_level)) -> 
+      (predicate cn)
+
 let child_node_predicate
   (t:eqtype)
   (#parent_level:pos) (parent:stratified_node t parent_level) =
@@ -101,10 +123,24 @@ let to_child_node_predicate
   : Tot (child_node_predicate t parent)
   = fun (#child_level:pos) (cn:(child_node parent child_level)) -> (predicate cn)
 
+
+(*
 let child_node_predicate_builder (t:eqtype) =
   (#parent_level:pos) -> 
   (parent:stratified_node t parent_level) ->
   Tot (child_node_predicate t parent)
+*)
+
+(*
+let to_child_node_predicate_builder 
+  (#t:eqtype)
+  (#parent_level:pos) (#parent:stratified_node t parent_level)
+  (predicate:child_node_predicate t parent) 
+  : Tot (child_node_predicate_builder t)
+  = fun (#parent_level2:pos) (parent2:stratified_node t parent_level2) -> (
+      fun (#child_level:pos) (cn:(child_node parent2 child_level)) -> (predicate cn)
+    )
+*)
 
 (*
 let refined_child_node_func
