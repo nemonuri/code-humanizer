@@ -96,6 +96,11 @@ let child_node_predicate
   (#parent_level:pos) (parent:stratified_node t parent_level) =
   child_node_func t bool #parent_level parent
 
+let to_child_node_predicate
+  (#t:eqtype) (#parent_level:pos) (parent:stratified_node t parent_level) (predicate:stratified_node_predicate t) 
+  : Tot (child_node_predicate t parent)
+  = fun (#child_level:pos) (cn:(child_node parent child_level)) -> (predicate cn)
+
 let child_node_predicate_builder (t:eqtype) =
   (#parent_level:pos) -> 
   (parent:stratified_node t parent_level) ->
@@ -179,6 +184,30 @@ let exists_in_children
   (predicate:child_node_predicate t parent)
   : Tot bool
   = exists_in_children_core parent parent.children predicate
+
+private let rec for_all_children_core
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv) 
+  (#children_mlv:nat)
+  (subchildren:stratified_node_list t children_mlv{ is_subchildren parent subchildren })
+  (predicate:child_node_predicate t parent)
+  : Tot bool (decreases subchildren)
+  = if is_empty subchildren then 
+      true
+    else
+      (
+        lemma_for_subchildren parent subchildren;
+        if predicate (get_hd subchildren) then 
+          true && (for_all_children_core parent (get_tl subchildren) predicate)
+        else 
+          false
+      )
+
+let for_all_children
+  (#t:eqtype) (#lv:pos) (parent:stratified_node t lv)
+  (predicate:child_node_predicate t parent)
+  : Tot bool
+  = for_all_children_core parent parent.children predicate
+
 
 (*
 private let rec select_with_index_in_children_core

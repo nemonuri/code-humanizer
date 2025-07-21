@@ -73,7 +73,10 @@ let get_statement_sum_kind (#lv:pos) (sn:node lv{ Statement? (get_kind sn) })
   : Tot statement_sum_kind
   = let Statement v0 = (get_kind sn) in v0
 
-#push-options "--query_stats"
+let get_expression_sum_kind (#lv:pos) (sn:node lv{ Expression? (get_kind sn) })
+  : Tot expression_sum_kind
+  = let Expression v0 = (get_kind sn) in v0
+
 let rec has_kind_block (#lv:pos) (sn:node lv)
   : Tot bool (decreases lv)
   = Block? (get_kind sn) &&
@@ -82,19 +85,26 @@ let rec has_kind_block (#lv:pos) (sn:node lv)
 and has_kind_statement (#lv:pos) (sn:node lv)
   : Tot bool (decreases lv)
   = Statement? (get_kind sn) && (
-    match (get_statement_sum_kind sn) with
-    | Statement_normal -> (for_all_children sn has_kind_argument)
-    | Statement_substituted _ -> (get_children_length sn = 1) && (for_all_children sn has_kind_expression)
+      match (get_statement_sum_kind sn) with
+      | Statement_normal -> (for_all_children sn has_kind_argument)
+      | Statement_substituted _ -> (get_children_length sn = 1) && (for_all_children sn has_kind_expression)
     )
 
 and has_kind_argument (#lv:pos) (sn:node lv)
   : Tot bool (decreases lv)
-  = Argument? (get_kind sn)
+  = (Argument? (get_kind sn)) && 
+    (get_children_length sn = 1) &&
+    (has_kind_expression (get_child_at sn 0))
 
 and has_kind_expression (#lv:pos) (sn:node lv)
-  : Tot bool
-  = Expression? (get_kind sn)
-#pop-options
+  : Tot bool (decreases lv)
+  = (Expression? (get_kind sn)) && (
+      match (get_expression_sum_kind sn) with
+      | Expression_block_containing -> (get_children_length sn >= 1) && (for_all_children sn has_kind_block)
+      | Expression_blockless_simple -> (is_leaf sn)
+      | Expression_blockless_complex -> (is_leaf sn)
+      | Expression_blockless_substituted _ -> (is_leaf sn)
+    )
 
 let has_kind_compilation_unit (#lv:pos) (sn:node lv)
   : Tot bool (decreases lv)
@@ -117,9 +127,7 @@ let has_kind_statement_substituted (#lv:pos) (sn:node lv)
   = (has_kind_statement sn) && (Statement_substituted? (get_statement_sum_kind sn))
 
 
-let get_expression_sum_kind (#lv:pos) (sn:node lv{ has_kind_expression sn })
-  : Tot expression_sum_kind
-  = let Expression v0 = (get_kind sn) in v0
+
 
 let has_kind_expression_block_containing (#lv:pos) (sn:node lv)
   : Tot bool

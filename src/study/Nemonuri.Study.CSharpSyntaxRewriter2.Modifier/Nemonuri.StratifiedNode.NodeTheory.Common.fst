@@ -142,10 +142,3 @@ let lemma_for_children
   : Lemma (ensures (all_nodes_contained_in_children_are_child sn))
   = introduce forall (lv2:pos) (sn2:stratified_node t lv2{children_contains sn sn2}). ((lv2 < lv) /\ (is_child sn sn2)) with
     (lemma_children_contained_node_level_is_lower_than_parent sn sn2)
-
-let for_all_children
-  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
-  (predicate:stratified_node_predicate t)
-  : Tot (_:bool{all_nodes_contained_in_children_are_child sn})
-  = lemma_for_children sn;
-    for_all sn.children predicate
