@@ -52,5 +52,5 @@ let is_descendant_or_self
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
   (#descendant_lv:pos) (descendant:stratified_node t descendant_lv)
   : Tot bool
-  = exists_in_descendant_or_self sn (fun (#clv:pos) (csn:stratified_node t clv) -> is_equal_node descendant csn)
+  = exists_in_descendant_or_self sn (is_equal_node descendant)
 
