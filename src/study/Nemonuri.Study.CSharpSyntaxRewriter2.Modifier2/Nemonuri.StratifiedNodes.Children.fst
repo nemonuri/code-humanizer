@@ -30,31 +30,52 @@ let child_selector t (t2:Type) (parent:N.node t) =
 //---|
 
 //--- theory members 2 ---
+let to_parent_child_selector #t #t2 (selector:N.node t -> t2) 
+  : Tot (parent_child_selector t t2) =
+  fun 
+    (parent:N.node t)
+    (child:N.node t{is_child parent child}) ->
+    selector child
+
 private let rec select_and_aggregate_from_children_core #t #t2
   (parent:N.node t) 
   (selector:child_selector t t2 parent)
-  (aggregator:Common.aggregator t2) 
-  (continue_predicate:t2 -> bool)
-  (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_child parent n) }) //L.for_all (is_child parent) subchildren
+  (child_parent_aggregator:Common.aggregator t2) 
+  (left_right_aggregator:Common.aggregator t2)
+  (continue_predicate:N.node t -> t2 -> bool)
+  (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_child parent n) })
   (seed:t2)
   : Tot t2 (decreases subchildren) =
-  if not (continue_predicate seed) then
-    seed
-  else
-    match subchildren with
-    | [] -> seed
-    | hd::tl ->
-        let v1 = selector hd in
-        let v2 = aggregator seed v1 in
-        select_and_aggregate_from_children_core parent selector aggregator continue_predicate tl v2
+  match subchildren with
+  | [] -> seed
+  | hd::tl ->
+      let v1 = selector hd in
+      let v2 = (
+        if (N.get_children_length parent = L.length subchildren) then (
+          child_parent_aggregator v1 seed
+        ) else (
+          left_right_aggregator seed v1
+        )
+      ) in
+      if not (continue_predicate hd v2) then
+        v2
+      else (
+        select_and_aggregate_from_children_core 
+          parent selector 
+          child_parent_aggregator left_right_aggregator
+          continue_predicate tl v2
+      )
 
 let select_and_aggregate_from_children #t #t2
   (parent:N.node t) 
-  (selector:parent_child_selector t t2)
-  (aggregator:Common.aggregator t2) 
-  (continue_predicate:t2 -> bool) 
+  (selector:child_selector t t2 parent)
+  (child_parent_aggregator:Common.aggregator t2) 
+  (left_right_aggregator:Common.aggregator t2)
+  (continue_predicate:N.node t -> t2 -> bool)
   (seed:t2)
   : Tot t2 =
-  //assume ( L.for_all (is_child parent) (N.get_children parent) ); // <- TODO
-  select_and_aggregate_from_children_core parent (selector parent) aggregator continue_predicate (N.get_children parent) seed
+  select_and_aggregate_from_children_core 
+    parent selector 
+    child_parent_aggregator left_right_aggregator 
+    continue_predicate (N.get_children parent) seed
 //---|

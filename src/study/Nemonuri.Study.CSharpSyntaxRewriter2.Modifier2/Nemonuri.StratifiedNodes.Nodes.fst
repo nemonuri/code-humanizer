@@ -32,6 +32,8 @@ let get_value #t (node:node t) : Tot t = node.internal.value
 let get_children #t (node:node t) : Tot (node_list t) =
   to_node_list node.internal.children
 
+let get_children_length #t (node:node t) : Tot nat = I.get_length node.internal.children
+
 let is_leaf #t (node:node t) : Tot bool = I.SNil? node.internal.children
 
 let is_branch #t (node:node t) : Tot bool = not (is_leaf node)

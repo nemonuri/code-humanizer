@@ -39,6 +39,13 @@ let rec contains
   | SCons #_ #_ hd tl ->
       if (((SCons?.hd_level nl) = node_level) && (hd = nd)) then true
       else (contains nd tl)
+
+let rec get_length
+  #t #max_level (nl:node_list_internal t max_level)
+  : Tot nat (decreases nl) =
+  match nl with
+  | SNil -> 0
+  | SCons #_ #_ _ tl -> 1 + get_length tl
 //---|
 
 //--- proofs ---

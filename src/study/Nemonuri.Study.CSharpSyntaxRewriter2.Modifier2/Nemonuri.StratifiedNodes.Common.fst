@@ -1,5 +1,5 @@
 module Nemonuri.StratifiedNodes.Common
 
 //--- type definitions ---
-let aggregator (t:Type) = (prev:t) -> (current:t) -> t
+let aggregator (t:Type) = (aggregated:t) -> (aggregating:t) -> t
 //---|
