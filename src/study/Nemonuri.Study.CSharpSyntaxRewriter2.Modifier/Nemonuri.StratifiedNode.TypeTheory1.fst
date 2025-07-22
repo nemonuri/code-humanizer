@@ -144,3 +144,6 @@ let has_kind_compilation_unit (#lv:pos) (sn:node lv)
   = (Compilation_unit? (get_kind sn)) &&
     (for_all_children sn has_kind_block)
 
+let get_count_of_argument_need_to_substitute_expression (#lv:pos) (sn:node lv{ has_kind_compilation_unit sn })
+  : Tot nat
+  = get_count_from_predicate sn may_have_kind_argument_need_to_substitute_expression

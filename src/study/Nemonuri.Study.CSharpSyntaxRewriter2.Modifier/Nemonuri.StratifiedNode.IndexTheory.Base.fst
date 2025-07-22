@@ -117,9 +117,7 @@ let try_get_indexes_of_descendant_or_self_from_predicate
       Some empty_stratified_node_indexes
     else
       try_get_indexes_of_descendant_or_self_from_predicate_core root empty_stratified_node_indexes
-        (fun (#parent_level:pos) (parent:stratified_node t parent_level) ->
-          (fun (#child_level:pos) (child:(child_node parent child_level)) -> predicate child)
-        )
+        (to_parent_and_child_node_predicate predicate)
 
 let try_get_indexes_of_descendant_or_self
   (#t:eqtype) (#root_lv:pos) (root:stratified_node t root_lv)

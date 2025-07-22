@@ -34,6 +34,21 @@ let rec get_count
         )
       )
 
+let rec get_count_from_predicate
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
+  (predicate:stratified_node_predicate t)
+  : Tot nat (decreases lv)
+  = if is_leaf sn then 
+      (if (predicate sn) then 1 else 0)
+    else 
+      sum_for_get_count #t #lv #sn (
+        select_in_children sn (
+          fun csn -> (
+            get_count_from_predicate csn predicate
+          )
+        )
+      )
+
 let rec exists_in_descendant_or_self
   (#t:eqtype) (#lv:pos) (sn:stratified_node t lv) 
   (predicate:stratified_node_predicate t)

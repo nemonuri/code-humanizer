@@ -26,6 +26,7 @@
     <Compile Include="Nemonuri.StratifiedNode.IndexTheory.Properties.fst" />
     <Compile Include="Nemonuri.StratifiedNode.IndexTheory.fst" />
     <Compile Include="Nemonuri.StratifiedNode.TypeTheory1.fst" />
+    <Compile Include="Nemonuri.StratifiedNode.Program1.fst" />
   </ItemGroup>
 
 </Project>

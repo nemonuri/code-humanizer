@@ -33,4 +33,12 @@ let refined_stratified_node_func
   (t:eqtype) (t2:Type) 
   (predicate:stratified_node_predicate t) =
   #lv:pos -> (sn:stratified_node t lv{predicate sn}) -> Tot t2
+
+type stratified_node_with_level (t:eqtype) =
+  | Snwl : #level:pos -> node:(stratified_node t level) -> stratified_node_with_level t
+
+let get_stratified_node_with_level 
+  (#t:eqtype) (#lv:pos) (sn:stratified_node t lv)
+  : Tot (stratified_node_with_level t)
+  = Snwl sn
   
