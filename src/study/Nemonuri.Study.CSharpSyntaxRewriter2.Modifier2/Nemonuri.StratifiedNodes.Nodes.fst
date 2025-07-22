@@ -34,23 +34,10 @@ let get_children #t (node:node t) : Tot (node_list t) =
 //---|
 
 //--- (node_list t) members ---
-private let rec get_max_core (l:list pos) (seed:pos)
-  : Tot pos (decreases l) =
-  match l with
-  | [] -> seed
-  | hd::tl ->
-      let seed2 = (if hd > seed then hd else seed) in
-      get_max_core tl seed2
-
-private let get_max (l:list pos)
-  : Tot (n:nat{ if L.isEmpty l then n = 0 else n > 0 }) =
+let rec get_list_level #t (l:node_list t) : Tot nat =
   match l with
   | [] -> 0
-  | hd::tl -> get_max_core tl hd
-  
-let get_max_level #t (l:node_list t) 
-  : Tot (n:nat{ if L.isEmpty l then n = 0 else n > 0 }) =
-  get_max (L.map (fun nd -> (get_level nd)) l)
+  | hd::tl -> Math.max (get_level hd) (get_list_level tl)
 //---|
 
 //--- propositions ---
@@ -66,16 +53,17 @@ let node_level_is_greater_than_levels_of_nodes_in_children
 private let to_node_inverse #t (nd:node t) : Tot (I.node_internal t (get_level nd)) =
   nd.internal
 
-private let rec to_node_list_inverse_core 
-  #t #node_list_internal_level (l:node_list t) (seed:I.node_list_internal t node_list_internal_level)
-  : Tot (I.node_list_internal t (Math.min (get_max_level l) node_list_internal_level))
+private let rec to_node_list_inverse
+  #t (l:node_list t)
+  : Tot (I.node_list_internal t (get_list_level l))
         (decreases l)
   =
   match l with
-  | [] -> seed
+  | [] -> I.SNil
   | hd::tl ->
-      let seed2 = I.SCons (to_node_inverse hd) seed in
-      to_node_list_inverse_core tl seed2
+      let hd2 = to_node_inverse hd in
+      let tl2 = to_node_list_inverse tl in
+      I.SCons hd2 tl2
 
 
 (*
