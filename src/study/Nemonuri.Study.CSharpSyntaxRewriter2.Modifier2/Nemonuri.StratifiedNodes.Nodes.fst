@@ -40,15 +40,6 @@ let rec get_list_level #t (l:node_list t) : Tot nat =
   | hd::tl -> Math.max (get_level hd) (get_list_level tl)
 //---|
 
-//--- propositions ---
-//let node_internal_children_and_get_children_result_
-
-let node_level_is_greater_than_levels_of_nodes_in_children 
-  #t (node1:node t) : Tot prop =
-  forall (node2:node t). 
-    (L.contains node2 (get_children node1)) ==> ((get_level node1) > (get_level node2))
-//---|
-
 //--- theory members for proofs ---
 private let to_node_inverse #t (nd:node t) : Tot (I.node_internal t (get_level nd)) =
   nd.internal
@@ -64,51 +55,73 @@ private let rec to_node_list_inverse
       let hd2 = to_node_inverse hd in
       let tl2 = to_node_list_inverse tl in
       I.SCons hd2 tl2
+//---|
 
-
-(*
-  : Tot (I.node_list_internal t (
-      match l with
-      | [] -> node_list_internal_level
-      | hd::_ -> Math.max (get_level hd) node_list_internal_level
-    )) 
-    (decreases l)
-*)
-
-(*
-private let rec to_node_list_inverse #t (l:node_list t) 
-  : Tot (I.node_list_internal t (get_max_level l)) 
-        (decreases l)     
-  =
-  match l with
-  | [] -> I.SNil
-  | hd::tl -> 
-      let hd2 = to_node_inverse hd in
-      I.SCons hd2 (to_node_list_inverse tl)
-  //I.SCons 
-*)
+//--- propositions ---
+let node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
+  : Tot prop =
+  forall (node1:node t) (node2:node t). 
+    (L.contains node2 (get_children node1)) ==> ((get_level node1) > (get_level node2))
 //---|
 
 //--- proofs ---
 open FStar.Classical.Sugar
 
-let lemma_to_node_is_bijection #t
+let lemma_to_node_is_bijection t
   : Lemma (ensures forall (lv:pos) (ni:I.node_internal t lv). (to_node_inverse (to_node ni)) = ni)
   =
   ()
 
-//let lemma_to_node_
+private let rec lemma_to_node_list_is_bijection_aux #t #lv
+  (nl:I.node_list_internal t lv) 
+  : Lemma (ensures 
+            (lv = (get_list_level (to_node_list nl))) && 
+            (to_node_list_inverse (to_node_list nl)) = nl)
+          (decreases nl)
+  =
+  match nl with
+  | I.SNil -> ()
+  | I.SCons #_ #_ hd tl -> lemma_to_node_list_is_bijection_aux tl
 
-(*
+let lemma_to_node_list_is_bijection t
+  : Lemma (ensures forall (lv:pos) (nl:I.node_list_internal t lv). 
+                     (lv = (get_list_level (to_node_list nl))) && 
+                     (to_node_list_inverse (to_node_list nl)) = nl)
+  =
+  introduce forall (lv2:pos) (nl2:I.node_list_internal t lv2).
+    (lv2 = (get_list_level (to_node_list nl2))) && (to_node_list_inverse (to_node_list nl2)) = nl2
+    with lemma_to_node_list_is_bijection_aux nl2
+
+let rec lemma_to_node_list_result_contains_to_node_result_entails_argument_node_list_internal_contains_argument_node_internal
+  #t #node_level #node_list_level
+  (node_internal:I.node_internal t node_level)
+  (node_list_internal:I.node_list_internal t node_list_level)
+  : Lemma (requires (L.contains (to_node node_internal) (to_node_list node_list_internal)))
+          (ensures (I.contains node_internal node_list_internal))
+          (decreases node_list_internal)
+  = 
+  let nd = to_node node_internal in
+  let nl = to_node_list node_list_internal in
+  //lemma_to_node_is_bijection t;
+  //lemma_to_node_list_is_bijection t;
+  if (((I.SCons?.hd_level node_list_internal) = node_level) && ((I.SCons?.hd node_list_internal) = node_internal)) then
+    ()
+  else
+    lemma_to_node_list_result_contains_to_node_result_entails_argument_node_list_internal_contains_argument_node_internal node_internal (I.SCons?.tl node_list_internal)
+
 let lemma_node1_children_contains_node2_entails_node1_internal_children_contains_node2_internal
   #t (node1:node t) (node2:node t)
   : Lemma (requires (L.contains node2 (get_children node1)))
-          (ensures (I.contains node2.internal node1.internal.children))
-          
-  =
-  introduce forall (node1:node t) (node2:node t)
-*)
-
+          (ensures (I.contains node2.internal node1.internal.children))      
+  = 
+  let node1_internal_children = to_node_list_inverse (get_children node1) in
+  let node2_internal = to_node_inverse node2 in
+  lemma_to_node_is_bijection t;
+  lemma_to_node_list_is_bijection t;
+  lemma_to_node_list_result_contains_to_node_result_entails_argument_node_list_internal_contains_argument_node_internal node2_internal node1_internal_children //;
+  //assert (node1_internal_children = node1.internal.children);
+  //assert (node2_internal = node2.internal);
+  //assert (I.contains node2_internal node1_internal_children)
 
 let lemma_node_level_is_greater_than_level_of_node_in_children
   #t (node1:node t) (node2:node t)
@@ -116,17 +129,15 @@ let lemma_node_level_is_greater_than_level_of_node_in_children
           (ensures ((get_level node1) > (get_level node2)))
   =
   assert ((to_node node2.internal) = (node2));
+  lemma_node1_children_contains_node2_entails_node1_internal_children_contains_node2_internal node1 node2;
   assert (I.contains node2.internal node1.internal.children);
   I.lemma_node_list_internal_level_is_greater_or_equal_than_element_level node2.internal node1.internal.children
 
-
-
-(*
-let lemma_node_level_is_greater_than_levels_of_nodes_in_children
-  #t (node1:node t)
-  : Lemma (ensures node_level_is_greater_than_levels_of_nodes_in_children node1) =
-  introduce forall (node2:node t{L.contains node2 (get_children node1)}). 
-    (I.contains node2.internal node1.internal.children) with ((to_node node2.internal) = (node2))
-*)
+let lemma_node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
+  : Lemma (ensures node_level_is_greater_than_levels_of_nodes_in_children t) =
+  introduce 
+    forall (node1:node t) (node2:node t{L.contains node2 (get_children node1)}). //
+      ((get_level node1) > (get_level node2))
+    with (lemma_node_level_is_greater_than_level_of_node_in_children node1 node2)
 //---|
   
