@@ -31,6 +31,10 @@ let get_value #t (node:node t) : Tot t = node.internal.value
 
 let get_children #t (node:node t) : Tot (node_list t) =
   to_node_list node.internal.children
+
+let is_leaf #t (node:node t) : Tot bool = I.SNil? node.internal.children
+
+let is_branch #t (node:node t) : Tot bool = not (is_leaf node)
 //---|
 
 //--- (node_list t) members ---
@@ -136,7 +140,7 @@ let lemma_node_level_is_greater_than_level_of_node_in_children
 let lemma_node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
   : Lemma (ensures node_level_is_greater_than_levels_of_nodes_in_children t) =
   introduce 
-    forall (node1:node t) (node2:node t{L.contains node2 (get_children node1)}). //
+    forall (node1:node t) (node2:node t{L.contains node2 (get_children node1)}).
       ((get_level node1) > (get_level node2))
     with (lemma_node_level_is_greater_than_level_of_node_in_children node1 node2)
 //---|

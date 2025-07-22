@@ -10,6 +10,7 @@
     <Compile Include="Nemonuri.StratifiedNodes.Internals.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />
   </ItemGroup>
 
 </Project>
