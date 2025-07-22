@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Nemonuri.StratifiedNodes.Common.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Internals.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
