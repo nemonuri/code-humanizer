@@ -3,7 +3,6 @@ module Nemonuri.StratifiedNodes.Walkers
 module L = FStar.List.Tot
 module N = Nemonuri.StratifiedNodes.Nodes
 module C = Nemonuri.StratifiedNodes.Children
-module Option = FStar.Option
 module Common = Nemonuri.StratifiedNodes.Common
 
 //--- type definitions ---

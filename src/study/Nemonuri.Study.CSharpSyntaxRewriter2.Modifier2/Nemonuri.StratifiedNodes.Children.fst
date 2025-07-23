@@ -5,7 +5,7 @@ module N = Nemonuri.StratifiedNodes.Nodes
 module Common = Nemonuri.StratifiedNodes.Common
 
 //--- theory members ---
-let is_child #t (parent_node:N.node t) (node:N.node t) 
+let is_parent #t (parent_node:N.node t) (node:N.node t) 
   : Pure bool (requires True) (ensures fun _ -> N.node_level_is_greater_than_levels_of_nodes_in_children t)
   =
   N.lemma_node_level_is_greater_than_levels_of_nodes_in_children t;
@@ -16,7 +16,7 @@ private let rec is_ancestor_list_core #t (hd:N.node t) (tl:N.node_list t)
   match tl with
   | [] -> true
   | hd2::tl2 -> 
-      (is_child hd2 hd) &&
+      (is_parent hd2 hd) &&
       (is_ancestor_list_core hd2 tl2)
 
 let is_ancestor_list #t (node_list:N.node_list t)
@@ -37,7 +37,7 @@ let is_concatenatable_to_ancestor_list #t (node:N.node t) (ancestor_list:N.node_
   =
   match ancestor_list with
   | [] -> true
-  | hd::_ -> is_child hd node
+  | hd::_ -> is_parent hd node
 
 let concatenate_as_ancestor_list #t
   (node:N.node t) (ancestor_list:N.node_list t)
@@ -49,9 +49,9 @@ let concatenate_as_ancestor_list #t
 //---|
 
 //--- asserts ---
-let test_is_child1 = assert (
+let test_is_parent1 = assert (
   forall (t:eqtype) (parent_node:N.node t) (node:N.node t).
-    (is_child parent_node node) ==> (parent_node.level > node.level))
+    (is_parent parent_node node) ==> (parent_node.level > node.level))
 //---|
 
 //--- propositions ---
@@ -61,7 +61,7 @@ let node_list_is_ancestor_list #t (node_list:N.node_list t) : prop =
   let skipped = Common.skip_while node_list (Prims.op_Equality n) in (
     (L.length skipped >= 2) ==> (
       let hd::tl = skipped in
-      is_child hd (L.hd tl)
+      is_parent hd (L.hd tl)
     )
   )
 *)
@@ -82,7 +82,7 @@ let head_given_ancestor_list #t (head:N.node t) =
 
 let parent_child_selector (t:eqtype) (t2:Type) =
   (parent:N.node t) ->
-  (child:N.node t{is_child parent child}) ->
+  (child:N.node t{is_parent parent child}) ->
   Tot t2
 
 let ancestor_list_given_selector (t:eqtype) (t2:Type) =
@@ -91,7 +91,7 @@ let ancestor_list_given_selector (t:eqtype) (t2:Type) =
   Tot t2
 
 let ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) =
-  (child:N.node t{is_child parent child}) ->
+  (child:N.node t{is_parent parent child}) ->
   (ancestors:next_head_given_ancestor_list child) ->
   Tot t2
 //---|
@@ -101,7 +101,7 @@ let to_parent_child_selector #t #t2 (selector:N.node t -> t2)
   : Tot (parent_child_selector t t2) =
   fun 
     (parent:N.node t)
-    (child:N.node t{is_child parent child}) ->
+    (child:N.node t{is_parent parent child}) ->
     selector child
 
 private let rec select_and_aggregate_from_children_core #t #t2
@@ -110,7 +110,7 @@ private let rec select_and_aggregate_from_children_core #t #t2
   (child_parent_aggregator:Common.aggregator t2) 
   (left_right_aggregator:Common.aggregator t2)
   (continue_predicate:N.node t -> t2 -> bool)
-  (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_child parent n) })
+  (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_parent parent n) })
   (ancestors:head_given_ancestor_list parent)
   (seed:t2)
   : Tot t2 (decreases subchildren) =
