@@ -41,17 +41,8 @@ let node_list_is_ancestor_list #t (node_list:N.node_list t) : prop =
 //---|
 
 //--- type definitions ---
-let parent_child_selector (t:eqtype) (t2:Type) =
-  (parent:N.node t) ->
-  (child:N.node t{is_child parent child}) ->
-  Tot t2
-
-let child_selector t (t2:Type) (parent:N.node t) =
-  (child:N.node t{is_child parent child}) ->
-  Tot t2
-
-let ancestor_list (t:eqtype) = 
-  al:(N.node_list t){ node_list_is_ancestor_list al }
+let ancestor_list (t:eqtype) = N.node_list t
+  //al:(N.node_list t){ node_list_is_ancestor_list al }
 
 let can_append_to_ancestor_list #t (ancestor_list1:ancestor_list t) (ancestor_list2:ancestor_list t) //(node:N.node t)
   : Tot bool =
@@ -72,6 +63,21 @@ let rec append_to_ancestor_list #t (ancestor_list1:ancestor_list t) (ancestor_li
     hd::(append_to_ancestor_list tl ancestor_list2)
   )
 *)
+
+let parent_child_selector (t:eqtype) (t2:Type) =
+  (parent:N.node t) ->
+  (child:N.node t{is_child parent child}) ->
+  Tot t2
+
+let ancestor_list_given_selector (t:eqtype) (t2:Type) =
+  (ancestors:ancestor_list t) ->
+  (node:N.node t) -> 
+  Tot t2
+
+let ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) =
+  (ancestors:ancestor_list t) ->
+  (child:N.node t{is_child parent child}) ->
+  Tot t2
 //---|
 
 //--- theory members 2 ---
@@ -84,17 +90,18 @@ let to_parent_child_selector #t #t2 (selector:N.node t -> t2)
 
 private let rec select_and_aggregate_from_children_core #t #t2
   (parent:N.node t) 
-  (selector:child_selector t t2 parent)
+  (selector:ancestor_list_given_selector_for_child t t2 parent)
   (child_parent_aggregator:Common.aggregator t2) 
   (left_right_aggregator:Common.aggregator t2)
   (continue_predicate:N.node t -> t2 -> bool)
   (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_child parent n) })
+  (ancestors:ancestor_list t)
   (seed:t2)
   : Tot t2 (decreases subchildren) =
   match subchildren with
   | [] -> seed
   | hd::tl ->
-      let v1 = selector hd in
+      let v1 = selector ancestors hd in
       let v2 = (
         if (N.get_children_length parent = L.length subchildren) then (
           child_parent_aggregator v1 seed
@@ -108,19 +115,20 @@ private let rec select_and_aggregate_from_children_core #t #t2
         select_and_aggregate_from_children_core 
           parent selector 
           child_parent_aggregator left_right_aggregator
-          continue_predicate tl v2
+          continue_predicate tl ancestors v2
       )
 
 let select_and_aggregate_from_children #t #t2
   (parent:N.node t) 
-  (selector:child_selector t t2 parent)
+  (selector:ancestor_list_given_selector_for_child t t2 parent)
   (child_parent_aggregator:Common.aggregator t2) 
   (left_right_aggregator:Common.aggregator t2)
   (continue_predicate:N.node t -> t2 -> bool)
+  (ancestors:ancestor_list t)
   (seed:t2)
   : Tot t2 =
   select_and_aggregate_from_children_core 
     parent selector 
     child_parent_aggregator left_right_aggregator 
-    continue_predicate (N.get_children parent) seed
+    continue_predicate (N.get_children parent) ancestors seed
 //---|
