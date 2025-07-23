@@ -17,6 +17,7 @@ let rec walk #t #t2
   (child_parent_aggregator:Common.aggregator t2) 
   (left_right_aggregator:Common.aggregator t2)
   (continue_predicate:N.node t -> t2 -> bool)
+  (ancestor_list:C.ancestor_list t{ if L.isEmpty ancestor_list then true else C.is_child (L.last ancestor_list) node })
   : Tot t2 (decreases (node.level)) =
   let v1 = selector node in
   if (N.is_leaf node) || (not (continue_predicate node v1)) then
@@ -24,6 +25,7 @@ let rec walk #t #t2
   else
     C.select_and_aggregate_from_children
       node (fun child -> 
-        (walk child selector child_parent_aggregator left_right_aggregator continue_predicate)
+        let next_ancestor_list = (L.append ancestor_list [node]) <: C.ancestor_list t in
+        (walk child selector child_parent_aggregator left_right_aggregator continue_predicate next_ancestor_list)
       ) child_parent_aggregator left_right_aggregator continue_predicate v1
 //---|
