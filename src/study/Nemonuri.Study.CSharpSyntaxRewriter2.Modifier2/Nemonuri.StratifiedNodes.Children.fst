@@ -46,6 +46,20 @@ let concatenate_as_ancestor_list #t
     (ensures fun r -> is_ancestor_list r)
   =
   node::ancestor_list
+
+#push-options "--query_stats"
+let get_child_index #t (parent_node:N.node t) (node:N.node t)
+  : Pure nat
+    (requires (is_parent parent_node node))
+    (ensures fun r ->
+      let v1 = L.length (N.get_children parent_node) in
+      (0 <= r) && (r < v1)
+    )
+  =
+  assume ((is_parent parent_node node) ==> (Some? (L.find (op_Equality node) (N.get_children parent_node))));
+  Common.find_index (N.get_children parent_node) (op_Equality node)
+#pop-options
+
 //---|
 
 //--- asserts ---
