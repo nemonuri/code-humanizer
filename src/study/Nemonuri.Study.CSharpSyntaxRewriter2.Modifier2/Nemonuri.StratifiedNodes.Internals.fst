@@ -46,6 +46,14 @@ let rec get_length
   match nl with
   | SNil -> 0
   | SCons #_ #_ _ tl -> 1 + get_length tl
+
+let get_level
+  #t #node_level (nd:node_internal t node_level) : Tot pos =
+  node_level
+
+let get_max_level
+  #t #max_level (nl:node_list_internal t max_level) : Tot nat =
+  max_level
 //---|
 
 //--- proofs ---

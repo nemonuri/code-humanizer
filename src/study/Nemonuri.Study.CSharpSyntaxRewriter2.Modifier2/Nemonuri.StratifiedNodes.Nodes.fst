@@ -47,10 +47,10 @@ let rec get_list_level #t (l:node_list t) : Tot nat =
 //---|
 
 //--- theory members for proofs ---
-private let to_node_inverse #t (nd:node t) : Tot (I.node_internal t (get_level nd)) =
+let to_node_inverse #t (nd:node t) : Tot (I.node_internal t (get_level nd)) =
   nd.internal
 
-private let rec to_node_list_inverse
+let rec to_node_list_inverse
   #t (l:node_list t)
   : Tot (I.node_list_internal t (get_list_level l))
         (decreases l)
