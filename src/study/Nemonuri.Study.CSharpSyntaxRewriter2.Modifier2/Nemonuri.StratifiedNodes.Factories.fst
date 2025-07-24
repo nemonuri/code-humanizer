@@ -4,6 +4,7 @@ module L = FStar.List.Tot
 module I = Nemonuri.StratifiedNodes.Internals
 module N = Nemonuri.StratifiedNodes.Nodes
 module C = Nemonuri.StratifiedNodes.Children
+module Id = Nemonuri.StratifiedNodes.Indexes
 module Common = Nemonuri.StratifiedNodes.Common
 
 let create_leaf_node_from_value (t:eqtype) (value:t)
@@ -38,3 +39,10 @@ let with_children #t (node:N.node t) (children:N.node_list t)
   let new_internal = I.SNode (N.to_node_list_inverse children) internal.value in
   N.to_node new_internal
 //#pop-options
+
+(*
+let with_node_at #t (node:N.node t) (indexes:list nat)
+  : Pure (N.node t)
+    (requires Id.can_get_descendant_or_self_from_indexes node indexes)
+    (ensures fun _ -> true)
+*)
