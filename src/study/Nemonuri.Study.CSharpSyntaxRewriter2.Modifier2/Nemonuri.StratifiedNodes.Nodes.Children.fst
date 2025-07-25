@@ -22,29 +22,17 @@ let get_children_length #t (node:T.node  t)
 
 //--- private theory members ---
 
-#push-options "--query_stats"
 let get_child_at #t (node:T.node t) (index:nat)
   : Pure (T.node  t) 
     (requires (index < (get_children_length node)))
-    //(requires (index < (L.length (get_children node))))
     (ensures fun r -> (
       let node2 = (L.index (get_children node) index) in
       r = node2)
     )
   =
-  //assert (E.are_equivalent_as_node_list (get_children node) node.internal.children);
   let node_internal = I.get_item node.internal.children index in (
-    //assume ((L.index (get_children node) index).level = (I.get_level node_internal));
-    //assume ((L.index (get_children node) index).internal = node_internal);
-    //assume ( E.are_equivalent_as_node_list_entails_get_item_pair_are_equivalent_as_node
-    //(get_children node) (node.internal.children) index );
-    //assert (E.are_equivalent_as_node (to_node node_internal) node_internal);
-    assert ( E.are_equivalent_as_node_list_entails_get_item_pair_are_equivalent_as_node
-    (get_children node) (node.internal.children) index );
+    assert ( E.are_equivalent_as_node_list_entails_get_item_pair_are_equivalent_as_node (get_children node) (node.internal.children) index );
     to_node node_internal
   )
-  // TODO: Internals 단계에서 구현하기
-  //L.index (get_children nd) index
-#pop-options 
 
 //---|
