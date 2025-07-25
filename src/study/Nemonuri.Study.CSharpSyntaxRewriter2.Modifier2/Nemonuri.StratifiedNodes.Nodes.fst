@@ -4,17 +4,7 @@ module L = FStar.List.Tot
 module Math = FStar.Math.Lib
 module I = Nemonuri.StratifiedNodes.Internals
 module Base = Nemonuri.StratifiedNodes.Nodes.Base
-include Nemonuri.StratifiedNodes.Nodes.Base.Members
-
-//--- theory members ---
-let to_node #t #level (node_internal:I.node_internal t level) : Tot (Base.node  t) =
-  Base.SNode level node_internal
-
-let to_node_list #t #max_level 
-  (node_list_internal:I.node_list_internal t max_level) 
-  : Tot (Base.node_list t) =
-  I.select node_list_internal (fun ni -> to_node ni)  
-//---|
+include Nemonuri.StratifiedNodes.Nodes.Bijections
 
 //--- (Base.node t) members ---
 let get_children #t (node:Base.node  t) : Tot (Base.node_list t) =
@@ -38,28 +28,11 @@ let is_leaf #t (node:Base.node  t) : Tot bool = I.SNil? node.internal.children
 let is_branch #t (node:Base.node  t) : Tot bool = not (is_leaf node)
 //---|
 
-//--- theory members for proofs ---
-let to_node_inverse #t (nd:Base.node  t) : Tot (I.node_internal t (get_level nd)) =
-  nd.internal
-
-let rec to_node_list_inverse
-  #t (l:Base.node_list t)
-  : Tot (I.node_list_internal t (get_list_level l))
-        (decreases l)
-  =
-  match l with
-  | [] -> I.SNil
-  | hd::tl ->
-      let hd2 = to_node_inverse hd in
-      let tl2 = to_node_list_inverse tl in
-      I.SCons hd2 tl2
-//---|
-
 //--- propositions ---
 let node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
   : Tot prop =
   forall (node1:Base.node  t) (node2:Base.node  t). 
-    (L.contains node2 (get_children node1)) ==> ((get_level node1) > (get_level node2))
+    (L.contains node2 (get_children node1)) ==> ((Base.get_level node1) > (Base.get_level node2))
 //---|
 
 //--- proofs ---
@@ -73,7 +46,7 @@ let lemma_to_node_is_bijection t
 private let rec lemma_to_node_list_is_bijection_aux #t #lv
   (nl:I.node_list_internal t lv) 
   : Lemma (ensures 
-            (lv = (get_list_level (to_node_list nl))) && 
+            (lv = (Base.get_list_level (to_node_list nl))) && 
             (to_node_list_inverse (to_node_list nl)) = nl)
           (decreases nl)
   =
@@ -83,11 +56,11 @@ private let rec lemma_to_node_list_is_bijection_aux #t #lv
 
 let lemma_to_node_list_is_bijection t
   : Lemma (ensures forall (lv:pos) (nl:I.node_list_internal t lv). 
-                     (lv = (get_list_level (to_node_list nl))) && 
+                     (lv = (Base.get_list_level (to_node_list nl))) && 
                      (to_node_list_inverse (to_node_list nl)) = nl)
   =
   introduce forall (lv2:pos) (nl2:I.node_list_internal t lv2).
-    (lv2 = (get_list_level (to_node_list nl2))) && (to_node_list_inverse (to_node_list nl2)) = nl2
+    (lv2 = (Base.get_list_level (to_node_list nl2))) && (to_node_list_inverse (to_node_list nl2)) = nl2
     with lemma_to_node_list_is_bijection_aux nl2
 
 let rec lemma_to_node_list_result_contains_to_node_result_entails_argument_node_list_internal_contains_argument_node_internal
@@ -124,7 +97,7 @@ let lemma_node1_children_contains_node2_entails_node1_internal_children_contains
 let lemma_node_level_is_greater_than_level_of_node_in_children
   #t (node1:Base.node  t) (node2:Base.node  t)
   : Lemma (requires (L.contains node2 (get_children node1)))
-          (ensures ((get_level node1) > (get_level node2)))
+          (ensures ((Base.get_level node1) > (Base.get_level node2)))
   =
   assert ((to_node node2.internal) = (node2));
   lemma_node1_children_contains_node2_entails_node1_internal_children_contains_node2_internal node1 node2;
@@ -135,7 +108,7 @@ let lemma_node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
   : Lemma (ensures node_level_is_greater_than_levels_of_nodes_in_children t) =
   introduce 
     forall (node1:Base.node t) (node2:Base.node t{L.contains node2 (get_children node1)}).
-      ((get_level node1) > (get_level node2))
+      ((Base.get_level node1) > (Base.get_level node2))
     with (lemma_node_level_is_greater_than_level_of_node_in_children node1 node2)
 //---|
 

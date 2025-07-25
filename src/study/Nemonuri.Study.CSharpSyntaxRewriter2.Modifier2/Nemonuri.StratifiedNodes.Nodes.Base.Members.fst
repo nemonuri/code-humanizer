@@ -23,7 +23,7 @@ private let rec get_list_level_impl #t (l:T.node_list t) : Tot nat =
 //---|
 
 //--- (T.node_list t) propositions ---
-let list_level_is_greater_or_equal_than_element_level 
+let list_level_is_greater_or_equal_than_any_element_level 
   (t:eqtype) (l:T.node_list t) 
   : prop =
   (forall (node:T.node t). 
@@ -31,7 +31,7 @@ let list_level_is_greater_or_equal_than_element_level
 //---|
 
 //--- (T.node_list t) lemmas ---
-private let rec lemma_list_level_is_greater_or_equal_than_element_level_for_cons
+private let rec lemma_list_level_is_greater_or_equal_than_element_level
   (t:eqtype) (n:T.node t) (l:T.node_list t)
   : Lemma 
     (requires L.contains n l)
@@ -43,24 +43,23 @@ private let rec lemma_list_level_is_greater_or_equal_than_element_level_for_cons
   let hd::tl = l in
   if (hd = n) then ()
   else 
-    lemma_list_level_is_greater_or_equal_than_element_level_for_cons t n tl
+    lemma_list_level_is_greater_or_equal_than_element_level t n tl
 
-let lemma_list_level_is_greater_or_equal_than_element_level (t:eqtype) (l:T.node_list t)
+let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.node_list t)
   : Lemma
     (ensures (
-      list_level_is_greater_or_equal_than_element_level t l
+      list_level_is_greater_or_equal_than_any_element_level t l
     ))
   = 
   introduce forall (it_node:T.node t{ L.contains it_node l }). 
     ((get_level it_node) <= get_list_level_impl l) with (
-      lemma_list_level_is_greater_or_equal_than_element_level_for_cons t it_node l
+      lemma_list_level_is_greater_or_equal_than_element_level t it_node l
     )
 //---|
 
 //--- (T.node_list t) members ---
 let get_list_level #t (l:T.node_list t) 
-  : Pure nat True (ensures fun _ -> list_level_is_greater_or_equal_than_element_level t l) =
-  lemma_list_level_is_greater_or_equal_than_element_level t l;
+  : Pure nat True (ensures fun _ -> list_level_is_greater_or_equal_than_any_element_level t l) =
+  lemma_list_level_is_greater_or_equal_than_any_element_level t l;
   get_list_level_impl l
-
 //---|
