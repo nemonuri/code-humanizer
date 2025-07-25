@@ -22,10 +22,20 @@ and node_list_internal (t:eqtype) : nat -> Type =
 //---|
 
 //--- theory members ---
+let rec get_length
+  #t #max_level (nl:node_list_internal t max_level)
+  : Tot nat (decreases nl) =
+  match nl with
+  | SNil -> 0
+  | SCons #_ #_ _ tl -> 1 + get_length tl
+
 let rec select 
   #t #t2 #max_level (nl:node_list_internal t max_level)
   (selector:((#lv:pos) -> node_internal t lv -> Tot t2))
-  : Tot (list t2) (decreases nl) =
+  : Pure (list t2) True
+    (ensures fun r -> (L.length r) = (get_length nl))
+    (decreases nl) 
+  =
   match nl with
   | SNil -> []
   | SCons #_ #_ hd tl -> (selector hd)::(select tl selector)
@@ -39,13 +49,6 @@ let rec contains
   | SCons #_ #_ hd tl ->
       if (((SCons?.hd_level nl) = node_level) && (hd = nd)) then true
       else (contains nd tl)
-
-let rec get_length
-  #t #max_level (nl:node_list_internal t max_level)
-  : Tot nat (decreases nl) =
-  match nl with
-  | SNil -> 0
-  | SCons #_ #_ _ tl -> 1 + get_length tl
 
 let get_level
   #t #node_level (nd:node_internal t node_level) : Tot pos =

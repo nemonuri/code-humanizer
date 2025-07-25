@@ -105,7 +105,8 @@ let lemma_length_is_invariant_of_to_node_list
   (node_list_internal:I.node_list_internal t node_list_internal_level)
   : Lemma (ensures length_is_invariant_of_to_node_list node_list_internal)
   =
-  admit ()
+  lemma_to_node_list_is_bijection t
+  //admit ()
 
 let lemma_to_node_list_theorem (t:eqtype) 
   : Lemma (ensures to_node_list_theorem t)
