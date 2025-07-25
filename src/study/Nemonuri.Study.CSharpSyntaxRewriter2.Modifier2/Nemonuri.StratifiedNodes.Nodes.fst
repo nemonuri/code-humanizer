@@ -5,24 +5,9 @@ module Math = FStar.Math.Lib
 module I = Nemonuri.StratifiedNodes.Internals
 module Base = Nemonuri.StratifiedNodes.Nodes.Base
 include Nemonuri.StratifiedNodes.Nodes.Bijections
+include Nemonuri.StratifiedNodes.Nodes.Children
 
 //--- (Base.node t) members ---
-let get_children #t (node:Base.node t) : Tot (Base.node_list t) =
-  to_node_list node.internal.children
-
-let get_children_length #t (node:Base.node  t) 
-  : Pure nat (requires True) (ensures fun r -> r = L.length (get_children node)) = 
-  //assume (I.get_length node.internal.children = L.length (get_children node));
-  I.get_length node.internal.children
-
-let get_child_at #t (nd:Base.node  t) (index:nat)
-  : Pure (Base.node  t) 
-    (requires (index < (get_children_length nd)))
-    (ensures fun r -> r = (L.index (get_children nd) index))
-  =
-  // TODO: Internals 단계에서 구현하기
-  L.index (get_children nd) index
-
 let is_leaf #t (node:Base.node  t) : Tot bool = I.SNil? node.internal.children
 
 let is_branch #t (node:Base.node  t) : Tot bool = not (is_leaf node)

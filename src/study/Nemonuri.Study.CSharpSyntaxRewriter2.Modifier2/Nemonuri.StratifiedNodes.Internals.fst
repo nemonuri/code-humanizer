@@ -58,6 +58,41 @@ let get_list_level
   #t #max_level (nl:node_list_internal t max_level) : Tot nat =
   max_level
 
+let can_get_item
+  #t #list_level (nl:node_list_internal t list_level) (index:nat)
+  : Tot bool =
+  (index < (get_length nl))
+
+let rec get_item_level
+  #t #list_level (nl:node_list_internal t list_level) (index:nat)
+  : Pure pos
+    (requires can_get_item nl index)
+    (ensures fun r -> r <= get_list_level nl)
+    (decreases nl)
+  =
+  let SCons hd tl = nl in
+  if index = 0 then 
+    get_level hd
+  else
+    get_item_level tl (index - 1)
+    
+#push-options "--query_stats"
+let rec get_item
+  #t #list_level (nl:node_list_internal t list_level) (index:nat{can_get_item nl index})
+  : Pure (node_internal t (get_item_level nl index))
+    //(requires can_get_item nl index)
+    (requires True)
+    (ensures fun r -> contains r nl)
+    (decreases nl)
+  =
+  let SCons hd tl = nl in
+  if index = 0 then
+    hd
+  else
+    get_item tl (index - 1)
+#pop-options
+
+
 //let get_element_at
 //  #t #max_level 
 //---|

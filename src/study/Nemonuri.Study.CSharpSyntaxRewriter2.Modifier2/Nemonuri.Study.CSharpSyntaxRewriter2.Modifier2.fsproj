@@ -16,6 +16,7 @@
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.ToNode.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.ToNodeList.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />
