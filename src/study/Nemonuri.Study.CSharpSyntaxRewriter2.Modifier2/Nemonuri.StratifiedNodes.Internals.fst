@@ -76,10 +76,9 @@ let rec get_item_level
   else
     get_item_level tl (index - 1)
     
-#push-options "--query_stats"
 let rec get_item
   #t #list_level (nl:node_list_internal t list_level) (index:nat{can_get_item nl index})
-  : Pure (node_internal t (get_item_level nl index))
+  : Pure (node_internal t (get_item_level nl index)) // <- '여기' 에 '조건'이 들어있기 때문인가...이 경우는 어쩔 수 없겠네.
     //(requires can_get_item nl index)
     (requires True)
     (ensures fun r -> contains r nl)
@@ -90,8 +89,6 @@ let rec get_item
     hd
   else
     get_item tl (index - 1)
-#pop-options
-
 
 //let get_element_at
 //  #t #max_level 
