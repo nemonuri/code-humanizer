@@ -56,9 +56,22 @@ let length_is_invariant_of_to_node_list
   (node_list_internal:I.node_list_internal t node_list_internal_level) : prop = 
   (I.get_length node_list_internal) = (L.length (to_node_list_impl node_list_internal))
 
+let length_is_invariant_of_to_node_list_inverse
+  #t (node_list:B.node_list t) : prop =
+  (I.get_length (to_node_list_inverse_impl node_list)) = (L.length node_list)
+
+let to_node_list_and_to_node_list_inverse_have_length_invariant (t:eqtype) : prop =
+  (forall (node_list_internal_level:nat) 
+    (node_list_internal:I.node_list_internal t node_list_internal_level) 
+    (node_list:B.node_list t).
+    (length_is_invariant_of_to_node_list node_list_internal) /\
+    (length_is_invariant_of_to_node_list_inverse node_list)
+  )
+
 let to_node_list_theorem (t:eqtype) : prop =
   to_node_list_is_bijection t /\
-  to_node_list_and_to_node_list_inverse_are_bijection_pair t
+  to_node_list_and_to_node_list_inverse_are_bijection_pair t /\
+  to_node_list_and_to_node_list_inverse_have_length_invariant t
 //---|
 
 //--- lemma ---
@@ -106,13 +119,30 @@ let lemma_length_is_invariant_of_to_node_list
   : Lemma (ensures length_is_invariant_of_to_node_list node_list_internal)
   =
   lemma_to_node_list_is_bijection t
-  //admit ()
+
+let lemma_length_is_invariant_of_to_node_list_inverse
+  #t (node_list:B.node_list t)
+  : Lemma (ensures length_is_invariant_of_to_node_list_inverse node_list)
+  =
+  lemma_to_node_list_is_bijection t
+
+let lemma_to_node_list_and_to_node_list_inverse_have_length_invariant (t:eqtype) 
+  : Lemma (ensures to_node_list_and_to_node_list_inverse_have_length_invariant t)
+  =
+  (introduce forall (node_list_internal_level:nat) 
+    (node_list_internal:I.node_list_internal t node_list_internal_level).
+    length_is_invariant_of_to_node_list node_list_internal with
+    lemma_length_is_invariant_of_to_node_list node_list_internal);
+  (introduce forall (node_list:B.node_list t).
+    length_is_invariant_of_to_node_list_inverse node_list with
+    lemma_length_is_invariant_of_to_node_list_inverse node_list)
 
 let lemma_to_node_list_theorem (t:eqtype) 
   : Lemma (ensures to_node_list_theorem t)
   =
   lemma_to_node_list_is_bijection t;
-  lemma_to_node_list_and_to_node_list_inverse_are_bijection_pair t
+  lemma_to_node_list_and_to_node_list_inverse_are_bijection_pair t;
+  lemma_to_node_list_and_to_node_list_inverse_have_length_invariant t
 //---|
 
 //--- theory members ---

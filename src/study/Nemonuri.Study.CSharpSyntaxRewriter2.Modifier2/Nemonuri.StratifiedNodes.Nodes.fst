@@ -7,12 +7,12 @@ module Base = Nemonuri.StratifiedNodes.Nodes.Base
 include Nemonuri.StratifiedNodes.Nodes.Bijections
 
 //--- (Base.node t) members ---
-let get_children #t (node:Base.node  t) : Tot (Base.node_list t) =
+let get_children #t (node:Base.node t) : Tot (Base.node_list t) =
   to_node_list node.internal.children
 
 let get_children_length #t (node:Base.node  t) 
   : Pure nat (requires True) (ensures fun r -> r = L.length (get_children node)) = 
-  assume (I.get_length node.internal.children = L.length (get_children node));
+  //assume (I.get_length node.internal.children = L.length (get_children node));
   I.get_length node.internal.children
 
 let get_child_at #t (nd:Base.node  t) (index:nat)
