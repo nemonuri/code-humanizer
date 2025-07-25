@@ -51,10 +51,12 @@ let equivalent_as_node_list_entails_both_lengths_are_equal
   : prop =
   forall (node_list_level:nat) (node_list:N.node_list t)
   (node_list_internal:I.node_list_internal t node_list_level).
-  (L.length node_list) = (I.get_length node_list_internal)
+  (are_equivalent_as_node_list_impl node_list node_list_internal) ==> (
+  (L.length node_list) = (I.get_length node_list_internal))
 
 let equivalent_theorem (t:eqtype) : prop =
-  equivalent_as_node_list_entails_any_item_pair_are_equivalent_as_node t
+  (equivalent_as_node_list_entails_any_item_pair_are_equivalent_as_node t) /\
+  (equivalent_as_node_list_entails_both_lengths_are_equal t)
 
 //---|
 
@@ -98,7 +100,8 @@ let lemma_equivalent_as_node_list_entails_both_lengths_are_equal (t: eqtype)
 let lemma_equivalent_theorem (t: eqtype)
   : Lemma (ensures equivalent_theorem t)
   =
-  lemma_equivalent_as_node_list_entails_any_item_pair_are_equivalent_as_node t
+  lemma_equivalent_as_node_list_entails_any_item_pair_are_equivalent_as_node t;
+  lemma_equivalent_as_node_list_entails_both_lengths_are_equal t
 
 //---|
 
