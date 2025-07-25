@@ -28,7 +28,7 @@ let with_children #t (node:N.node t) (children:N.node_list t)
   : Pure (N.node t) 
          (requires True)
          (ensures fun node -> 
-           ((I.get_max_level node.internal.children) = (I.get_max_level (N.to_node_list_inverse children))) &&
+           ((I.get_list_level node.internal.children) = (I.get_list_level (N.to_node_list_inverse children))) &&
            (node.internal.children = (N.to_node_list_inverse children)) (*&&
            ((N.get_list_level (N.get_children node)) = (N.get_list_level children)) &&
            ((N.get_children node) = children)*)

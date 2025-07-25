@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Nemonuri.Bijections.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Common.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Internals.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Base.Types.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Base.Members.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Base.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.ToNode.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.ToNodeList.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Nodes.Bijections.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />

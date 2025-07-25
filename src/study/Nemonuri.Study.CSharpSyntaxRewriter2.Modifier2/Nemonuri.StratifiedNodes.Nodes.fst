@@ -3,66 +3,47 @@ module Nemonuri.StratifiedNodes.Nodes
 module L = FStar.List.Tot
 module Math = FStar.Math.Lib
 module I = Nemonuri.StratifiedNodes.Internals
-
-//--- type definitions ---
-type node (t:eqtype) =
-  | SNode : 
-      level:pos ->
-      internal:(I.node_internal t level) ->
-      node t
-
-let node_list (t:eqtype) = list (node t)
-//---|
+module Base = Nemonuri.StratifiedNodes.Nodes.Base
+include Nemonuri.StratifiedNodes.Nodes.Base.Members
 
 //--- theory members ---
-let to_node #t #level (node_internal:I.node_internal t level) : Tot (node t) =
-  SNode level node_internal
+let to_node #t #level (node_internal:I.node_internal t level) : Tot (Base.node  t) =
+  Base.SNode level node_internal
 
 let to_node_list #t #max_level 
   (node_list_internal:I.node_list_internal t max_level) 
-  : Tot (node_list t) =
+  : Tot (Base.node_list t) =
   I.select node_list_internal (fun ni -> to_node ni)  
 //---|
 
-//--- (node t) members ---
-let get_level #t (node:node t) : Tot pos = node.level
-
-let get_value #t (node:node t) : Tot t = node.internal.value
-
-let get_children #t (node:node t) : Tot (node_list t) =
+//--- (Base.node t) members ---
+let get_children #t (node:Base.node  t) : Tot (Base.node_list t) =
   to_node_list node.internal.children
 
-let get_children_length #t (node:node t) 
+let get_children_length #t (node:Base.node  t) 
   : Pure nat (requires True) (ensures fun r -> r = L.length (get_children node)) = 
   assume (I.get_length node.internal.children = L.length (get_children node));
   I.get_length node.internal.children
 
-let get_child_at #t (nd:node t) (index:nat)
-  : Pure (node t) 
+let get_child_at #t (nd:Base.node  t) (index:nat)
+  : Pure (Base.node  t) 
     (requires (index < (get_children_length nd)))
     (ensures fun r -> r = (L.index (get_children nd) index))
   =
   // TODO: Internals 단계에서 구현하기
   L.index (get_children nd) index
 
-let is_leaf #t (node:node t) : Tot bool = I.SNil? node.internal.children
+let is_leaf #t (node:Base.node  t) : Tot bool = I.SNil? node.internal.children
 
-let is_branch #t (node:node t) : Tot bool = not (is_leaf node)
-//---|
-
-//--- (node_list t) members ---
-let rec get_list_level #t (l:node_list t) : Tot nat =
-  match l with
-  | [] -> 0
-  | hd::tl -> Math.max (get_level hd) (get_list_level tl)
+let is_branch #t (node:Base.node  t) : Tot bool = not (is_leaf node)
 //---|
 
 //--- theory members for proofs ---
-let to_node_inverse #t (nd:node t) : Tot (I.node_internal t (get_level nd)) =
+let to_node_inverse #t (nd:Base.node  t) : Tot (I.node_internal t (get_level nd)) =
   nd.internal
 
 let rec to_node_list_inverse
-  #t (l:node_list t)
+  #t (l:Base.node_list t)
   : Tot (I.node_list_internal t (get_list_level l))
         (decreases l)
   =
@@ -77,7 +58,7 @@ let rec to_node_list_inverse
 //--- propositions ---
 let node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
   : Tot prop =
-  forall (node1:node t) (node2:node t). 
+  forall (node1:Base.node  t) (node2:Base.node  t). 
     (L.contains node2 (get_children node1)) ==> ((get_level node1) > (get_level node2))
 //---|
 
@@ -127,7 +108,7 @@ let rec lemma_to_node_list_result_contains_to_node_result_entails_argument_node_
     lemma_to_node_list_result_contains_to_node_result_entails_argument_node_list_internal_contains_argument_node_internal node_internal (I.SCons?.tl node_list_internal)
 
 let lemma_node1_children_contains_node2_entails_node1_internal_children_contains_node2_internal
-  #t (node1:node t) (node2:node t)
+  #t (node1:Base.node  t) (node2:Base.node  t)
   : Lemma (requires (L.contains node2 (get_children node1)))
           (ensures (I.contains node2.internal node1.internal.children))      
   = 
@@ -141,7 +122,7 @@ let lemma_node1_children_contains_node2_entails_node1_internal_children_contains
   //assert (I.contains node2_internal node1_internal_children)
 
 let lemma_node_level_is_greater_than_level_of_node_in_children
-  #t (node1:node t) (node2:node t)
+  #t (node1:Base.node  t) (node2:Base.node  t)
   : Lemma (requires (L.contains node2 (get_children node1)))
           (ensures ((get_level node1) > (get_level node2)))
   =
@@ -153,8 +134,9 @@ let lemma_node_level_is_greater_than_level_of_node_in_children
 let lemma_node_level_is_greater_than_levels_of_nodes_in_children (t:eqtype)
   : Lemma (ensures node_level_is_greater_than_levels_of_nodes_in_children t) =
   introduce 
-    forall (node1:node t) (node2:node t{L.contains node2 (get_children node1)}).
+    forall (node1:Base.node t) (node2:Base.node t{L.contains node2 (get_children node1)}).
       ((get_level node1) > (get_level node2))
     with (lemma_node_level_is_greater_than_level_of_node_in_children node1 node2)
 //---|
-  
+
+include Nemonuri.StratifiedNodes.Nodes.Base

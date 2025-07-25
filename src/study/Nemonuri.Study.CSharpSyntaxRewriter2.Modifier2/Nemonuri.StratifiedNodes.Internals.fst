@@ -51,7 +51,7 @@ let get_level
   #t #node_level (nd:node_internal t node_level) : Tot pos =
   node_level
 
-let get_max_level
+let get_list_level
   #t #max_level (nl:node_list_internal t max_level) : Tot nat =
   max_level
 
