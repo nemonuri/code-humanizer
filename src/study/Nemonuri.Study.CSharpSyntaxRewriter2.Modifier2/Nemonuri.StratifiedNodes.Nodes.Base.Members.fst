@@ -62,4 +62,24 @@ let get_list_level #t (l:T.node_list t)
   : Pure nat True (ensures fun _ -> list_level_is_greater_or_equal_than_any_element_level t l) =
   lemma_list_level_is_greater_or_equal_than_any_element_level t l;
   get_list_level_impl l
+
+let rec try_get_first_index_of_predicate #t 
+  (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool)
+  : Pure (option nat) True
+        (ensures fun r ->
+          match r with
+          | None -> true
+          | Some v1 -> v1 < (L.length node_list)
+        )
+        (decreases node_list)
+  = 
+  match node_list with
+  | [] -> None
+  | hd::tl ->
+  match (predicate hd) with
+  | true -> Some 0
+  | false ->
+  match try_get_first_index_of_predicate tl predicate with
+  | None -> None
+  | Some v1 -> Some (1 + v1)
 //---|

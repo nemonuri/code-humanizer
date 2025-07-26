@@ -19,10 +19,14 @@
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Equivalence.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.fst" />
+
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />
-    <Compile Include="Nemonuri.StratifiedNodes.Factories.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Indexes.fst" />
+    
+    <Compile Include="Nemonuri.StratifiedNodes.Factories.Nodes.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Factories.NodeLists.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Factories.fst" />
   </ItemGroup>
 
 </Project>

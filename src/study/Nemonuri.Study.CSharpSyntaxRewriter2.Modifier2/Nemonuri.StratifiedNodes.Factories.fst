@@ -1,44 +1,9 @@
 module Nemonuri.StratifiedNodes.Factories
 
-module L = FStar.List.Tot
-module I = Nemonuri.StratifiedNodes.Internals
-module N = Nemonuri.StratifiedNodes.Nodes
-module C = Nemonuri.StratifiedNodes.Children
-module Id = Nemonuri.StratifiedNodes.Indexes
-module Common = Nemonuri.StratifiedNodes.Common
+include Nemonuri.StratifiedNodes.Factories.Nodes
+include Nemonuri.StratifiedNodes.Factories.NodeLists
 
-let create_leaf_node_from_value (t:eqtype) (value:t)
-  : Pure (N.node t) 
-         (requires True) 
-         (ensures fun node -> (N.get_value node = value) && (N.is_leaf node))
-  =
-  N.to_node (I.SNode (I.SNil) value)
 
-let with_value #t (node:N.node t) (value:t)
-  : Pure (N.node t) 
-         (requires True) 
-         (ensures fun node -> (N.get_value node = value))
-  =
-  let internal = node.internal in
-  let new_internal = I.SNode internal.children value in
-  N.to_node new_internal
-
-//#push-options "--query_stats"
-let with_children #t (node:N.node t) (children:N.node_list t)
-  : Pure (N.node t) 
-         (requires True)
-         (ensures fun node -> 
-           ((I.get_list_level node.internal.children) = (I.get_list_level (N.to_node_list_inverse children))) &&
-           (node.internal.children = (N.to_node_list_inverse children)) &&
-           ((N.get_list_level (N.get_children node)) = (N.get_list_level children)) &&
-           ((N.get_children node) = children)
-         )
-  =
-  //N.lemma_to_node_list_is_bijection t;
-  let internal = node.internal in
-  let new_internal = I.SNode (N.to_node_list_inverse children) internal.value in
-  N.to_node new_internal
-//#pop-options
 
 (*
 let with_node_at #t (node:N.node t) (indexes:list nat)
@@ -46,3 +11,24 @@ let with_node_at #t (node:N.node t) (indexes:list nat)
     (requires Id.can_get_descendant_or_self_from_indexes node indexes)
     (ensures fun _ -> true)
 *)
+
+//--- node list members ---
+
+
+
+
+
+// 사담: 의미가 있나 이거? 결국 항등 함수일 뿐이잖아?
+(*
+let create_node_list (t:eqtype) (node_list:N.node_list t)
+  : Pure (N.node_list t) 
+         (requires True) 
+         (ensures fun _ -> (N.to_node_list_theorem t) /\ (E.equivalent_theorem t))
+  =
+  N.lemma_to_node_list_theorem t;
+  E.lemma_equivalent_theorem t;
+  node_list
+*)
+
+
+//---|
