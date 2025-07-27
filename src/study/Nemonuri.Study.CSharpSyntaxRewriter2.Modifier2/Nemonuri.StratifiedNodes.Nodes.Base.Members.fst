@@ -95,26 +95,10 @@ private let rec get_list_level_impl #t (l:T.node_list t) : Tot nat =
   | [] -> 0
   | hd::tl -> Math.max (get_level hd) (get_list_level_impl tl)
 
-(*
-private let rec get_index_list_from_predicate_core #t 
-  (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool)
-  : Tot (nat & (list nat))
-    (decreases node_list)
-  =
-  match node_list with
-  | [] -> (0, [])
-  | hd::tl ->
-  let (reverse_index, satisfied_reverse_index_list) = get_index_list_from_predicate_core tl predicate in
-  let next_reverse_index = reverse_index + 1 in
-  let next_satisfied_reverse_index_list = (if (predicate hd) then (reverse_index::satisfied_reverse_index_list) else satisfied_reverse_index_list ) in
-  ( reverse_index, next_satisfied_reverse_index_list )
-*)
-
 private let rec get_index_list_from_predicate_core #t 
   (original_node_list: T.node_list t)
   (current_index: nat) 
   (predicate: (T.node t) -> Tot bool) 
-  //(current_index_list: list nat)
   : Pure (list nat) 
     (requires (current_index = (L.length original_node_list)) ||
               (is_node_list_index current_index original_node_list)
@@ -149,6 +133,16 @@ let result_of_get_index_list_from_predicate_is_node_list_index_list #t
   let v0 = get_index_list_from_predicate_impl node_list predicate in
   is_node_list_index_list v0 node_list
 *)
+
+let element_of_result_of_get_index_list_from_predicate_satisfies_predicate #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
+  (index: nat)
+  : prop =
+  let index_list = get_index_list_from_predicate_core node_list 0 predicate in
+  ((L.contains index index_list) ==> (
+    (is_node_list_index index node_list) /\
+    (predicate (L.index node_list index))
+  ))
 //---|
 
 //--- (T.node_list t) lemmas ---
@@ -177,6 +171,36 @@ let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.
       lemma_list_level_is_greater_or_equal_than_element_level t it_node l
     )
 
+private let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
+  (index: nat)
+  : Lemma (requires L.contains index (get_index_list_from_predicate_core node_list 0 predicate))
+    (ensures is_node_list_index index node_list)
+  =
+  admit ()
+
+private let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux2 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
+  (index: nat)
+  : Lemma (requires 
+      (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)) /\ 
+      (is_node_list_index index node_list)
+    )
+    (ensures predicate (L.index node_list index))
+  =
+  admit ()
+
+let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
+  (index: nat)
+  : Lemma (ensures element_of_result_of_get_index_list_from_predicate_satisfies_predicate node_list predicate index)
+  =
+  if not (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)) then ()
+  else (
+    lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 node_list predicate index;
+    lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux2 node_list predicate index
+  )
+  
 (*
 private let rec lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core #t
   (original_node_list: T.node_list t)
