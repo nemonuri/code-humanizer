@@ -52,7 +52,7 @@ let remove_all #t
   (node_list: N.node_list t)
   (exclusion_predicate: (N.node t) -> Tot bool) 
   : Pure (N.node_list t) True
-    (ensures fun _ -> Common.filter_theorem exclusion_predicate node_list)
+    (ensures fun r -> (forall x. (L.contains x r) ==> (exclusion_predicate x)))
   =
   L.mem_filter_forall exclusion_predicate node_list;
   L.filter exclusion_predicate node_list
@@ -92,10 +92,12 @@ let replace_range #t
   (node_list:N.node_list t) 
   (node:N.node t) //{ L.contains node node_list }
   (inserting_node_list:N.node_list t)
-  : Tot (N.node_list t)
+  : Pure (N.node_list t)
+    (requires L.contains node node_list)
+    (ensures fun _ -> true)
   =
-  assume (Some? (N.try_get_first_index_of_predicate node_list (op_Equality node)));
-  let Some index = N.try_get_first_index_of_predicate node_list (op_Equality node) in
+  //assume (Some? (N.try_get_first_index_of_predicate node_list (op_Equality node)));
+  let N.ISome _ index = N.try_get_first_index_of_predicate node_list (op_Equality node) in
   replace_range_at node_list index inserting_node_list
 
 let replace #t

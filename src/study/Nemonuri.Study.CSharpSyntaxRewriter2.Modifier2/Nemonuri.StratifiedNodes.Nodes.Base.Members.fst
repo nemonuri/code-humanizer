@@ -161,7 +161,7 @@ let element_of_result_of_get_index_list_from_predicate_satisfies_predicate #t
   (index: nat)
   : prop =
   let index_list = get_index_list_from_predicate_core node_list 0 predicate in
-  ((L.contains index index_list) ==> (
+  ((L.contains index index_list) <==> (
     (is_node_list_index index node_list) /\
     (predicate (L.index node_list index))
   ))
@@ -193,6 +193,7 @@ let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.
       lemma_list_level_is_greater_or_equal_than_element_level t it_node l
     )
 
+(*
 let lemma_result_of_get_index_list_from_predicate_is_shorter_or_equal_than_original_node_list #t
   (original_node_list: T.node_list t)
   (current_index: nat) 
@@ -203,6 +204,7 @@ let lemma_result_of_get_index_list_from_predicate_is_shorter_or_equal_than_origi
     )
   = 
   admit ()
+*)
 
 private let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
@@ -231,6 +233,7 @@ private let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_p
   ()
   //lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 node_list predicate index
 
+(*
 let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
   (index: nat)
@@ -241,6 +244,7 @@ let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate
     lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 node_list predicate index;
     lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux2 node_list predicate index
   )
+*)
   
 (*
 private let rec lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core #t
@@ -316,46 +320,40 @@ let try_get_first_index_of_predicate #t
         (ensures fun r ->
           match r with
           | T.INone _ -> true
-          | T.ISome _ v1 -> v1 < (L.length node_list)
+          | T.ISome _ v1 -> 
+            (element_of_result_of_get_index_list_from_predicate_satisfies_predicate node_list predicate v1)
         )
         (decreases node_list)
   = 
   match get_index_list_from_predicate node_list predicate with
   | [] -> T.INone node_list
   | hd::tl -> T.ISome node_list hd
-
-(*
-  match node_list with
-  | [] -> None
-  | hd::tl ->
-  match (predicate hd) with
-  | true -> Some 0
-  | false ->
-  match try_get_first_index_of_predicate tl predicate with
-  | None -> None
-  | Some v1 -> Some (1 + v1)
-*)
-
-(*
-let get_index_list_from_predicate #t
-  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool)
-  : Pure (list nat) True
-    (ensures fun r -> 
-      result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate)
-  =
-  //assume (result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate);
-  lemma_result_of_get_index_list_from_predicate_is_node_list_index_list node_list;
-  get_index_list_from_predicate_impl node_list predicate
-*)
-
-(*
-private let _ = assert ( forall t node_list predicate.
-  let r = get_index_list_from_predicate #t node_list predicate in
-  ( forall index_in_result. 
-      (L.contains index_in_result r) ==>
-        ((is_node_list_index index_in_result node_list) /\
-        (predicate (L.index node_list index_in_result)) )
-  )
-)
-*)
 //---|
+
+//--- try_get_index ---
+private let try_get_index_impl #t
+  (node_list:T.node_list t) (node:T.node t)
+  : Pure (T.maybe_node_list_index node_list) True
+  
+    (ensures fun r ->
+      match (L.contains node node_list) with
+      | true -> T.ISome? r
+      | false -> T.INone? r
+    )
+  
+  =
+  try_get_first_index_of_predicate node_list (op_Equality node)
+
+(*
+let try_get_index #t
+  (node_list:T.node_list t) (node:T.node t)
+  : Pure (T.maybe_node_list_index node_list) True
+    (ensures fun r ->
+      match (L.contains node node_list) with
+      | true -> T.ISome? r
+      | false -> T.INone? r
+    )
+  =
+  assert 
+*)
+//---
