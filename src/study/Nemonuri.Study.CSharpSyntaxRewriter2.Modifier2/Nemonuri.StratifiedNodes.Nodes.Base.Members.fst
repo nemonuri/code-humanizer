@@ -74,34 +74,28 @@ private let rec get_index_list_from_predicate_core #t
   ( reverse_index, next_satisfied_reverse_index_list )
 *)
 
-private let rec get_index_list_from_predicate_impl_core #t 
+private let rec get_index_list_from_predicate_core #t 
   (original_node_list: T.node_list t)
-  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
-  (current_index: nat) (current_index_list: list nat)
+  (current_index: nat) 
+  (predicate: (T.node t) -> Tot bool) 
+  //(current_index_list: list nat)
   : Pure (list nat) 
-    (requires 
-      (Common.list1_length_is_less_or_equal_than_list2_length_plus_list3_length
-        original_node_list node_list current_index_list)
+    (requires (current_index = (L.length original_node_list)) ||
+              (is_node_list_index current_index original_node_list)
     )
-    (ensures fun _ -> true)
-    (decreases node_list)
+    (ensures fun r -> is_node_list_index_list r original_node_list)
+    (decreases (L.length original_node_list) - current_index)
   =
-  match node_list with
-  | [] -> current_index_list
-  | hd::tl -> 
-  let next_lndex_list = (
-    match (predicate hd) with
-    | true -> current_index::current_index_list
-    | false -> current_index_list
-  ) in
-  get_index_list_from_predicate_impl_core 
-    original_node_list tl predicate (current_index + 1) next_lndex_list
-
-private let get_index_list_from_predicate_impl #t
-  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
-  : Tot (list nat) =
-  get_index_list_from_predicate_impl_core 
-    node_list node_list predicate 0 []
+  let length = (L.length original_node_list) in
+  match (length = current_index) with
+  | true -> []
+  | false -> 
+  let current_item = (L.index original_node_list current_index) in
+  let next_index = (current_index + 1) in
+  let results_from_end = (get_index_list_from_predicate_core original_node_list next_index predicate) in
+  match (predicate current_item) with
+  | true -> current_index::results_from_end
+  | false -> results_from_end
 
 //---|
 
@@ -112,11 +106,13 @@ let list_level_is_greater_or_equal_than_any_element_level
   (forall (node:T.node t). 
     (L.contains node l) ==> ((get_level node) <= get_list_level_impl l))
 
+(*
 let result_of_get_index_list_from_predicate_is_node_list_index_list #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
   : prop =
   let v0 = get_index_list_from_predicate_impl node_list predicate in
   is_node_list_index_list v0 node_list
+*)
 //---|
 
 //--- (T.node_list t) lemmas ---
@@ -145,34 +141,28 @@ let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.
       lemma_list_level_is_greater_or_equal_than_element_level t it_node l
     )
 
+(*
 private let rec lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core #t
   (original_node_list: T.node_list t)
-  (remained_node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (current_index: nat) (current_index_list: list nat)
+  (current_index: nat) 
+  (predicate: (T.node t) -> Tot bool) 
   : Lemma 
-    (requires
-      (Common.list1_length_is_less_or_equal_than_list2_length_plus_list3_length
-        original_node_list remained_node_list current_index_list) 
-      ///\ ((Cons? remained_node_list) ==> (is_node_list_index current_index original_node_list))
-    )
-    (ensures 
-      //((Cons? original_node_list) ==> (is_node_list_index current_index node_list)) /\
-      //(is_node_list_index_list current_index_list original_node_list) /\
-      result_of_get_index_list_from_predicate_is_node_list_index_list 
-        original_node_list predicate
-    )
-    (decreases remained_node_list)
+    (requires current_index <= (L.length original_node_list) )
+    (ensures result_of_get_index_list_from_predicate_is_node_list_index_list 
+        original_node_list predicate)
+    (decreases (L.length original_node_list) - current_index)
   =
-  admit();
-  match remained_node_list with
-  | [] -> ()
-  | hd::tl ->   
-  let next_lndex_list = (
-    match (predicate hd) with
-    | true -> current_index::current_index_list
-    | false -> current_index_list
-  ) in
-  lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
-    original_node_list tl predicate (current_index + 1) next_lndex_list
+  let length = (L.length original_node_list) in
+  match (length = current_index) with
+  | true -> ()
+  | false -> 
+  let current_item = (L.index original_node_list current_index) in
+  let next_index = (current_index + 1) in
+  let results_from_end = (lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core 
+                          original_node_list next_index predicate) in
+  match (predicate current_item) with
+  | true -> current_index::results_from_end
+  | false -> results_from_end
 
 let lemma_result_of_get_index_list_from_predicate_is_node_list_index_list #t
   (node_list: T.node_list t) //(predicate: (T.node t) -> Tot bool)
@@ -184,7 +174,7 @@ let lemma_result_of_get_index_list_from_predicate_is_node_list_index_list #t
   result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate with
   lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
     node_list node_list predicate 0 []
-
+*)
 
 
 //---|
@@ -207,26 +197,16 @@ let try_get_item #t (node_list:T.node_list t) (index:nat)
   | Some v1 -> Some (get_item node_list v1)
   | None -> None
 
-(*
-let rec get_index_list_from_predicate #t 
-  (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool)
+let get_index_list_from_predicate #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
   : Pure (list nat) True
-    (ensures fun r ->
-      forall (index_in_result:nat). (L.contains index_in_result node_list) ==>
-      ((is_node_list_index index_in_result node_list) /\
-       (predicate (L.index node_list index_in_result))
-      )
-    )
-    (decreases node_list)
+    (ensures fun r -> is_node_list_index_list r node_list)
   =
-  match node_list with
-  | [] -> []
-  | hd::tl ->
-*)
+  get_index_list_from_predicate_core node_list 0 predicate
 
-let rec try_get_first_index_of_predicate #t 
+let try_get_first_index_of_predicate #t 
   (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool)
-  : Pure (option nat) True
+  : Pure (T.option_node_list_index node_list) True
         (ensures fun r ->
           match r with
           | None -> true
@@ -234,6 +214,11 @@ let rec try_get_first_index_of_predicate #t
         )
         (decreases node_list)
   = 
+  match get_index_list_from_predicate node_list predicate with
+  | [] -> None
+  | hd::tl -> Some hd
+
+(*
   match node_list with
   | [] -> None
   | hd::tl ->
@@ -243,7 +228,9 @@ let rec try_get_first_index_of_predicate #t
   match try_get_first_index_of_predicate tl predicate with
   | None -> None
   | Some v1 -> Some (1 + v1)
+*)
 
+(*
 let get_index_list_from_predicate #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool)
   : Pure (list nat) True
@@ -253,6 +240,7 @@ let get_index_list_from_predicate #t
   //assume (result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate);
   lemma_result_of_get_index_list_from_predicate_is_node_list_index_list node_list;
   get_index_list_from_predicate_impl node_list predicate
+*)
 
 (*
 private let _ = assert ( forall t node_list predicate.
