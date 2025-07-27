@@ -6,9 +6,25 @@ module L = FStar.List.Tot
 let aggregator (t:Type) = (aggregated:t) -> (aggregating:t) -> t
 //---|
 
-//--- predicates ---
+//--- propositions ---
+(*
 let filter_theorem (#a: Type) (f: (a -> Tot bool)) (l: list a) : prop =
   forall x. L.memP x (L.filter f l) <==> L.memP x l /\ f x
+*)
+
+let list1_length_is_equal_to_list2_length_plus_list3_length 
+  #t1 #t2 #t3
+  (list1: list t1) (list2: list t2) (list3: list t3)
+  : bool
+  =
+  (L.length list1) = (L.length list2) + (L.length list3)
+
+let list1_length_is_less_or_equal_than_list2_length_plus_list3_length
+  #t1 #t2 #t3
+  (list1: list t1) (list2: list t2) (list3: list t3)
+  : bool
+  =
+  (L.length list1) >= (L.length list2) + (L.length list3)
 //---|
 
 //--- theory members ---

@@ -4,6 +4,7 @@ module L = FStar.List.Tot
 module I = Nemonuri.StratifiedNodes.Internals
 module T = Nemonuri.StratifiedNodes.Nodes.Base.Types
 module Math = FStar.Math.Lib
+module Common = Nemonuri.StratifiedNodes.Common
 open FStar.Classical.Sugar
 
 //--- (T.node_list_index t) or (T.option_node_list_index t) members ---
@@ -33,9 +34,13 @@ let try_convert_to_node_list_index #t (index:nat) (node_list:T.node_list t)
   | true -> Some index
   | false -> None //<: (T.option_node_list_index node_list)
 
+private let is_node_list_index_rewrite #t (node_list:T.node_list t) (index:nat)
+  : Tot bool =
+  is_node_list_index index node_list
+
 let is_node_list_index_list #t (l:list nat) (node_list:T.node_list t)
   : Tot bool =
-  L.for_all (fun (index:nat) -> is_node_list_index index node_list) l 
+  L.for_all (is_node_list_index_rewrite node_list) l 
 
 //---|
 
@@ -70,9 +75,15 @@ private let rec get_index_list_from_predicate_core #t
 *)
 
 private let rec get_index_list_from_predicate_impl_core #t 
+  (original_node_list: T.node_list t)
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
   (current_index: nat) (current_index_list: list nat)
-  : Tot (list nat) 
+  : Pure (list nat) 
+    (requires 
+      (Common.list1_length_is_less_or_equal_than_list2_length_plus_list3_length
+        original_node_list node_list current_index_list)
+    )
+    (ensures fun _ -> true)
     (decreases node_list)
   =
   match node_list with
@@ -84,13 +95,13 @@ private let rec get_index_list_from_predicate_impl_core #t
     | false -> current_index_list
   ) in
   get_index_list_from_predicate_impl_core 
-    tl predicate (current_index + 1) next_lndex_list
+    original_node_list tl predicate (current_index + 1) next_lndex_list
 
 private let get_index_list_from_predicate_impl #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
   : Tot (list nat) =
   get_index_list_from_predicate_impl_core 
-    node_list predicate 0 []
+    node_list node_list predicate 0 []
 
 //---|
 
@@ -136,29 +147,32 @@ let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.
 
 private let rec lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core #t
   (original_node_list: T.node_list t)
-  (remained_node_list: T.node_list t) (current_index: nat) (current_index_list: list nat)
+  (remained_node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (current_index: nat) (current_index_list: list nat)
   : Lemma 
     (requires
-      ((Nil? original_node_list) ==> (Nil? current_index_list)) /\
-      ((Cons? original_node_list) ==> 
-        ((L.length original_node_list) = (L.length remained_node_list) + (L.length current_index_list))
-      ) /\
-      ((Cons? remained_node_list) ==> (is_node_list_index current_index original_node_list))
+      (Common.list1_length_is_less_or_equal_than_list2_length_plus_list3_length
+        original_node_list remained_node_list current_index_list) 
+      ///\ ((Cons? remained_node_list) ==> (is_node_list_index current_index original_node_list))
     )
     (ensures 
       //((Cons? original_node_list) ==> (is_node_list_index current_index node_list)) /\
-      (is_node_list_index_list current_index_list original_node_list))
+      //(is_node_list_index_list current_index_list original_node_list) /\
+      result_of_get_index_list_from_predicate_is_node_list_index_list 
+        original_node_list predicate
+    )
     (decreases remained_node_list)
   =
-  admit ()
-  (*
+  admit();
   match remained_node_list with
   | [] -> ()
-  | hd::tl -> 
-  let next_lndex_list = current_index::current_index_list in
+  | hd::tl ->   
+  let next_lndex_list = (
+    match (predicate hd) with
+    | true -> current_index::current_index_list
+    | false -> current_index_list
+  ) in
   lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
-    original_node_list tl (current_index + 1) next_lndex_list
-  *)
+    original_node_list tl predicate (current_index + 1) next_lndex_list
 
 let lemma_result_of_get_index_list_from_predicate_is_node_list_index_list #t
   (node_list: T.node_list t) //(predicate: (T.node t) -> Tot bool)
@@ -166,11 +180,11 @@ let lemma_result_of_get_index_list_from_predicate_is_node_list_index_list #t
     (ensures (forall predicate. result_of_get_index_list_from_predicate_is_node_list_index_list
       node_list predicate))
   =
-  admit ()
-  (*
+  introduce forall (predicate: (T.node t) -> Tot bool).
+  result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate with
   lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
-    node_list node_list 0 []
-  *)
+    node_list node_list predicate 0 []
+
 
 
 //---|
