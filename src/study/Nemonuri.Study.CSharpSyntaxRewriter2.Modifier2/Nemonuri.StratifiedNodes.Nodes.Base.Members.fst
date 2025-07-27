@@ -133,6 +133,46 @@ let lemma_list_level_is_greater_or_equal_than_any_element_level (t:eqtype) (l:T.
     ((get_level it_node) <= get_list_level_impl l) with (
       lemma_list_level_is_greater_or_equal_than_element_level t it_node l
     )
+
+private let rec lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core #t
+  (original_node_list: T.node_list t)
+  (remained_node_list: T.node_list t) (current_index: nat) (current_index_list: list nat)
+  : Lemma 
+    (requires
+      ((Nil? original_node_list) ==> (Nil? current_index_list)) /\
+      ((Cons? original_node_list) ==> 
+        ((L.length original_node_list) = (L.length remained_node_list) + (L.length current_index_list))
+      ) /\
+      ((Cons? remained_node_list) ==> (is_node_list_index current_index original_node_list))
+    )
+    (ensures 
+      //((Cons? original_node_list) ==> (is_node_list_index current_index node_list)) /\
+      (is_node_list_index_list current_index_list original_node_list))
+    (decreases remained_node_list)
+  =
+  admit ()
+  (*
+  match remained_node_list with
+  | [] -> ()
+  | hd::tl -> 
+  let next_lndex_list = current_index::current_index_list in
+  lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
+    original_node_list tl (current_index + 1) next_lndex_list
+  *)
+
+let lemma_result_of_get_index_list_from_predicate_is_node_list_index_list #t
+  (node_list: T.node_list t) //(predicate: (T.node t) -> Tot bool)
+  : Lemma 
+    (ensures (forall predicate. result_of_get_index_list_from_predicate_is_node_list_index_list
+      node_list predicate))
+  =
+  admit ()
+  (*
+  lemma_result_of_get_index_list_from_predicate_is_node_list_index_list_core
+    node_list node_list 0 []
+  *)
+
+
 //---|
 
 //--- (T.node_list t) members ---
@@ -196,7 +236,8 @@ let get_index_list_from_predicate #t
     (ensures fun r -> 
       result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate)
   =
-  assume (result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate);
+  //assume (result_of_get_index_list_from_predicate_is_node_list_index_list node_list predicate);
+  lemma_result_of_get_index_list_from_predicate_is_node_list_index_list node_list;
   get_index_list_from_predicate_impl node_list predicate
 
 (*
