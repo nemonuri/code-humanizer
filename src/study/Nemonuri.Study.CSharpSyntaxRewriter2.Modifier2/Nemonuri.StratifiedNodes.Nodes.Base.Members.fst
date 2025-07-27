@@ -22,17 +22,53 @@ private let _ = assert ( forall t index node_list .
   (is_not_node_list_index #t index node_list)
  )
 
-let try_convert_to_node_list_index #t (index:nat) (node_list:T.node_list t) 
-  : Pure (T.option_node_list_index node_list) True
+let has_index #t
+  (#node_list:T.node_list t)
+  (source:T.maybe_node_list_index node_list)
+  : Tot bool =
+  T.ISome? source
+
+let to_int #t
+  (#node_list:T.node_list t)
+  (source:T.maybe_node_list_index node_list)
+  : Pure int True
+    (ensures fun r -> 
+      match has_index source with
+      | true -> (r >= 0) && (is_node_list_index r node_list)
+      | false -> (r = -1)
+    )
+  =
+  match has_index source with
+  | true -> (T.ISome?.index source)
+  | false -> -1
+
+(*
+let has_index #t 
+  (#node_list:T.node_list t)
+  (source:T.maybe_node_list_index node_list)
+  : Tot bool =
+  (source.value <> -1)
+*)
+
+(*
+let get_default_maybe_node_list_index #t (node_list:T.node_list t)
+  : Pure (T.maybe_node_list_index node_list) True
+    (ensures fun r -> not (has_index r))
+  =
+  T.INone node_list
+*)
+
+let to_maybe_node_list_index #t (index:nat) (node_list:T.node_list t) 
+  : Pure (T.maybe_node_list_index node_list) True
     (ensures fun r ->
-      match r with
-      | Some v1 -> (is_node_list_index index node_list) && (v1 = index)
-      | None -> is_not_node_list_index index node_list
+      match (index >= (L.length node_list)) with
+      | true -> (to_int r) = -1
+      | false -> (to_int r) = index
     )
   =
   match is_node_list_index index node_list with
-  | true -> Some index
-  | false -> None //<: (T.option_node_list_index node_list)
+  | true -> T.ISome node_list index 
+  | false -> T.INone node_list
 
 private let is_node_list_index_rewrite #t (node_list:T.node_list t) (index:nat)
   : Tot bool =
@@ -193,9 +229,9 @@ let get_item #t (node_list:T.node_list t) (index:T.node_list_index node_list)
 let try_get_item #t (node_list:T.node_list t) (index:nat)
   : Tot (option (T.node t))
   =
-  match try_convert_to_node_list_index index node_list with
-  | Some v1 -> Some (get_item node_list v1)
-  | None -> None
+  match to_maybe_node_list_index index node_list with
+  | T.ISome _ v1 -> Some (get_item node_list v1)
+  | T.INone _ -> None
 
 let get_index_list_from_predicate #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
@@ -206,17 +242,17 @@ let get_index_list_from_predicate #t
 
 let try_get_first_index_of_predicate #t 
   (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool)
-  : Pure (T.option_node_list_index node_list) True
+  : Pure (T.maybe_node_list_index node_list) True
         (ensures fun r ->
           match r with
-          | None -> true
-          | Some v1 -> v1 < (L.length node_list)
+          | T.INone _ -> true
+          | T.ISome _ v1 -> v1 < (L.length node_list)
         )
         (decreases node_list)
   = 
   match get_index_list_from_predicate node_list predicate with
-  | [] -> None
-  | hd::tl -> Some hd
+  | [] -> T.INone node_list
+  | hd::tl -> T.ISome node_list hd
 
 (*
   match node_list with

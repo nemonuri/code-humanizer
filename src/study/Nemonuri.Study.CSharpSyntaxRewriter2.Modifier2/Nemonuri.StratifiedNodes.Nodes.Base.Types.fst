@@ -14,10 +14,22 @@ let node_list (t:eqtype) = list (node t)
 
 let node_list_index #t (nl:node_list t) = i:nat{ (Cons? nl) && (i < (L.length nl)) }
 
-let option_node_list_index #t (nl:node_list t) = 
-  (*oi:*)(option (node_list_index nl))(*{
-    match oi with
-    | Some i -> ((Cons? nl) && (i < (L.length nl)))
-    | None -> true
-  }*)
+(*
+type maybe_node_list_index #t: node_list t -> Type =
+| MIndex: 
+    (internal_node_list:node_list t) -> 
+    //(has_index:bool) ->
+    (value:int{ 
+      ((0 <= value) && (value < (L.length internal_node_list))) ||
+      (value = -1)
+    }) ->
+    maybe_node_list_index internal_node_list
+*)
+
+type maybe_node_list_index #t: node_list t -> Type =
+| INone: (internal_node_list:node_list t) -> maybe_node_list_index internal_node_list
+| ISome: 
+  (internal_node_list:node_list t) ->
+  (index:node_list_index internal_node_list) ->
+  maybe_node_list_index internal_node_list
 //---|
