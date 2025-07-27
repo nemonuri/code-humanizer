@@ -11,4 +11,13 @@ type node (t:eqtype) =
       node t
 
 let node_list (t:eqtype) = list (node t)
+
+let node_list_index #t (nl:node_list t) = i:nat{ (Cons? nl) && (i < (L.length nl)) }
+
+let option_node_list_index #t (nl:node_list t) = 
+  (*oi:*)(option (node_list_index nl))(*{
+    match oi with
+    | Some i -> ((Cons? nl) && (i < (L.length nl)))
+    | None -> true
+  }*)
 //---|
