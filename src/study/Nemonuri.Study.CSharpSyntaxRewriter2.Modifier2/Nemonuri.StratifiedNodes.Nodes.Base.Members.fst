@@ -518,7 +518,27 @@ let lemma8 #t
   =
   L.mem_filter_forall (op_Equality node) node_list
 
-//let rec lemma10
+let lemma10 #t
+  (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool) 
+  : Lemma
+    (ensures (exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (get_index_list_from_predicate node_list predicate)))
+    //(decreases node_list)
+  =
+  //get_index_list_from_predicate
+  let v1 = (get_index_list_from_predicate node_list predicate) in
+  let v2 = (exists i2. (L.contains i2 v1) /\ (predicate (L.index node_list i2))) in
+  assert (v2 <==> (Cons? v1));
+  //(introduce exists (i3:nat{i3 < L.length node_list}). ((predicate (L.index node_list i3)) <==> (L.contains (L.index node_list i3) node_list)) with
+  //  (L.lemma_index_memP node_list i3))  
+  introduce forall (i3:T.node_list_index node_list). 
+    (L.contains (L.index node_list i3) node_list) with (L.lemma_index_memP node_list i3);
+  assume (forall n. (L.contains n node_list) ==> (exists i. (L.index node_list i) = n));
+  assert (v2 <==> (exists i. (L.contains (L.index node_list i) node_list) /\ (predicate (L.index node_list i))));
+  assert ((exists i. (L.contains (L.index node_list i) node_list) /\ (predicate (L.index node_list i))) <==> (exists n. (L.contains n node_list) /\ (predicate n)))
+  // assert (v2 <==> (exists n. (L.contains n node_list) /\ (predicate n)))
+  //introduce forall (i4:nat{i4 < L.length node_list}). 
+  //assert (forall (i4:nat). (predicate (L.index node_list i4)) <==> ((L.contains (L.index node_list i4) node_list) /\ (predicate (L.index node_list i4))))
+  //assert ((exists i2. (predicate (L.index node_list i2))) <==> (exists n. (L.contains n node_list) /\ (predicate n)))
 
 let lemma9 #t
   (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool) 
@@ -530,7 +550,8 @@ let lemma9 #t
   =
   L.mem_filter_forall predicate node_list;
   assert ((exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (L.filter predicate node_list)));
-  assume ((exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (get_index_list_from_predicate node_list predicate)))
+  lemma10 node_list predicate;
+  assert ((exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (get_index_list_from_predicate node_list predicate)))
 
 (*
     let v1 = get_index_list_from_predicate node_list predicate in 
