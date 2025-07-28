@@ -508,26 +508,32 @@ let try_get_first_index_of_predicate #t
 
 //--- try_get_index ---
 
-(*
+
 let try_get_index #t
   (node_list:T.node_list t) (node:T.node t)
   : Pure (T.maybe_node_list_index node_list) True
+  (*
     (ensures fun r ->
       match r with
       | T.ISome nl v1 -> L.contains node node_list
       | T.INone nl -> not (L.contains node node_list)
     )
-
-    
+  *)
+  (*  
     (ensures fun r ->
       match (L.contains node node_list) with
       | true -> T.ISome? r
       | false -> T.INone? r
     )
-    
+  *)
+    (ensures (fun r ->
+      (T.ISome? r) <==> (L.contains node node_list)
+    ))
   =
+  assert ((Cons? (L.filter (op_Equality node) node_list)) <==> (L.contains node node_list));
+  assert ((Cons? (get_index_list_from_predicate node_list (op_Equality node))) <==>
+          (Cons? (L.filter (op_Equality node) node_list)));
   try_get_first_index_of_predicate node_list (op_Equality node)
-*)
 
 (*
 let try_get_index #t
