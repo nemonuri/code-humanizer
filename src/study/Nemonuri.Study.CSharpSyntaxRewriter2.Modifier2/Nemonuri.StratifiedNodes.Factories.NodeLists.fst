@@ -96,8 +96,8 @@ let replace_range #t
     (requires L.contains node node_list)
     (ensures fun _ -> true)
   =
-  assume (N.ISome? (N.try_get_first_index_of_predicate node_list (op_Equality node)));
-  let N.ISome _ index = N.try_get_first_index_of_predicate node_list (op_Equality node) in
+  //assume (N.ISome? (N.try_get_first_index_of_predicate node_list (op_Equality node)));
+  let N.ISome _ index = N.try_get_index node_list node in
   replace_range_at node_list index inserting_node_list
 
 let replace #t
