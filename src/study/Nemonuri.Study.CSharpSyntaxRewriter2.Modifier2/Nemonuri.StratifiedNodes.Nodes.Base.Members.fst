@@ -517,6 +517,56 @@ let lemma8 #t
   =
   L.mem_filter_forall (op_Equality node) node_list
 
+let rec lemma9 #t
+  (node_list:T.node_list t) (node:T.node t) (predicate: (T.node t) -> Tot bool) 
+  : Lemma 
+    (ensures
+      (Cons? (get_index_list_from_predicate node_list predicate)) <==>
+      (Cons? (L.filter predicate node_list))
+    )
+    (decreases node_list)
+  =
+  match node_list with
+  | [] -> ()
+  | hd::tl ->
+  if (Nil? tl) then (
+    assert ((L.length node_list = 1) /\ (hd = L.hd node_list));
+    assert ((predicate hd) <==> (Cons? (get_index_list_from_predicate node_list predicate)));
+    assert ((predicate hd) <==> (Cons? (L.filter predicate node_list)));
+    assert (
+      (Cons? (get_index_list_from_predicate node_list predicate)) <==>
+      (Cons? (L.filter predicate node_list))
+    )
+  ) else (
+    (*
+    
+    assert ((L.for_all (fun n -> not (predicate n)) node_list) <==> (Nil? (L.filter predicate node_list)));
+    assert ((L.for_all (fun n -> not (predicate n)) node_list) <==> (Nil? (get_index_list_from_predicate node_list predicate)));
+    *)
+    //L.for_all_mem predicate node_list;
+    L.mem_filter_forall predicate node_list;
+    assert ((exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (L.filter predicate node_list)));
+    assert ((exists n. (L.contains n node_list) /\ (predicate n)) <==> (Cons? (get_index_list_from_predicate node_list predicate)))
+    //assert ((Nil? (L.filter predicate node_list)) <==> (Nil? (get_index_list_from_predicate node_list predicate)))
+  )
+
+(*
+    let v1 = get_index_list_from_predicate node_list predicate in 
+    let v2 = L.filter predicate node_list in
+    if predicate hd then (
+      //assert (((Cons? v1) && (L.hd v1 = 0)) ==> )
+      assert (Cons? v1);
+      assert (Cons? v2)
+    ) else (
+      assert ((Cons? (get_index_list_from_predicate tl predicate)) <==> (Cons? (L.filter predicate tl)));
+      lemma9 tl node predicate
+    )
+*)
+      
+    
+
+    
+
 let try_get_index #t
   (node_list:T.node_list t) (node:T.node t)
   : Pure (T.maybe_node_list_index node_list) True
