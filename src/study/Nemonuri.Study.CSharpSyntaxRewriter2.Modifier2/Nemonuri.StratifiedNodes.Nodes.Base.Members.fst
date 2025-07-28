@@ -508,6 +508,14 @@ let try_get_first_index_of_predicate #t
 
 //--- try_get_index ---
 
+let lemma8 #t
+  (node_list:T.node_list t) (node:T.node t)
+  : Lemma 
+    (ensures 
+      (Cons? (L.filter (op_Equality node) node_list)) <==> (L.contains node node_list)
+    )
+  =
+  L.mem_filter_forall (op_Equality node) node_list
 
 let try_get_index #t
   (node_list:T.node_list t) (node:T.node t)
@@ -530,7 +538,7 @@ let try_get_index #t
       (T.ISome? r) <==> (L.contains node node_list)
     ))
   =
-  assert ((Cons? (L.filter (op_Equality node) node_list)) <==> (L.contains node node_list));
+  lemma8 node_list node;
   assert ((Cons? (get_index_list_from_predicate node_list (op_Equality node))) <==>
           (Cons? (L.filter (op_Equality node) node_list)));
   try_get_first_index_of_predicate node_list (op_Equality node)
