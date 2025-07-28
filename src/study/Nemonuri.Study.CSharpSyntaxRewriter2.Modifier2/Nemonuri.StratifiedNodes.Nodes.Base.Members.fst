@@ -233,6 +233,171 @@ private let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_p
   ()
   //lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate_aux1 node_list predicate index
 
+let lemma5 #t
+  (node_list: T.node_list t) 
+  (predicate: (T.node t) -> Tot bool) (index: nat)
+  : Lemma 
+    (requires 
+      (index <= (L.length node_list)) /\ (
+        let v1 = (get_index_list_from_predicate_core node_list index predicate) in
+        (Cons? v1) && (L.hd v1 = index)
+      )
+    )
+    (ensures
+      (index >= 1) ==> (
+        let v1 = (get_index_list_from_predicate_core node_list index predicate) in
+        let l1 = L.length v1 in
+        let v2 = (get_index_list_from_predicate_core node_list (index - 1) predicate) in
+        let l2 = L.length v2 in (
+          ((l1 = l2) ==> (L.hd v2 = index)) /\
+          ((l1 + 1 = l2) ==> 
+            ((L.hd v2 = index - 1) /\ (L.hd (L.tl v2) = index)))
+        )
+      )
+    )
+  =
+  if not (index >= 1) then ()
+  else (
+    let v1 = (get_index_list_from_predicate_core node_list index predicate) in
+    let l1 = L.length v1 in
+    let v2 = (get_index_list_from_predicate_core node_list (index - 1) predicate) in
+    let l2 = L.length v2 in
+    (
+      assert (Cons? v2);
+      assert ((l1 = l2) || (l1 + 1 = l2)); // 하나라도 빼면 증명실패
+      //assert (forall (n:nat). (n=0 \/ n=1) ==> (l1 + n = l2));
+      // - 이건 증명 실패...뭔가 미묘한 차이가 있나
+      assert (forall (n:nat). (l1 + n = l2) ==> (n=0 \/ n=1))
+    )
+  )
+
+let lemma4 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (index: nat)
+  : Lemma
+    (requires
+      (index <= (L.length node_list)) /\ 
+      (L.contains index (get_index_list_from_predicate_core node_list index predicate))
+    )
+    (ensures
+      ((index >= 1) ==> (L.contains index (get_index_list_from_predicate_core node_list (index-1) predicate))) /\
+      ((index = 0) ==> (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)) )
+    )
+  =
+  lemma5 node_list predicate index
+
+// 수학적 귀납법의, '기본'으로 돌아가서 'requires' 와 'ensures' 를 작성하자.
+let rec lemma6 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (index: nat) 
+  (index_decrease: nat)
+  : Lemma
+    (requires (
+      let v1 = index - index_decrease in
+      (0 <= v1) /\ (v1 <= index) /\ (index <= (L.length node_list)) /\ 
+      (L.contains index (get_index_list_from_predicate_core node_list v1 predicate))
+    ))
+    (ensures (
+      let v1 = index - index_decrease in
+      ((v1 >= 1) ==> (L.contains index (get_index_list_from_predicate_core node_list (v1 - 1) predicate))) /\
+      ((v1 = 0) ==> (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)))
+    ))
+    (decreases (index - index_decrease))
+  =
+  if index_decrease = 0 then (
+    lemma4 node_list predicate index
+  ) else if (index = index_decrease) then (
+    assert (index - index_decrease = 0)
+  ) else (
+    assert (index_decrease < index);
+    lemma6 node_list predicate index (index_decrease + 1)
+  )
+  
+let rec lemma7 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (index: nat) 
+  (index_decrease: nat)
+  : Lemma
+    (requires (
+      let v1 = index - index_decrease in
+      (0 <= v1) /\ (v1 <= index) /\ (index <= (L.length node_list)) /\ 
+      (L.contains index (get_index_list_from_predicate_core node_list v1 predicate))
+    ))
+    (ensures (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)))
+    (decreases (index - index_decrease))
+  =
+  lemma6 node_list predicate index index_decrease; //...이거 없어도 증명은 되네...??
+  let v1 = index - index_decrease in
+  if v1 = 0 then ()
+  else
+    lemma7 #t node_list predicate index (index_decrease + 1)
+// 대체 얘가 재귀적 증명을 어떻게 하는건지...??
+// - requires 를 계속 만족하다가, 딱 마지막에만 ensures 를 만족하면 되는거야...? 그렇게 해도 증명이 돼...? 어떻게지?
+// - lemma n의 증명은, lemma n'{n' << n}이다, 뭐 이런거냐?
+//   - 이 증명 방법이 타당한 이유는?
+
+
+let lemma1 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (index: nat)
+  : Lemma 
+    (requires 
+      (index <= (L.length node_list)) /\ 
+      (let v1 = (get_index_list_from_predicate_core node_list index predicate) in
+      (Cons? v1) && (index = L.hd v1))
+    )
+    (ensures (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)))
+  =
+  lemma5 node_list predicate index;
+  lemma4 node_list predicate index;
+  introduce forall (index_decrease: nat{
+    let v1 = index - index_decrease in
+    (0 <= v1) /\ (v1 <= index) /\ (index <= (L.length node_list)) /\ 
+    (L.contains index (get_index_list_from_predicate_core node_list v1 predicate))
+  }). (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)) with
+  lemma7 node_list predicate index index_decrease
+
+
+private let rec lemma2_core #t
+  (original_node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (original_index: nat)
+  (current_index: nat)
+  : Lemma
+    (requires 
+      //(original_index <= (L.length original_node_list)) /\ 
+      (is_node_list_index original_index original_node_list) /\ 
+      (predicate (L.index original_node_list original_index)) /\
+      (current_index <= original_index)
+      // /\ (current_index < (L.length original_node_list))
+    )
+    (ensures 
+      //(original_index = current_index) ==>
+      (L.contains original_index (get_index_list_from_predicate_core original_node_list 0 predicate))
+    )
+    (decreases (L.length original_node_list) - current_index)
+  =
+  assert (current_index < (L.length original_node_list));
+  lemma1 original_node_list predicate original_index;
+  let length = (L.length original_node_list) in
+  match (original_index = current_index) with
+  | true -> assert (
+      let v1 = get_index_list_from_predicate_core original_node_list original_index predicate in
+      (Cons? v1) && (original_index = L.hd v1)
+    )
+  | false -> 
+    lemma2_core
+      original_node_list predicate original_index (current_index + 1)
+
+let lemma2 #t
+  (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) (index: nat)
+  : Lemma 
+    (requires       
+      (is_node_list_index index node_list) /\ 
+      (predicate (L.index node_list index))
+    )
+    (ensures 
+      //(index <= (L.length node_list)) /\
+      (L.contains index (get_index_list_from_predicate_core node_list 0 predicate))
+    )
+  =
+  lemma2_core node_list predicate index 0
+
+
 (*
 let lemma_element_of_result_of_get_index_list_from_predicate_satisfies_predicate #t
   (node_list: T.node_list t) (predicate: (T.node t) -> Tot bool) 
@@ -312,6 +477,14 @@ let get_index_list_from_predicate #t
       )
     )
   =
+  introduce forall (index:nat).
+    ((is_node_list_index index node_list) /\ (predicate (L.index node_list index)) ==> 
+    (L.contains index (get_index_list_from_predicate_core node_list 0 predicate))) with
+  (
+    if not (is_node_list_index index node_list) then ()
+    else if not (predicate (L.index node_list index)) then ()
+    else lemma2 node_list predicate index
+  );
   get_index_list_from_predicate_core node_list 0 predicate
 
 let try_get_first_index_of_predicate #t 
@@ -331,18 +504,27 @@ let try_get_first_index_of_predicate #t
 //---|
 
 //--- try_get_index ---
-private let try_get_index_impl #t
+
+(*
+let try_get_index #t
   (node_list:T.node_list t) (node:T.node t)
   : Pure (T.maybe_node_list_index node_list) True
-  
+    (ensures fun r ->
+      match r with
+      | T.ISome nl v1 -> L.contains node node_list
+      | T.INone nl -> not (L.contains node node_list)
+    )
+
+    
     (ensures fun r ->
       match (L.contains node node_list) with
       | true -> T.ISome? r
       | false -> T.INone? r
     )
-  
+    
   =
   try_get_first_index_of_predicate node_list (op_Equality node)
+*)
 
 (*
 let try_get_index #t
