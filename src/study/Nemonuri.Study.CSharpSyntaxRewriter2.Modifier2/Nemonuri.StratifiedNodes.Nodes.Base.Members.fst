@@ -346,12 +346,15 @@ let lemma1 #t
   =
   lemma5 node_list predicate index;
   lemma4 node_list predicate index;
+  lemma7 node_list predicate index 0
+  (*
   introduce forall (index_decrease: nat{
-    let v1 = index - index_decrease in
-    (0 <= v1) /\ (v1 <= index) /\ (index <= (L.length node_list)) /\ 
-    (L.contains index (get_index_list_from_predicate_core node_list v1 predicate))
+    let v2 = index - index_decrease in
+    (0 <= v2) /\ (v2 <= index) /\ (index <= (L.length node_list)) /\ 
+    (L.contains index (get_index_list_from_predicate_core node_list v2 predicate))
   }). (L.contains index (get_index_list_from_predicate_core node_list 0 predicate)) with
   lemma7 node_list predicate index index_decrease
+  *)
 
 
 private let rec lemma2_core #t
