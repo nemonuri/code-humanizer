@@ -105,4 +105,23 @@ let rec splitAt (#a:Type) (n:nat) (l:list a) : Tot (list a & list a) =
     | [] -> [], l
     | x :: xs -> let l1, l2 = splitAt (n-1) xs in x :: l1, l2
 
+let rec lemma_splitAt_fst_length (#a:Type) (n:nat) (l:list a) :
+  Lemma
+    (requires (n <= L.length l))
+    (ensures (L.length (fst (splitAt n l)) = n)) =
+  if n = 0 then ()
+  else
+    match l with
+    | [] -> ()
+    | x :: xs -> lemma_splitAt_fst_length (n - 1) xs
+
+let rec lemma_splitAt_snd_length (#a:Type) (n:nat) (l:list a) :
+  Lemma
+    (requires (n <= L.length l))
+    (ensures (L.length (snd (splitAt n l)) = L.length l - n)) =
+  match n, l with
+  | 0, _ -> ()
+  | _, [] -> ()
+  | _, _ :: l' -> lemma_splitAt_snd_length (n - 1) l'
+
 //---|

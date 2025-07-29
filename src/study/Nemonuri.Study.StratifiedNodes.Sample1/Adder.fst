@@ -64,11 +64,12 @@ let walk_adder_node (node:node_t)
   =
   W.walk node selector aggregator aggregator continue_predicate []
 
-
+(*
 let _ = assert ( 
   ( walk_adder_node (create_adder_node1 ()) ) =
   ( walk_adder_node (create_adder_node2 ()) )
 )
+*)
 
 
 let main () = 

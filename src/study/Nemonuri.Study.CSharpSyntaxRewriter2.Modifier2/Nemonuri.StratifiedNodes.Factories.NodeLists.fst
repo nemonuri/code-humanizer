@@ -28,12 +28,18 @@ let rec create_leaf_node_list
 
 let insert_range #t 
   (node_list:N.node_list t) 
-  (index:nat{ index <= L.length node_list })
+  (index:nat)
   (inserting_node_list:N.node_list t)
-  : Tot (N.node_list t)
+  : Pure (N.node_list t)
+    (requires (N.is_node_list_index index node_list ) || ( index = L.length node_list ))
+    (ensures fun r -> (L.length r) = (L.length node_list) + (L.length inserting_node_list))
   =
   let (l1, l2) = Common.splitAt index node_list in
+  Common.lemma_splitAt_fst_length index node_list;
+  Common.lemma_splitAt_snd_length index node_list;
   let l3 = L.append l1 inserting_node_list in
+  L.append_length l1 inserting_node_list;
+  L.append_length l3 l2;
   L.append l3 l2
 
 let insert #t
@@ -73,9 +79,13 @@ let rec remove_first #t
   (node_list:N.node_list t) (exclusion_predicate: (N.node t) -> Tot bool)
   : Pure (N.node_list t) True
     (ensures fun r -> 
-      (Cons? node_list) ==> (
-        (not (exclusion_predicate (L.hd node_list))) ==> (L.length r = (L.length node_list) - 1)
-      )
+      ((Cons? node_list) ==> (
+        (~(exclusion_predicate (L.hd node_list))) ==> (L.length r = (L.length node_list) - 1)
+      )) (*/\
+      (forall node. 
+        ((L.contains node node_list) /\ ~(exclusion_predicate node)) <==>
+        (L.length r = (L.length node_list) - 1)
+      )*)
     )
     (decreases node_list)
   =
