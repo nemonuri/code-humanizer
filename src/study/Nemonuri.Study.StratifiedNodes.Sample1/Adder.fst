@@ -28,7 +28,7 @@ let aggregator : (Common.aggregator nat) =
 let continue_predicate : (N.node nat -> nat -> bool) =
   fun n t -> true
 
-let create_adder_node ()
+let create_adder_node1 ()
   : Pure (node_t) True
     (fun r -> is_adder_node r)
   =
@@ -39,16 +39,34 @@ let create_adder_node ()
   let n = F.create_node 0 [n0; n1] in
   n
 
+let create_adder_node2 ()
+  : Pure (node_t) True
+    (fun r -> is_adder_node r)
+  =
+  let v1 = create_adder_node1 () in
+  let v2 = F.swap (N.get_children v1) 0 1 in
+  let v3 = F.replace_children v1 v2 in
+  v3
+
 let walk_adder_node (node:node_t)
   : Pure nat (requires is_adder_node node)
     (ensures fun _ -> true)
   =
   W.walk node selector aggregator aggregator continue_predicate []
 
+(*
+let _ = assert ( 
+  ( walk_adder_node (create_adder_node1 ()) ) =
+  ( walk_adder_node (create_adder_node2 ()) )
+)
+*)
 
 let main () = 
-  let v1 = walk_adder_node (create_adder_node ()) in
-  print_any v1
+  let v1 = walk_adder_node (create_adder_node1 ()) in
+  print_any v1;
+  print_newline ();
+  let v2 = walk_adder_node (create_adder_node2 ()) in
+  print_any v2
 
 let _ = main ()
   
