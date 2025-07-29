@@ -518,6 +518,40 @@ let lemma8 #t
   =
   L.mem_filter_forall (op_Equality node) node_list
 
+(*
+private let rec prop1 
+  (t:eqtype) (l:list t) (item:t) 
+  (i:nat{i < (L.length l)})
+  : Tot prop (decreases i) =
+  match i with
+  | 0 -> ((L.index l i) = item)
+  | _ -> ((L.index l i) = item) \/ (prop1 t l item (i-1))
+*)
+
+let lemma11 (t:eqtype) 
+  (l:list t) (item:t) (index:nat{index < (L.length l)})
+  : Lemma 
+    (requires (L.contains item l))
+    (ensures (exists i. (L.index l i) = item))
+  =
+  assert ((L.index l (L.index_of l item)) = item)
+  (*
+  match (L.index l index) = item with
+  | true -> ()
+  | false -> (
+      assert (index > 0);
+      (lemma11 t l item (index-1))
+    )
+  *)
+  
+  (*
+  let head_item = L.hd l in
+  match (head_item = item) with
+  | true -> (assert ((L.index l 0) = item))
+  | false -> (lemma11 t (L.tl l) item)
+  *)
+
+
 let lemma10 #t
   (node_list:T.node_list t) (predicate: (T.node t) -> Tot bool) 
   : Lemma
