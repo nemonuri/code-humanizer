@@ -71,13 +71,19 @@ let remove_all #t
 
 let rec remove_first #t 
   (node_list:N.node_list t) (exclusion_predicate: (N.node t) -> Tot bool)
-  : Tot (N.node_list t) (decreases node_list)
+  : Pure (N.node_list t) True
+    (ensures fun r -> 
+      (Cons? node_list) ==> (
+        (not (exclusion_predicate (L.hd node_list))) ==> (L.length r = (L.length node_list) - 1)
+      )
+    )
+    (decreases node_list)
   =
   match node_list with
   | [] -> []
   | hd::tl ->
   match (exclusion_predicate hd) with
-  | false -> (remove_first tl exclusion_predicate)
+  | false -> tl
   | true -> hd::(remove_first tl exclusion_predicate)
 
 let remove #t (node_list:N.node_list t) (node:N.node t)
@@ -86,7 +92,9 @@ let remove #t (node_list:N.node_list t) (node:N.node t)
   remove_first node_list (op_disEquality node)
 
 let remove_at #t (node_list:N.node_list t) (index:nat{ index < L.length node_list })
-  : Tot (N.node_list t)
+  : Pure (N.node_list t) True
+    //(ensures fun r -> (L.length r = (L.length node_list) - 1))
+    (ensures fun r -> true)
   =
   remove node_list (L.index node_list index)
 
@@ -98,7 +106,8 @@ let replace_range_at #t
   : Tot (N.node_list t)
   =
   let v1 = remove_at node_list index in
-  insert_range node_list index inserting_node_list
+  assume ((L.length v1) = (L.length node_list) - 1);
+  insert_range v1 index inserting_node_list
 
 let replace_range #t
   (node_list:N.node_list t) 
@@ -243,13 +252,15 @@ private let rec swap_core #t
     (requires index1 < index2)
     (ensures fun _ -> true) // ((L.length node_list) = (L.length r)) 은 증명 못 하네...
   =
+  let node_list_head::node_list_tail = node_list in
   if (index1 = 0) then (
-    let node1::tl = node_list in
-    let node2 = (L.index tl (index2 - 1)) in
-    let v1 = replace_range_at tl (index2 - 1) [node1] in
+    let node2 = (L.index node_list_tail (index2 - 1)) in
+    let v1 = replace_range_at node_list_tail (index2 - 1) [node_list_head] in
+    //assert (L.length node_list = (L.length v1) + 1);
     node2::v1
-  ) else
-  swap_core (L.tl node_list) (index1 - 1) (index2 - 1)
+  ) else (
+    node_list_head::(swap_core (L.tl node_list) (index1 - 1) (index2 - 1))
+  )
   
 let swap #t
   (node_list:N.node_list t)

@@ -30,8 +30,8 @@ let selector : (C.ancestor_list_given_selector nat nat) =
 
 let aggregator : (Common.aggregator nat) =
   fun v1 v2 -> (
-    let msg = sprintf "%d + %d \n" v1 v2 in
-    let _ = Log.debug_print_string msg in
+    //let msg = sprintf "%d + %d \n" v1 v2 in
+    //let _ = Log.debug_print_string msg in
     v1 + v2
   )
 
@@ -64,12 +64,12 @@ let walk_adder_node (node:node_t)
   =
   W.walk node selector aggregator aggregator continue_predicate []
 
-(*
+
 let _ = assert ( 
   ( walk_adder_node (create_adder_node1 ()) ) =
   ( walk_adder_node (create_adder_node2 ()) )
 )
-*)
+
 
 let main () = 
   let v1 = walk_adder_node (create_adder_node1 ()) in
