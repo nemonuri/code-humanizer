@@ -27,6 +27,28 @@ let list1_length_is_less_or_equal_than_list2_length_plus_list3_length
   (L.length list1) >= (L.length list2) + (L.length list3)
 //---|
 
+//--- proof ---
+(*
+let rec lemma_splitAt_fst_length_is_n #t (n:nat) (l:list t)
+  : Lemma 
+    (requires (n <= L.length l))  
+    (ensures (L.length (fst (L.splitAt n l)) = n))
+    (decreases n)
+  =
+  if n = 0 then (
+    assert (Nil? (fst (L.splitAt n l)))
+  ) else //if (L.length (fst (L.splitAt (n-1) l)) = (n-1)) then
+  let l_fst1 = L.length (fst (L.splitAt (n-1) l)) in
+  let l_fst2 = L.length (fst (L.splitAt n l)) in
+  assert ((L.tl (fst (L.splitAt n l))) == (fst (L.splitAt (n-1) l)));
+  assert (l_fst1 + 1 = l_fst2);
+  if (l_fst1 = (n-1)) then (
+    assert (l_fst2 = n)
+  ) else
+    lemma_splitAt_fst_length_is_n (n-1) l
+*)
+//---|
+
 //--- theory members ---
 // https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.skipwhile?view=net-9.0
 let rec skip_while #t

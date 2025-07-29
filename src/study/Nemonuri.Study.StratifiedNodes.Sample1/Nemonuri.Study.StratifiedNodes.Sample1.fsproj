@@ -1,0 +1,17 @@
+<Project Sdk="FStarLang.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>5.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fst" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2\Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2.fsproj" />
+  </ItemGroup>
+
+</Project>
