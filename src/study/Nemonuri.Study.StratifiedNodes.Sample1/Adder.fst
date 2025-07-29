@@ -30,8 +30,8 @@ let selector : (C.ancestor_list_given_selector nat nat) =
 
 let aggregator : (Common.aggregator nat) =
   fun v1 v2 -> (
-    //let msg = sprintf "%d + %d \n" v1 v2 in
-    //let _ = Log.debug_print_string msg in
+    let msg = sprintf "%d + %d \n" v1 v2 in
+    let _ = Log.debug_print_string msg in
     v1 + v2
   )
 
@@ -81,3 +81,24 @@ let main () =
 
 let _ = main ()
   
+(* 출력
+
+1 + 0
+1 + 2
+3 + 3
+3 + 3
+6 + 0
+4 + 0
+4 + 5
+6 + 9
+15
+4 + 0
+4 + 5
+9 + 0
+1 + 0
+1 + 2
+3 + 3
+9 + 6
+15
+
+*)

@@ -31,7 +31,7 @@ let insert_range #t
   (index:nat)
   (inserting_node_list:N.node_list t)
   : Pure (N.node_list t)
-    (requires (N.is_node_list_index index node_list ) || ( index = L.length node_list ))
+    (requires (N.is_node_list_index_or_length index node_list ))
     (ensures fun r -> (L.length r) = (L.length node_list) + (L.length inserting_node_list))
   =
   let (l1, l2) = Common.splitAt index node_list in
@@ -44,9 +44,11 @@ let insert_range #t
 
 let insert #t
   (node_list:N.node_list t) 
-  (index:nat{ index <= L.length node_list })
+  (index:nat)
   (inserting_node:N.node t)
-  : Tot (N.node_list t)
+  : Pure (N.node_list t)
+    (requires (N.is_node_list_index_or_length index node_list ))
+    (ensures fun r -> (L.length r) = (L.length node_list) + 1)
   =
   insert_range node_list index [inserting_node]
 
@@ -54,14 +56,16 @@ let insert #t
 let add_range #t
   (node_list:N.node_list t) 
   (inserting_node_list:N.node_list t)
-  : Tot (N.node_list t)
+  : Pure (N.node_list t) True
+    (ensures fun r -> (L.length r) = (L.length node_list) + (L.length inserting_node_list))
   =
   insert_range node_list (L.length node_list) inserting_node_list
 
 let add #t
   (node_list:N.node_list t) 
   (inserting_node:N.node t)
-  : Tot (N.node_list t)
+  : Pure (N.node_list t) True
+    (ensures fun r -> (L.length r) = (L.length node_list) + 1)
   =
   insert node_list (L.length node_list) inserting_node
 

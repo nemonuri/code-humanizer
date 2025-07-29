@@ -17,6 +17,10 @@ let is_not_node_list_index #t (index:nat) (node_list:T.node_list t)
   : Tot bool =
   (Nil? node_list) || (index >= (L.length node_list))
 
+let is_node_list_index_or_length #t (index:nat) (node_list:T.node_list t) 
+  : Tot bool =
+  (is_node_list_index index node_list ) || ( index = L.length node_list )
+
 private let _ = assert ( forall t index node_list .
   (is_node_list_index #t index node_list) \/
   (is_not_node_list_index #t index node_list)
