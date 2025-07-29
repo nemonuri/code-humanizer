@@ -2,4 +2,9 @@
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))"
           Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../')) != ''" />
+
+  <PropertyGroup Condition=" '$(DesignTimeBuild)' != 'true' and '$(ForceLogQueries)' == 'true' ">
+    <FSTAR_FLAGS>$(FSTAR_FLAGS) --force --log_queries</FSTAR_FLAGS>
+  </PropertyGroup>
+  
 </Project>

@@ -98,4 +98,11 @@ let filter (#a: Type) (f: (a -> Tot bool)) (l: list a)
 *)
 
 
+let rec splitAt (#a:Type) (n:nat) (l:list a) : Tot (list a & list a) =
+  if n = 0 then [], l
+  else
+    match l with
+    | [] -> [], l
+    | x :: xs -> let l1, l2 = splitAt (n-1) xs in x :: l1, l2
+
 //---|

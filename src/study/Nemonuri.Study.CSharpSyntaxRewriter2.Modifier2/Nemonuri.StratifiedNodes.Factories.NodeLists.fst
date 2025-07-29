@@ -32,7 +32,7 @@ let insert_range #t
   (inserting_node_list:N.node_list t)
   : Tot (N.node_list t)
   =
-  let (l1, l2) = L.splitAt index node_list in
+  let (l1, l2) = Common.splitAt index node_list in
   let l3 = L.append l1 inserting_node_list in
   L.append l3 l2
 
@@ -202,6 +202,7 @@ let swap #t
 //#pop-options 
 
 // ...assert 는 나중에 필요한 것만 선택하기...
+(*
 let swap #t
   (node_list:N.node_list t)
   (index1:N.node_list_index node_list)
@@ -229,5 +230,40 @@ let swap #t
 
     (v1 `append` [v4_head] `append` v3 `append` [v2_head] `append` v4_tail)
   )
+*)
 
+// 증명형 프로그래밍은 '재사용성' 보다, '증명 원활성' 이 더 중요하다.
+// 즉, 코드 재사용보다, 짧고 간결하여 증명하기 쉬운 코드가 더 좋다.
+
+private let rec swap_core #t
+  (node_list:N.node_list t)
+  (index1:N.node_list_index node_list)
+  (index2:N.node_list_index node_list)
+  : Pure (N.node_list t) 
+    (requires index1 < index2)
+    (ensures fun _ -> true) // ((L.length node_list) = (L.length r)) 은 증명 못 하네...
+  =
+  if (index1 = 0) then (
+    let node1::tl = node_list in
+    let node2 = (L.index tl (index2 - 1)) in
+    let v1 = replace_range_at tl (index2 - 1) [node1] in
+    node2::v1
+  ) else
+  swap_core (L.tl node_list) (index1 - 1) (index2 - 1)
+  
+let swap #t
+  (node_list:N.node_list t)
+  (index1:N.node_list_index node_list)
+  (index2:N.node_list_index node_list)
+  : Tot (N.node_list t)
+  =
+  match (index1 = index2) with
+  | true -> node_list
+  | false -> 
+  let (index_1st, index_2nd) = (
+    match (index1 < index2) with
+    | true -> (index1, index2)
+    | false -> (index2, index1)
+  ) in
+  swap_core node_list index_1st index_2nd
 //---|

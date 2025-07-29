@@ -16,7 +16,4 @@
     <ForceLogQueries Condition=" '$(ForceLogQueries)' == '' ">true</ForceLogQueries>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(DesignTimeBuild)' != 'true' and '$(ForceLogQueries)' == 'true' ">
-    <FSTAR_FLAGS>$(FSTAR_FLAGS) --force --log_queries</FSTAR_FLAGS>
-  </PropertyGroup>
 </Project>
