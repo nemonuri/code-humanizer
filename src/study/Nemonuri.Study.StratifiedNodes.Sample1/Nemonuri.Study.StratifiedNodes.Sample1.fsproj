@@ -5,6 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>5.0</LangVersion>
     <FSTAR_FLAGS>$(FSTAR_FLAGS) --include $(MSBuildThisFileDirectory)../Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2</FSTAR_FLAGS>
+    <FSTAR_FLAGS>$(FSTAR_FLAGS) --include $(MSBuildThisFileDirectory)../Nemonuri.FStar.Logging</FSTAR_FLAGS>
     <ForceLogQueries>false</ForceLogQueries>
   </PropertyGroup>
 
@@ -14,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2\Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2.fsproj" />
+    <ProjectReference Include="..\Nemonuri.FStar.Logging\Nemonuri.FStar.Logging.fsproj" />
   </ItemGroup>
 
 <!-- 

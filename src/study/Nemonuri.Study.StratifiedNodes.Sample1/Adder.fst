@@ -7,8 +7,10 @@ module C = Nemonuri.StratifiedNodes.Children
 module F = Nemonuri.StratifiedNodes.Factories
 module Common = Nemonuri.StratifiedNodes.Common
 module W = Nemonuri.StratifiedNodes.Walkers
+module Log = Nemonuri.FStar.Logging
 
 open FStar.IO
+open FStar.Printf
 
 let node_t = N.node nat
 
@@ -20,10 +22,18 @@ let is_adder_node (node:node_t)
   | false -> (N.get_value node) = 0
 
 let selector : (C.ancestor_list_given_selector nat nat) =
-  fun node ancestors -> (N.get_value node)
+  fun node ancestors -> (
+    //let msg = sprintf "selected %d \n" (N.get_value node) in
+    //let _ = Log.debug_print_string msg in
+    N.get_value node
+    )
 
 let aggregator : (Common.aggregator nat) =
-  fun v1 v2 -> v1 + v2
+  fun v1 v2 -> (
+    let msg = sprintf "%d + %d \n" v1 v2 in
+    let _ = Log.debug_print_string msg in
+    v1 + v2
+  )
 
 let continue_predicate : (N.node nat -> nat -> bool) =
   fun n t -> true

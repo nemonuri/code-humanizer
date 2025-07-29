@@ -1,0 +1,14 @@
+<Project Sdk="FStarLang.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>5.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Nemonuri.FStar.Logging.fsti" />
+    <Compile Include="Nemonuri_FStar_Logging.fs" />
+  </ItemGroup>
+
+</Project>
