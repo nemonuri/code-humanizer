@@ -528,8 +528,8 @@ private let rec prop1
   | _ -> ((L.index l i) = item) \/ (prop1 t l item (i-1))
 *)
 
-let lemma11 (t:eqtype) 
-  (l:list t) (item:t) (index:nat{index < (L.length l)})
+let lemma11 (#t:eqtype) 
+  (l:list t) (item:t)
   : Lemma 
     (requires (L.contains item l))
     (ensures (exists i. (L.index l i) = item))
@@ -566,7 +566,12 @@ let lemma10 #t
   //  (L.lemma_index_memP node_list i3))  
   introduce forall (i3:T.node_list_index node_list). 
     (L.contains (L.index node_list i3) node_list) with (L.lemma_index_memP node_list i3);
-  assume (forall n. (L.contains n node_list) ==> (exists i. (L.index node_list i) = n));
+  introduce forall (n:T.node t). (L.contains n node_list) ==> (exists i. (L.index node_list i) = n) with
+    (
+      if not (L.contains n node_list) then ()
+      else lemma11 node_list n
+    );
+  assert (forall n. (L.contains n node_list) ==> (exists i. (L.index node_list i) = n));
   assert (v2 <==> (exists i. (L.contains (L.index node_list i) node_list) /\ (predicate (L.index node_list i))));
   assert ((exists i. (L.contains (L.index node_list i) node_list) /\ (predicate (L.index node_list i))) <==> (exists n. (L.contains n node_list) /\ (predicate n)))
   // assert (v2 <==> (exists n. (L.contains n node_list) /\ (predicate n)))
