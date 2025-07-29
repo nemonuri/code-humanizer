@@ -77,7 +77,7 @@ let rec remove_first #t
   | [] -> []
   | hd::tl ->
   match (exclusion_predicate hd) with
-  | false -> tl
+  | false -> (remove_first tl exclusion_predicate)
   | true -> hd::(remove_first tl exclusion_predicate)
 
 let remove #t (node_list:N.node_list t) (node:N.node t)
