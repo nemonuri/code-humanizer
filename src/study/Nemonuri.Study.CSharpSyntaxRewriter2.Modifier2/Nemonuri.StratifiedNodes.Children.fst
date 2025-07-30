@@ -2,9 +2,14 @@ module Nemonuri.StratifiedNodes.Children
 
 module L = FStar.List.Tot
 module N = Nemonuri.StratifiedNodes.Nodes
+module T = Nemonuri.StratifiedNodes.Children.Types
 module Common = Nemonuri.StratifiedNodes.Common
 
 //--- theory members ---
+let always_continue_predicate (t:eqtype) (t2:Type)
+  : T.continue_predicate t t2 =
+  fun n v -> true
+
 let is_parent #t (parent_node:N.node t) (node:N.node t) 
   : Pure bool (requires True) (ensures fun _ -> N.node_level_is_greater_than_levels_of_nodes_in_children t)
   =
@@ -118,47 +123,72 @@ let to_parent_child_selector #t #t2 (selector:N.node t -> t2)
     (child:N.node t{is_parent parent child}) ->
     selector child
 
+private let rec lemma_empty_list_is_decrease_of_list #t
+  (l:list t)
+  : Lemma 
+    (ensures (Nil? l) \/ ((Nil #t) << l))
+    (decreases l)
+  =
+  match l with
+  | [] -> ()
+  | _::tl -> lemma_empty_list_is_decrease_of_list tl
+
+
 private let rec select_and_aggregate_from_children_core #t #t2
   (parent:N.node t) 
+  (parent_value: t2)
   (selector:ancestor_list_given_selector_for_child t t2 parent)
-  (child_parent_aggregator:Common.aggregator t2) 
-  (left_right_aggregator:Common.aggregator t2)
-  (continue_predicate:N.node t -> t2 -> bool)
+  (from_left_to_right:Common.aggregator t2)
+  (from_last_child_to_parent:Common.aggregator t2) 
+  (continue_predicate:T.continue_predicate t t2)
   (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_parent parent n) })
   (ancestors:head_given_ancestor_list parent)
   (seed:t2)
   : Tot t2 (decreases subchildren) =
   match subchildren with
-  | [] -> seed
+  | [] -> (from_last_child_to_parent seed parent_value)
   | hd::tl ->
-      let v1 = selector hd ancestors in
-      let v2 = (
-        if (N.get_children_length parent = L.length subchildren) then (
-          child_parent_aggregator v1 seed
-        ) else (
-          left_right_aggregator seed v1
-        )
-      ) in
-      if not (continue_predicate hd v2) then
-        v2
-      else (
-        select_and_aggregate_from_children_core 
-          parent selector 
-          child_parent_aggregator left_right_aggregator
-          continue_predicate tl ancestors v2
-      )
+  let v1 = selector hd ancestors in
+  let v2 = from_left_to_right seed v1 in
+  let next_subchildren = (
+    if (continue_predicate hd v2) then
+      tl
+    else (
+      let empty_list = [] in
+      lemma_empty_list_is_decrease_of_list subchildren;
+      assert (empty_list << subchildren);
+      empty_list
+    )
+  ) in (
+    select_and_aggregate_from_children_core 
+    parent parent_value selector 
+    from_left_to_right
+    from_last_child_to_parent
+    continue_predicate next_subchildren ancestors v2
+  )
 
 let select_and_aggregate_from_children #t #t2
   (parent:N.node t) 
+  (parent_value: t2)
   (selector:ancestor_list_given_selector_for_child t t2 parent)
-  (child_parent_aggregator:Common.aggregator t2) 
-  (left_right_aggregator:Common.aggregator t2)
-  (continue_predicate:N.node t -> t2 -> bool)
+  (to_first_child_from_parent:Common.aggregator t2) 
+  (from_left_to_right:Common.aggregator t2)
+  (from_last_child_to_parent:Common.aggregator t2) 
+  (continue_predicate:T.continue_predicate t t2)
   (ancestors:head_given_ancestor_list parent)
-  (seed:t2)
   : Tot t2 =
+  let children = (N.get_children parent) in
+  match children with
+  | [] -> parent_value
+  | children_head::children_tail ->
+  let head_child_value = selector children_head ancestors in
+  let seed = to_first_child_from_parent head_child_value parent_value in
   select_and_aggregate_from_children_core 
-    parent selector 
-    child_parent_aggregator left_right_aggregator 
-    continue_predicate (N.get_children parent) ancestors seed
+    parent parent_value selector 
+    from_left_to_right
+    from_last_child_to_parent
+    continue_predicate children_tail ancestors
+    seed
 //---|
+
+include Nemonuri.StratifiedNodes.Children.Types
