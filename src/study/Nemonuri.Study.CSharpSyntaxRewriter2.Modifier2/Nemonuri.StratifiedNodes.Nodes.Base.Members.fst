@@ -5,7 +5,6 @@ module I = Nemonuri.StratifiedNodes.Internals
 module T = Nemonuri.StratifiedNodes.Nodes.Base.Types
 module Math = FStar.Math.Lib
 module Common = Nemonuri.StratifiedNodes.Common
-open FStar.Classical.Sugar
 
 //--- (T.node_list_index t) or (T.option_node_list_index t) members ---
 
@@ -648,4 +647,9 @@ let try_get_index #t
   =
   assert 
 *)
+ 
+let value_selector (t:eqtype) (node:T.node t)
+  : Tot t =
+  (get_value node)
+  
 //---

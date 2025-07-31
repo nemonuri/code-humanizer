@@ -64,8 +64,6 @@ let create_node (#t:eqtype) (value:t) (children:N.node_list t)
   | [] -> node
   | _ -> replace_children node children
 
-
-
 //---|
 
 

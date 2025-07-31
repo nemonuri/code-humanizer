@@ -18,9 +18,6 @@ let get_children #t (node:T.node t)
 let get_children_length #t (node:T.node  t) 
   : Pure nat (requires True) (ensures fun r -> r = L.length (get_children node)) = 
   I.get_length node.internal.children
-//---|
-
-//--- private theory members ---
 
 let get_child_at #t (node:T.node t) (index:nat)
   : Pure (T.node  t) 

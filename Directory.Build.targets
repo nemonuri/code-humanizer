@@ -1,4 +1,4 @@
-<Project>
+<Project TreatAsLocal="FStarHintLocation">
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))"
           Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../')) != ''" />
@@ -6,5 +6,11 @@
   <PropertyGroup Condition=" '$(DesignTimeBuild)' != 'true' and '$(ForceLogQueries)' == 'true' ">
     <FSTAR_FLAGS>$(FSTAR_FLAGS) --force --log_queries</FSTAR_FLAGS>
   </PropertyGroup>
-  
+
+  <PropertyGroup Condition=" '$(DesignTimeBuild)' != 'true' and '$(UseHints)' == 'true' ">
+    <FSTAR_FLAGS>$(FSTAR_FLAGS) --use_hints --detail_hint_replay --record_hints</FSTAR_FLAGS>
+    <FStarHintLocation>$(IntermediateOutputPath)hint\</FStarHintLocation>
+    <FSTAR_FLAGS>$(FSTAR_FLAGS) --hint_dir $(FStarHintLocation)</FSTAR_FLAGS>
+  </PropertyGroup>
+
 </Project>

@@ -84,6 +84,13 @@ let node_list_is_ancestor_list #t (node_list:N.node_list t) : prop =
     )
   )
 *)
+
+let node_list_is_subchildren_of_node #t
+  (node_list:N.node_list t)
+  (node:N.node t) 
+  : prop =
+  (forall (n:N.node t). (L.contains n node_list) ==> (is_parent node n))
+
 //---|
 
 //--- type definitions ---
@@ -123,6 +130,12 @@ let to_parent_child_selector #t #t2 (selector:N.node t -> t2)
     (child:N.node t{is_parent parent child}) ->
     selector child
 
+let to_ancestor_list_given_selector (t:eqtype) (t2:Type)
+  (selector:N.node t -> t2)
+  : Tot (ancestor_list_given_selector t t2) =
+  fun node ancestors -> (selector node)
+
+
 private let rec lemma_empty_list_is_decrease_of_list #t
   (l:list t)
   : Lemma 
@@ -141,7 +154,7 @@ private let rec select_and_aggregate_from_children_core #t #t2
   (from_left_to_right:Common.aggregator t2)
   (from_last_child_to_parent:Common.aggregator t2) 
   (continue_predicate:T.continue_predicate t t2)
-  (subchildren:N.node_list t{ forall (n:N.node t). (L.contains n subchildren) ==> (is_parent parent n) })
+  (subchildren:N.node_list t{ node_list_is_subchildren_of_node subchildren parent })
   (ancestors:head_given_ancestor_list parent)
   (seed:t2)
   : Tot t2 (decreases subchildren) =
