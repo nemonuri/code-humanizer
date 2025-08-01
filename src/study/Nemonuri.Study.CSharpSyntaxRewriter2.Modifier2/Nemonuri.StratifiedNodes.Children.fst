@@ -4,6 +4,7 @@ module L = FStar.List.Tot
 module N = Nemonuri.StratifiedNodes.Nodes
 module T = Nemonuri.StratifiedNodes.Children.Types
 module Common = Nemonuri.StratifiedNodes.Common
+module O = FStar.Pervasives.Native
 
 //--- theory members ---
 let always_continue_predicate (t:eqtype) (t2:Type)
@@ -211,15 +212,15 @@ let select_and_aggregate_from_children #t #t2
 
 let rec select_and_aggregate_from_children #t #t2
   (parent:N.node t) 
-  //(parent_selector:ancestor_list_given_selector t t2)
   (selector:ancestor_list_given_selector t t2)
+  (selector_for_child:ancestor_list_given_selector_for_child t t2 parent)
   (to_first_child_from_parent:Common.aggregator t2) 
   (from_left_to_right:Common.aggregator t2)
   (from_last_child_to_parent:Common.aggregator t2) 
   (continue_predicate:T.continue_predicate t t2)
   (ancestors:next_head_given_ancestor_list parent)
   (subchildren:N.node_list t)
-  (aggregating_from_parent_or_aggregated_by_depth_first: option t2)
+  (maybe_aggregated_by_depth_first: option t2)
   : Pure t2
     (requires 
       (node_list_is_subchildren_of_node subchildren parent) /\
@@ -227,51 +228,32 @@ let rec select_and_aggregate_from_children #t #t2
        (subchildren << (N.get_children parent))
       ) /\
       ((subchildren = (N.get_children parent)) <==>
-       (None? aggregating_from_parent_or_aggregated_by_depth_first)
-      )
+       (None? maybe_aggregated_by_depth_first)
+      ) (*/\
+      (selector_for_child == 
+       (to_ancestor_list_given_selector_for_child t t2 parent selector)
+      ) *)
     )
     (ensures fun r -> true)
     (decreases subchildren)
   =
-  let agg = aggregating_from_parent_or_aggregated_by_depth_first in
-  let selector_for_child : (ancestor_list_given_selector_for_child t t2 parent) = (
-    to_ancestor_list_given_selector_for_child t t2 parent selector
-  ) in
   let children = (N.get_children parent) in
-  match subchildren = children with
-  | true -> (
-    match subchildren with
-    | [] -> (selector parent ancestors)
-    | children_head::tl ->
-    let current_ancestors = concatenate_as_ancestor_list parent ancestors in
-    let head_child_value = selector_for_child children_head current_ancestors in
-    let aggregated = to_first_child_from_parent head_child_value (selector parent ancestors) in
-    let next_subchildren = (
-      if (continue_predicate children_head aggregated) then
-        tl
-      else (
-        let empty_list = [] in
-        lemma_empty_list_is_decrease_of_list subchildren;
-        assert (empty_list << subchildren);
-        empty_list
-      )
-    ) in
-    select_and_aggregate_from_children
-      parent selector 
-      to_first_child_from_parent
-      from_left_to_right 
-      from_last_child_to_parent 
-      continue_predicate
-      ancestors next_subchildren (Some aggregated)
+  let current_ancestors = concatenate_as_ancestor_list parent ancestors in
+  let looped = (subchildren <> children) in
+  match subchildren with
+  | [] -> (
+    let parent_value = (selector parent ancestors) in 
+    match looped with
+    | false -> parent_value
+    | true -> (from_last_child_to_parent (O.Some?.v maybe_aggregated_by_depth_first) parent_value) 
   )
-  | false -> (
-    let Some agg_some = agg in
-    match subchildren with
-    | [] -> (from_last_child_to_parent agg_some (selector parent ancestors))
-    | hd::tl ->
-    let current_ancestors = concatenate_as_ancestor_list parent ancestors in
-    let v1 = selector_for_child hd current_ancestors in
-    let aggregated = from_left_to_right agg_some v1 in
+  | hd::tl -> (
+    let head_child_value = selector_for_child hd current_ancestors in
+    let aggregated = (
+      match looped with
+      | false -> to_first_child_from_parent head_child_value (selector parent ancestors)
+      | true -> from_left_to_right (O.Some?.v maybe_aggregated_by_depth_first) head_child_value
+    ) in 
     let next_subchildren = (
       if (continue_predicate hd aggregated) then
         tl
@@ -281,15 +263,16 @@ let rec select_and_aggregate_from_children #t #t2
         assert (empty_list << subchildren);
         empty_list
       )
-    ) in
+    ) in 
     select_and_aggregate_from_children
-      parent selector 
+      parent selector selector_for_child
       to_first_child_from_parent
       from_left_to_right 
       from_last_child_to_parent 
       continue_predicate
       ancestors next_subchildren (Some aggregated)
   )
+
 
 (*
   let children = (N.get_children parent) in

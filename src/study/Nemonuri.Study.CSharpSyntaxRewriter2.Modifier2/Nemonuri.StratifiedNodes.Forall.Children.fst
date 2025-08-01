@@ -24,6 +24,7 @@ let for_all_select_and_aggregate_from_children_internal #t (parent:N.node t)
   (node_predicate:N.node t -> Tot bool)
 *)
 
+(*
 let for_all_select_and_aggregate_from_children #t
   (parent:N.node t) 
   (node_predicate:N.node t -> Tot bool)
@@ -41,7 +42,7 @@ let for_all_select_and_aggregate_from_children #t
     (Common.aggregated_identity bool)
     (for_all_continue_predicate t)
     ancestors
-
+*)
 //---|
 
 //--- propositions ---

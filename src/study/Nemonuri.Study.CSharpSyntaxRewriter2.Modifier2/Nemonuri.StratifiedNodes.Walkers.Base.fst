@@ -23,21 +23,25 @@ let rec walk #t #t2
   if (N.is_leaf node) || (not (continue_predicate node v1)) then
     v1
   else
-    let next_ancestors = C.concatenate_as_ancestor_list node ancestors in
     let child_selector : (C.ancestor_list_given_selector_for_child t t2 node) = (
       fun (child:N.node t{C.is_parent node child}) 
           (ancestors1:C.next_head_given_ancestor_list child) -> (
-      walk child selector 
-      to_first_child_from_parent 
-      from_left_to_right 
-      from_last_child_to_parent
-      continue_predicate ancestors1
+      walk 
+        child selector 
+        to_first_child_from_parent 
+        from_left_to_right 
+        from_last_child_to_parent
+        continue_predicate ancestors1
     )) in
     C.select_and_aggregate_from_children
-      node v1
+      node 
+      selector
       child_selector
       to_first_child_from_parent 
       from_left_to_right 
       from_last_child_to_parent
-      continue_predicate next_ancestors
+      continue_predicate 
+      ancestors
+      (N.get_children node)
+      (None #t2)
 //---|
