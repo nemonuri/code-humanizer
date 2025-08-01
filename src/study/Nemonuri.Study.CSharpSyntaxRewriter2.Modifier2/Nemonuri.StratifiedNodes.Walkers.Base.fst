@@ -33,7 +33,7 @@ let rec walk #t #t2
         from_last_child_to_parent
         continue_predicate ancestors1
     )) in
-    C.select_and_aggregate_from_children
+    C.aggregate_children_overload
       node 
       selector
       child_selector
@@ -42,6 +42,4 @@ let rec walk #t #t2
       from_last_child_to_parent
       continue_predicate 
       ancestors
-      (N.get_children node)
-      (None #t2)
 //---|

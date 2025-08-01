@@ -143,17 +143,33 @@ private let rec lemma_empty_list_is_decrease_of_list #t
   | [] -> ()
   | _::tl -> lemma_empty_list_is_decrease_of_list tl
 
-let rec select_and_aggregate_from_children #t #t2
+let aggregate_or_fallback #t
+  (aggregator:Common.aggregator t)
+  (maybe_aggregated: option t) (aggregating: t) (fallback_factory: t -> t)
+  : Tot t
+  =
+  match maybe_aggregated with
+  | None -> fallback_factory aggregating
+  | Some v -> (aggregator v aggregating)
+
+let aggregate_or_identity #t
+  (aggregator:Common.aggregator t)
+  (maybe_aggregated: option t) (aggregating: t)
+  : Tot t
+  =
+  aggregate_or_fallback aggregator maybe_aggregated aggregating (fun v -> v)
+
+let rec aggregate_children #t #t2
   (parent:N.node t) 
-  (selector:ancestor_list_given_selector t t2)
+  (parent_value:t2)
   (selector_for_child:ancestor_list_given_selector_for_child t t2 parent)
   (to_first_child_from_parent:Common.aggregator t2) 
   (from_left_to_right:Common.aggregator t2)
   (from_last_child_to_parent:Common.aggregator t2) 
   (continue_predicate:T.continue_predicate t t2)
-  (ancestors:next_head_given_ancestor_list parent)
+  (current_ancestors:head_given_ancestor_list parent)
   (subchildren:N.node_list t)
-  (maybe_aggregated_by_depth_first: option t2)
+  (maybe_aggregated: option t2)
   : Pure t2
     (requires 
       (node_list_is_subchildren_of_node subchildren parent) /\
@@ -161,29 +177,19 @@ let rec select_and_aggregate_from_children #t #t2
        (subchildren << (N.get_children parent))
       ) /\
       ((subchildren = (N.get_children parent)) <==>
-       (None? maybe_aggregated_by_depth_first)
+       (None? maybe_aggregated)
       )
     )
     (ensures fun r -> true)
     (decreases subchildren)
   =
   let children = (N.get_children parent) in
-  let current_ancestors = concatenate_as_ancestor_list parent ancestors in
-  let looped = (subchildren <> children) in
   match subchildren with
-  | [] -> (
-    let parent_value = (selector parent ancestors) in 
-    match looped with
-    | false -> parent_value
-    | true -> (from_last_child_to_parent (O.Some?.v maybe_aggregated_by_depth_first) parent_value) 
-  )
+  | [] -> aggregate_or_identity from_last_child_to_parent maybe_aggregated parent_value
   | hd::tl -> (
     let head_child_value = selector_for_child hd current_ancestors in
-    let aggregated = (
-      match looped with
-      | false -> to_first_child_from_parent head_child_value (selector parent ancestors)
-      | true -> from_left_to_right (O.Some?.v maybe_aggregated_by_depth_first) head_child_value
-    ) in 
+    let fallback_factory:(t2 -> t2) = (fun v -> (to_first_child_from_parent v parent_value)) in
+    let aggregated = aggregate_or_fallback from_left_to_right maybe_aggregated head_child_value fallback_factory in 
     let next_subchildren = (
       if (continue_predicate hd aggregated) then
         tl
@@ -194,14 +200,40 @@ let rec select_and_aggregate_from_children #t #t2
         empty_list
       )
     ) in 
-    select_and_aggregate_from_children
-      parent selector selector_for_child
+    aggregate_children
+      parent parent_value selector_for_child
       to_first_child_from_parent
       from_left_to_right 
       from_last_child_to_parent 
       continue_predicate
-      ancestors next_subchildren (Some aggregated)
+      current_ancestors next_subchildren (Some aggregated)
   )
+
+let aggregate_children_overload #t #t2
+  (parent:N.node t) 
+  (selector:ancestor_list_given_selector t t2)
+  (selector_for_child:ancestor_list_given_selector_for_child t t2 parent)
+  (to_first_child_from_parent:Common.aggregator t2) 
+  (from_left_to_right:Common.aggregator t2)
+  (from_last_child_to_parent:Common.aggregator t2) 
+  (continue_predicate:T.continue_predicate t t2)
+  (ancestors:next_head_given_ancestor_list parent)
+  : Pure t2 True
+    (ensures fun r -> true)
+  =
+  let parent_value = (selector parent ancestors) in
+  let current_ancestors = (concatenate_as_ancestor_list parent ancestors) in
+  let children = (N.get_children parent) in
+  aggregate_children
+    parent parent_value selector_for_child
+    to_first_child_from_parent
+    from_left_to_right
+    from_last_child_to_parent
+    continue_predicate
+    current_ancestors 
+    children
+    None
+
 
 //---|
 

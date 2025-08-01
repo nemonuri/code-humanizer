@@ -31,15 +31,13 @@ let for_all_root_and_children #t
   let selector_for_child : (C.ancestor_list_given_selector_for_child t bool root) = (
     C.to_ancestor_list_given_selector_for_child t bool root selector
   ) in
-  C.select_and_aggregate_from_children 
+  C.aggregate_children_overload 
     root selector selector_for_child
     for_all_aggregator
     for_all_aggregator
     (Common.aggregated_identity bool)
     (for_all_continue_predicate t)
     []
-    (N.get_children root)
-    None
 
 //--- propositions ---
 
@@ -76,6 +74,7 @@ let lemma1 #t
   =
   ()
 
+(*
 #push-options "--query_stats"
 let lemma2 #t
   (root:N.node t) 
@@ -94,7 +93,7 @@ let lemma2 #t
   =
   ()
 #pop-options 
-
+*)
 
 (*
 let lemma4 #t
