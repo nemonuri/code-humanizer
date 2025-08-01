@@ -74,26 +74,6 @@ let test_is_parent1 = assert (
     (is_parent parent_node node) ==> (parent_node.level > node.level))
 //---|
 
-//--- propositions ---
-(*
-let node_list_is_ancestor_list #t (node_list:N.node_list t) : prop =
-  forall (n:N.node t).
-  let skipped = Common.skip_while node_list (Prims.op_Equality n) in (
-    (L.length skipped >= 2) ==> (
-      let hd::tl = skipped in
-      is_parent hd (L.hd tl)
-    )
-  )
-*)
-
-let node_list_is_subchildren_of_node #t
-  (node_list:N.node_list t)
-  (node:N.node t) 
-  : prop =
-  (forall (n:N.node t). (L.contains n node_list) ==> (is_parent node n))
-
-//---|
-
 //--- type definitions ---
 let ancestor_list (t:eqtype) = l:N.node_list t{ is_ancestor_list l }
 
@@ -121,6 +101,16 @@ let ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) =
   (child:N.node t{is_parent parent child}) ->
   (ancestors:next_head_given_ancestor_list child) ->
   Tot t2
+//---|
+
+//--- propositions ---
+
+let node_list_is_subchildren_of_node #t
+  (node_list:N.node_list t)
+  (node:N.node t) 
+  : prop =
+  (forall (n:N.node t). (L.contains n node_list) ==> (is_parent node n))
+
 //---|
 
 //--- theory members 2 ---
@@ -212,6 +202,67 @@ let rec select_and_aggregate_from_children #t #t2
       continue_predicate
       ancestors next_subchildren (Some aggregated)
   )
+
+//---|
+
+//--- propositions 2 ---
+
+let result_of_to_ancestor_list_given_selector_is_extensionality_equal_to_source
+  (t:eqtype) (t2:Type)
+  (node:N.node t)
+  (source_selector:N.node t -> t2)
+  : prop =
+  forall (ancestors:next_head_given_ancestor_list node). (
+    let selector2 = ( to_ancestor_list_given_selector t t2 source_selector ) in
+    ( (source_selector node) == (selector2 node ancestors) )
+  )
+
+let result_of_to_ancestor_list_given_selector_for_child_is_extensionality_equal_to_source
+  (t:eqtype) (t2:Type)
+  (parent:N.node t)
+  (source_selector:ancestor_list_given_selector t t2)
+  : prop =
+  forall 
+  (child:N.node t)
+  (ancestors_of_parent:next_head_given_ancestor_list parent).
+  ( is_parent parent child ) ==> (
+    let selector2 = ( to_ancestor_list_given_selector_for_child t t2 parent source_selector ) in
+    let ancestors = ( concatenate_as_ancestor_list parent ancestors_of_parent ) in
+    ( (source_selector child ancestors) == (selector2 child ancestors) )
+  )
+
+//---|
+
+//--- proof 2 ---
+
+let lemma_result_of_to_ancestor_list_given_selector_is_extensionality_equal_to_source #t
+  (t2:Type)
+  (node:N.node t) (source_selector:N.node t -> t2)
+  : Lemma 
+    (ensures result_of_to_ancestor_list_given_selector_is_extensionality_equal_to_source 
+      t t2 node source_selector )
+  =
+  ()
+
+let lemma_result_of_to_ancestor_list_given_selector_for_child_is_extensionality_equal_to_source #t
+  (t2:Type)
+  (parent:N.node t)
+  (source_selector:ancestor_list_given_selector t t2)
+  : Lemma
+    (ensures result_of_to_ancestor_list_given_selector_for_child_is_extensionality_equal_to_source
+      t t2 parent source_selector )
+  =
+  ()
+
+private let lemma3 #t
+  (t2:Type)
+  (node:N.node t)
+  (source_selector:N.node t -> t2)
+  : Lemma
+    (ensures result_of_to_ancestor_list_given_selector_for_child_is_extensionality_equal_to_source
+      t t2 node (to_ancestor_list_given_selector t t2 source_selector) )
+  =
+  ()
 
 //---|
 
