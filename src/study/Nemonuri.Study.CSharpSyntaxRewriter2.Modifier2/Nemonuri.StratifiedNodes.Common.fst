@@ -128,4 +128,14 @@ let rec lemma_splitAt_snd_length (#a:Type) (n:nat) (l:list a) :
   | _, [] -> ()
   | _, _ :: l' -> lemma_splitAt_snd_length (n - 1) l'
 
+
+let rec ends_with (#t:eqtype)
+  (l:list t) (sub_l:list t)
+  : Tot bool (decreases l) =
+  let (len, sub_len) = (L.length l, L.length sub_l) in
+  if len < sub_len then false
+  else if len = sub_len then (l = sub_l)
+  else (ends_with (L.tl l) sub_l)
+
+
 //---|

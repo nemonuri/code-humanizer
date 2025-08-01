@@ -174,7 +174,7 @@ let aggregate_or_get_fallback_override #t
   aggregate_or_get_fallback aggregator maybe_aggregated aggregating_or_fallback_aggregated fallback_factory
 *)
 
-let aggregate_first_child_and_parent_when_begin_aggregate_children #t #t2
+let aggregate_first_child_and_parent #t #t2
   (parent: N.node t)
   (parent_value: t2)
   (selector_for_child: ancestor_list_given_selector_for_child t t2 parent)
@@ -191,6 +191,24 @@ let aggregate_first_child_and_parent_when_begin_aggregate_children #t #t2
   let first_child_value = selector_for_child first_child ancestors in
   aggregator first_child_value parent_value
 
+let aggregate_left_to_right #t #t2
+  (parent: N.node t)
+  (prev_aggregated: t2)
+  (selector_for_child: ancestor_list_given_selector_for_child t t2 parent)
+  (aggregator:Common.aggregator t2) 
+  (successor_child: N.node t)
+  (ancestors: next_head_given_ancestor_list successor_child)
+  : Pure t2
+    (requires
+      (N.is_branch parent) /\
+      ( let mi = N.try_get_index (N.get_children parent) successor_child in
+        ((N.to_int mi) > 0)
+      )
+    )
+    (ensures fun r -> true)
+  =
+  let successor_child_value = selector_for_child successor_child ancestors in
+  aggregator prev_aggregated successor_child_value
 
 let rec aggregate_children #t #t2
   (parent:N.node t) 
@@ -206,9 +224,10 @@ let rec aggregate_children #t #t2
   : Pure t2
     (requires 
       (node_list_is_subchildren_of_node subchildren parent) /\
-      ((subchildren = (N.get_children parent)) \/
-       (subchildren << (N.get_children parent))
-      ) /\
+      ( (subchildren = (N.get_children parent)) \/ (subchildren << (N.get_children parent)) ) /\
+      ( (Cons? subchildren) ==> (
+        (((N.get_children_length parent) - (L.length subchildren)) >= 0) /\
+        ( (N.get_child_at parent ((N.get_children_length parent) - (L.length subchildren))) = (L.hd subchildren) )) ) /\
       ((subchildren = (N.get_children parent)) <==>
        (None? maybe_aggregated)
       )
@@ -222,9 +241,18 @@ let rec aggregate_children #t #t2
   | hd::tl -> (
     let aggregated = (
       match maybe_aggregated with
-      | None -> aggregate_first_child_and_parent_when_begin_aggregate_children 
-                  parent parent_value selector_for_child to_first_child_from_parent hd current_ancestors
-      | Some prev_aggregated -> from_left_to_right prev_aggregated (selector_for_child hd current_ancestors)
+      | None -> 
+          assert (subchildren = (N.get_children parent));
+          aggregate_first_child_and_parent 
+            parent parent_value selector_for_child to_first_child_from_parent hd current_ancestors
+      | Some prev_aggregated -> 
+          assert (subchildren << (N.get_children parent));
+          assert (((N.get_children_length parent) - (L.length subchildren)) > 0 );
+          assert (hd <> (N.get_child_at parent 0));
+          aggregate_left_to_right
+            parent prev_aggregated selector_for_child from_left_to_right hd current_ancestors
+                                 
+      //from_left_to_right prev_aggregated (selector_for_child hd current_ancestors)
     ) in
     //let head_child_value = selector_for_child hd current_ancestors in
     //let fallback_factory:(t2 -> t2) = (fun v -> (to_first_child_from_parent v parent_value)) in
