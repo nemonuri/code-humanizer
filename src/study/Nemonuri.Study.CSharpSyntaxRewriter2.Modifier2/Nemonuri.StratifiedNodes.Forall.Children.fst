@@ -7,19 +7,9 @@ module Common = Nemonuri.StratifiedNodes.Common
 module D = Nemonuri.StratifiedNodes.Decreasers
 module F = Nemonuri.StratifiedNodes.Factories
 open FStar.FunctionalExtensionality
-
+open Nemonuri.StratifiedNodes.Forall.Aggregating
 
 //--- theory members ---
-
-let for_all_aggregator
-  : (Common.aggregator bool) =
-  fun v1 v2 -> (v1 && v2)
-
-let for_all_continue_predicate (t:eqtype)
-  : (C.continue_predicate t bool) 
-  =
-  fun n v -> v
-
 
 let for_all_root_and_children #t
   (root:N.node t) 
@@ -38,6 +28,8 @@ let for_all_root_and_children #t
     (Common.aggregated_identity bool)
     (for_all_continue_predicate t)
     []
+
+//---|
 
 //--- propositions ---
 

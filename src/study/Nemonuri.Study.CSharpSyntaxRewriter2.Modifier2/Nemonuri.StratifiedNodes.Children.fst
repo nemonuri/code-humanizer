@@ -143,7 +143,8 @@ private let rec lemma_empty_list_is_decrease_of_list #t
   | [] -> ()
   | _::tl -> lemma_empty_list_is_decrease_of_list tl
 
-let aggregate_or_fallback #t
+(*
+let aggregate_or_get_fallback #t
   (aggregator:Common.aggregator t)
   (maybe_aggregated: option t) (aggregating: t) (fallback_factory: t -> t)
   : Tot t
@@ -151,13 +152,45 @@ let aggregate_or_fallback #t
   match maybe_aggregated with
   | None -> fallback_factory aggregating
   | Some v -> (aggregator v aggregating)
+*)
 
-let aggregate_or_identity #t
+let aggregate_or_get_identity #t
   (aggregator:Common.aggregator t)
   (maybe_aggregated: option t) (aggregating: t)
   : Tot t
   =
-  aggregate_or_fallback aggregator maybe_aggregated aggregating (fun v -> v)
+  match maybe_aggregated with
+  | None -> aggregating
+  | Some v -> (aggregator v aggregating)
+  //aggregate_or_get_fallback aggregator maybe_aggregated aggregating (fun v -> v)
+
+(*
+let aggregate_or_get_fallback_override #t
+  (aggregator:Common.aggregator t)
+  (maybe_aggregated: option t) (aggregating_or_fallback_aggregated: t)
+  (fallback_aggregator:Common.aggregator t) (fallback_aggregating: t)
+  : Tot t =
+  let fallback_factory:(t -> t) = (fun v -> (fallback_aggregator v fallback_aggregating)) in
+  aggregate_or_get_fallback aggregator maybe_aggregated aggregating_or_fallback_aggregated fallback_factory
+*)
+
+let aggregate_first_child_and_parent_when_begin_aggregate_children #t #t2
+  (parent: N.node t)
+  (parent_value: t2)
+  (selector_for_child: ancestor_list_given_selector_for_child t t2 parent)
+  (aggregator:Common.aggregator t2) 
+  (first_child: N.node t)
+  (ancestors: next_head_given_ancestor_list first_child)
+  : Pure t2
+    (requires 
+      (N.is_branch parent) /\
+      ((N.get_child_at parent 0) = first_child)
+    )
+    (ensures fun r -> true)
+  =
+  let first_child_value = selector_for_child first_child ancestors in
+  aggregator first_child_value parent_value
+
 
 let rec aggregate_children #t #t2
   (parent:N.node t) 
@@ -185,11 +218,18 @@ let rec aggregate_children #t #t2
   =
   let children = (N.get_children parent) in
   match subchildren with
-  | [] -> aggregate_or_identity from_last_child_to_parent maybe_aggregated parent_value
+  | [] -> aggregate_or_get_identity from_last_child_to_parent maybe_aggregated parent_value
   | hd::tl -> (
-    let head_child_value = selector_for_child hd current_ancestors in
-    let fallback_factory:(t2 -> t2) = (fun v -> (to_first_child_from_parent v parent_value)) in
-    let aggregated = aggregate_or_fallback from_left_to_right maybe_aggregated head_child_value fallback_factory in 
+    let aggregated = (
+      match maybe_aggregated with
+      | None -> aggregate_first_child_and_parent_when_begin_aggregate_children 
+                  parent parent_value selector_for_child to_first_child_from_parent hd current_ancestors
+      | Some prev_aggregated -> from_left_to_right prev_aggregated (selector_for_child hd current_ancestors)
+    ) in
+    //let head_child_value = selector_for_child hd current_ancestors in
+    //let fallback_factory:(t2 -> t2) = (fun v -> (to_first_child_from_parent v parent_value)) in
+    //let aggregated = aggregate_or_get_fallback_override from_left_to_right maybe_aggregated head_child_value to_first_child_from_parent parent_value in
+    //aggregate_or_get_fallback from_left_to_right maybe_aggregated head_child_value fallback_factory in 
     let next_subchildren = (
       if (continue_predicate hd aggregated) then
         tl
@@ -293,6 +333,17 @@ private let lemma3 #t
   : Lemma
     (ensures result_of_to_ancestor_list_given_selector_for_child_is_extensionality_equal_to_source
       t t2 node (to_ancestor_list_given_selector t t2 source_selector) )
+  =
+  ()
+
+let lemma_maybe_aggregated_is_none_entails_result_of_aggregate_or_get_identity_is_identity #t
+  (aggregator:Common.aggregator t)
+  (maybe_aggregated: option t) (aggregating: t)
+  : Lemma (requires (None? maybe_aggregated))
+    (ensures 
+      (aggregate_or_get_identity aggregator maybe_aggregated aggregating) ==
+      (aggregating)
+    )
   =
   ()
 

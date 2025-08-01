@@ -42,12 +42,18 @@ let prepend_child_inverse #t
   (prepended, prev_node)
 
 let get_prepended_node #t
-  (node:N.node t{ N.is_branch node })
+  (node:N.node t)
+  : Pure (N.node t)
+    (requires N.is_branch node)
+    (ensures fun r -> (N.get_child_at node 0) = r)
   =
   fst (prepend_child_inverse node)
 
 let get_previous_node #t
-  (node:N.node t{ N.is_branch node })
+  (node:N.node t)
+  : Pure (N.node t)
+    (requires N.is_branch node)
+    (ensures fun r -> true)
   =
   snd (prepend_child_inverse node)
 

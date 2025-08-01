@@ -35,6 +35,7 @@
 
     <Compile Include="Nemonuri.StratifiedNodes.Decreasers.fst" />
 
+    <Compile Include="Nemonuri.StratifiedNodes.Forall.Aggregating.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Forall.Children.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Forall.Walkers.fst" />
   </ItemGroup>
