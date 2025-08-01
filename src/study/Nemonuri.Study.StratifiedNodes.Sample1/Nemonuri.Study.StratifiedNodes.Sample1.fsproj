@@ -6,6 +6,7 @@
     <LangVersion>5.0</LangVersion>
     <FSTAR_FLAGS>$(FSTAR_FLAGS) --include $(MSBuildThisFileDirectory)../Nemonuri.Study.CSharpSyntaxRewriter2.Modifier2</FSTAR_FLAGS>
     <FSTAR_FLAGS>$(FSTAR_FLAGS) --include $(MSBuildThisFileDirectory)../Nemonuri.FStar.Logging</FSTAR_FLAGS>
+    <UseHints>true</UseHints>
     <ForceLogQueries>false</ForceLogQueries>
   </PropertyGroup>
 
