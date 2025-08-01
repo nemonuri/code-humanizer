@@ -135,6 +135,12 @@ let to_ancestor_list_given_selector (t:eqtype) (t2:Type)
   : Tot (ancestor_list_given_selector t t2) =
   fun node ancestors -> (selector node)
 
+let to_ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) 
+  (selector:ancestor_list_given_selector t t2)
+  : Tot (ancestor_list_given_selector_for_child t t2 parent)
+  =
+  fun child ancestors -> (selector child ancestors)
+
 
 private let rec lemma_empty_list_is_decrease_of_list #t
   (l:list t)
@@ -146,9 +152,8 @@ private let rec lemma_empty_list_is_decrease_of_list #t
   | [] -> ()
   | _::tl -> lemma_empty_list_is_decrease_of_list tl
 
-
-private let rec select_and_aggregate_from_children_core #t #t2
-  (parent:N.node t) 
+(*
+let rec select_and_aggregate_from_children_internal #t #t2 (parent:N.node t) 
   (parent_value: t2)
   (selector:ancestor_list_given_selector_for_child t t2 parent)
   (from_left_to_right:Common.aggregator t2)
@@ -173,8 +178,8 @@ private let rec select_and_aggregate_from_children_core #t #t2
       empty_list
     )
   ) in (
-    select_and_aggregate_from_children_core 
-    parent parent_value selector 
+    select_and_aggregate_from_children_internal parent
+    parent_value selector 
     from_left_to_right
     from_last_child_to_parent
     continue_predicate next_subchildren ancestors v2
@@ -196,12 +201,111 @@ let select_and_aggregate_from_children #t #t2
   | children_head::children_tail ->
   let head_child_value = selector children_head ancestors in
   let seed = to_first_child_from_parent head_child_value parent_value in
-  select_and_aggregate_from_children_core 
+  select_and_aggregate_from_children_internal 
     parent parent_value selector 
     from_left_to_right
     from_last_child_to_parent
     continue_predicate children_tail ancestors
     seed
+*)
+
+let rec select_and_aggregate_from_children #t #t2
+  (parent:N.node t) 
+  //(parent_selector:ancestor_list_given_selector t t2)
+  (selector:ancestor_list_given_selector t t2)
+  (to_first_child_from_parent:Common.aggregator t2) 
+  (from_left_to_right:Common.aggregator t2)
+  (from_last_child_to_parent:Common.aggregator t2) 
+  (continue_predicate:T.continue_predicate t t2)
+  (ancestors:next_head_given_ancestor_list parent)
+  (subchildren:N.node_list t)
+  (aggregating_from_parent_or_aggregated_by_depth_first: option t2)
+  : Pure t2
+    (requires 
+      (node_list_is_subchildren_of_node subchildren parent) /\
+      ((subchildren = (N.get_children parent)) \/
+       (subchildren << (N.get_children parent))
+      ) /\
+      ((subchildren = (N.get_children parent)) <==>
+       (None? aggregating_from_parent_or_aggregated_by_depth_first)
+      )
+    )
+    (ensures fun r -> true)
+    (decreases subchildren)
+  =
+  let agg = aggregating_from_parent_or_aggregated_by_depth_first in
+  let selector_for_child : (ancestor_list_given_selector_for_child t t2 parent) = (
+    to_ancestor_list_given_selector_for_child t t2 parent selector
+  ) in
+  let children = (N.get_children parent) in
+  match subchildren = children with
+  | true -> (
+    match subchildren with
+    | [] -> (selector parent ancestors)
+    | children_head::tl ->
+    let current_ancestors = concatenate_as_ancestor_list parent ancestors in
+    let head_child_value = selector_for_child children_head current_ancestors in
+    let aggregated = to_first_child_from_parent head_child_value (selector parent ancestors) in
+    let next_subchildren = (
+      if (continue_predicate children_head aggregated) then
+        tl
+      else (
+        let empty_list = [] in
+        lemma_empty_list_is_decrease_of_list subchildren;
+        assert (empty_list << subchildren);
+        empty_list
+      )
+    ) in
+    select_and_aggregate_from_children
+      parent selector 
+      to_first_child_from_parent
+      from_left_to_right 
+      from_last_child_to_parent 
+      continue_predicate
+      ancestors next_subchildren (Some aggregated)
+  )
+  | false -> (
+    let Some agg_some = agg in
+    match subchildren with
+    | [] -> (from_last_child_to_parent agg_some (selector parent ancestors))
+    | hd::tl ->
+    let current_ancestors = concatenate_as_ancestor_list parent ancestors in
+    let v1 = selector_for_child hd current_ancestors in
+    let aggregated = from_left_to_right agg_some v1 in
+    let next_subchildren = (
+      if (continue_predicate hd aggregated) then
+        tl
+      else (
+        let empty_list = [] in
+        lemma_empty_list_is_decrease_of_list subchildren;
+        assert (empty_list << subchildren);
+        empty_list
+      )
+    ) in
+    select_and_aggregate_from_children
+      parent selector 
+      to_first_child_from_parent
+      from_left_to_right 
+      from_last_child_to_parent 
+      continue_predicate
+      ancestors next_subchildren (Some aggregated)
+  )
+
+(*
+  let children = (N.get_children parent) in
+  match children with
+  | [] -> parent_value
+  | children_head::children_tail ->
+  let head_child_value = selector children_head ancestors in
+  let seed = to_first_child_from_parent head_child_value parent_value in
+  select_and_aggregate_from_children_internal 
+    parent parent_value selector 
+    from_left_to_right
+    from_last_child_to_parent
+    continue_predicate children_tail ancestors
+    seed
+*)
+
 //---|
 
 include Nemonuri.StratifiedNodes.Children.Types

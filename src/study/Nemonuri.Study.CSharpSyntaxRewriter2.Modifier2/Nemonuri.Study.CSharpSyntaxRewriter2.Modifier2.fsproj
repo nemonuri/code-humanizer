@@ -5,6 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>5.0</LangVersion>
     <UseHints>true</UseHints>
+    <ForceLogQueries>false</ForceLogQueries>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +26,6 @@
     <Compile Include="Nemonuri.StratifiedNodes.Children.fst" />
     
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.Base.fst" />
-    <Compile Include="Nemonuri.StratifiedNodes.Walkers.Forall.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Indexes.fst" />
     
@@ -34,6 +34,9 @@
     <Compile Include="Nemonuri.StratifiedNodes.Factories.fst" />
 
     <Compile Include="Nemonuri.StratifiedNodes.Decreasers.fst" />
+
+    <Compile Include="Nemonuri.StratifiedNodes.Forall.Children.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.Forall.Walkers.fst" />
   </ItemGroup>
 
 </Project>

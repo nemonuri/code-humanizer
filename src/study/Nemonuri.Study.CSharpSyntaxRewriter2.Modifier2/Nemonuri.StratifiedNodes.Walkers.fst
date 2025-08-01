@@ -1,4 +1,4 @@
 module Nemonuri.StratifiedNodes.Walkers
 
 include Nemonuri.StratifiedNodes.Walkers.Base
-include Nemonuri.StratifiedNodes.Walkers.Forall
+//include Nemonuri.StratifiedNodes.Walkers.Forall

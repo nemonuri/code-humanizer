@@ -41,4 +41,14 @@ let prepend_child_inverse #t
   let prev_node = F.replace_children node prev_children in
   (prepended, prev_node)
 
+let get_prepended_node #t
+  (node:N.node t{ N.is_branch node })
+  =
+  fst (prepend_child_inverse node)
+
+let get_previous_node #t
+  (node:N.node t{ N.is_branch node })
+  =
+  snd (prepend_child_inverse node)
+
 //---|

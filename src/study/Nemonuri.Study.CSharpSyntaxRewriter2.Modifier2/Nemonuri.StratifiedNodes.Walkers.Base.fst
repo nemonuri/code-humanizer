@@ -24,7 +24,7 @@ let rec walk #t #t2
     v1
   else
     let next_ancestors = C.concatenate_as_ancestor_list node ancestors in
-    let child_selector = (
+    let child_selector : (C.ancestor_list_given_selector_for_child t t2 node) = (
       fun (child:N.node t{C.is_parent node child}) 
           (ancestors1:C.next_head_given_ancestor_list child) -> (
       walk child selector 

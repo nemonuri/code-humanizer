@@ -1,4 +1,4 @@
-module Nemonuri.StratifiedNodes.Walkers.Forall
+module Nemonuri.StratifiedNodes.Forall.Walkers
 
 module L = FStar.List.Tot
 module N = Nemonuri.StratifiedNodes.Nodes
@@ -6,6 +6,8 @@ module C = Nemonuri.StratifiedNodes.Children
 module F = Nemonuri.StratifiedNodes.Factories
 module Common = Nemonuri.StratifiedNodes.Common
 module B = Nemonuri.StratifiedNodes.Walkers.Base
+module D = Nemonuri.StratifiedNodes.Decreasers
+module Fc = Nemonuri.StratifiedNodes.Forall.Children
 
 //--- theory members ---
 let for_all_children_values #t (t2:Type)
@@ -26,14 +28,7 @@ let for_all_children_and_self_values #t (t2:Type)
   | false -> false
   | true -> (for_all_children_values t2 node selector predicate)
 
-let for_all_aggregator
-  : (Common.aggregator bool) =
-  fun v1 v2 -> (v1 && v2)
 
-let for_all_continue_predicate (t:eqtype)
-  : (C.continue_predicate t bool) 
-  =
-  fun n v -> v
 
 let for_all_nodes #t
   (node:N.node t)
@@ -41,10 +36,10 @@ let for_all_nodes #t
   : Tot bool =
   let selector = (C.to_ancestor_list_given_selector t bool node_predicate) in
   B.walk node selector 
-  for_all_aggregator
-  for_all_aggregator
+  Fc.for_all_aggregator
+  Fc.for_all_aggregator
   (Common.aggregated_identity bool)
-  (for_all_continue_predicate t)
+  (Fc.for_all_continue_predicate t)
   []
 //---|
 
@@ -69,11 +64,16 @@ let node_satisfies_for_all_nodes_entails_all_children_nodes_satisfy_predicate #t
   (C.is_parent node child_node) ==>
   (node1_satisfies_for_all_nodes_entails_node2_satisfies_predicate node child_node node_predicate)
 
-let node_has_single_leaf_child #t
+let node_has_leaf_children #t
   (node:N.node t)
   : prop =
   (N.is_branch node) /\ 
-  (N.get_level node = 2) /\ 
+  (N.get_level node = 2)
+
+let node_has_single_leaf_child #t
+  (node:N.node t)
+  : prop =
+  (node_has_leaf_children node) /\ 
   (N.get_children_length node = 1)
 
 //---|
@@ -173,7 +173,26 @@ let lemma10 #t
   = 
   ()
 
-
+(*
+let rec lemma11 #t
+  (node:N.node t)
+  (node_predicate:N.node t -> Tot bool)
+  : Lemma
+    (requires 
+      (node_has_leaf_children node) /\
+      (for_all_nodes node node_predicate)
+    )
+    (ensures 
+      (for_all_nodes (D.get_previous_node node) node_predicate)
+    )
+    (decreases (D.get_decreaser_from_children node))
+  =
+  if (N.is_branch node) && (N.get_level node = 2) && (N.get_children_length node = 1) then
+    lemma9 node node_predicate
+  else
+    lemma11 (D.get_previous_node node) node_predicate
+*)
+  
     
 
 
