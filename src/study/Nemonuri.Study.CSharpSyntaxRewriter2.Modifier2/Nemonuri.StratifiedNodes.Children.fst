@@ -113,7 +113,7 @@ let ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) =
 
 let get_one_if_ancestor_list_is_empty_or_zero #t
   (al:ancestor_list t)
-  : Tot (n:nat{n <= 1}) 
+  : Tot (Common.zero_or_one) 
   =
   match al with
   | [] -> 1
@@ -129,7 +129,7 @@ let get_ancestor_list_head_level_or_zero #t
 
 private let get_ancestor_list_decreaser_tuple #t
   (al:ancestor_list t)
-  : Tot (nat & nat)
+  : Tot (Common.zero_or_one & nat)
   =
   ((get_one_if_ancestor_list_is_empty_or_zero al), (get_ancestor_list_head_level_or_zero al))
 
@@ -155,7 +155,7 @@ let lemma_concatenate_as_ancestor_list_is_decreasing #t
       ( let al2 = concatenate_as_ancestor_list node al in
         let (al_1, al_2) = get_ancestor_list_decreaser_tuple al in
         let (al2_1, al2_2) = get_ancestor_list_decreaser_tuple al2 in
-        ( (al2_1 < al_1) \/ ( (al2_1 = al_1) /\ (al2_2 < al_2) ) )
+        ( (al2_1 << al_1) \/ ( (al2_1 = al_1) /\ (al2_2 << al_2) ) )
       ) 
     )
   =

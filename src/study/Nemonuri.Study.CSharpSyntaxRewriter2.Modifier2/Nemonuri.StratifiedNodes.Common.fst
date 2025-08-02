@@ -8,6 +8,8 @@ let aggregator (t:Type) = (aggregated:t) -> (aggregating:t) -> t
 let aggregated_identity (t:Type) 
   : (aggregator t) =
   fun aggregated aggregating -> aggregated
+
+let zero_or_one = n:nat{n <= 1}
 //---|
 
 //--- propositions ---
