@@ -28,7 +28,9 @@
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.Base.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Walkers.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Indexes.fst" />
-    
+    <Compile Include="Nemonuri.StratifiedNodes.AncestorContexts.Types.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.AncestorContexts.fst" />
+
     <Compile Include="Nemonuri.StratifiedNodes.Factories.Nodes.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Factories.NodeLists.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Factories.fst" />

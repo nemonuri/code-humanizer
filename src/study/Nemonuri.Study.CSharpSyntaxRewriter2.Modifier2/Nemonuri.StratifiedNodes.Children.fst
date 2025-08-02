@@ -6,6 +6,12 @@ module T = Nemonuri.StratifiedNodes.Children.Types
 module Common = Nemonuri.StratifiedNodes.Common
 module O = FStar.Pervasives.Native
 
+(*
+note
+
+모듈 이름을 Children 이 아니라, Parents 나 Ancestors 로 바꿔야 하지 않을까?
+*)
+
 //--- theory members ---
 let always_continue_predicate (t:eqtype) (t2:Type)
   : T.continue_predicate t t2 =
@@ -103,6 +109,60 @@ let ancestor_list_given_selector_for_child t (t2:Type) (parent:N.node t) =
   Tot t2
 //---|
 
+//--- ancestor_list members ---
+
+let get_one_if_ancestor_list_is_empty_or_zero #t
+  (al:ancestor_list t)
+  : Tot (n:nat{n <= 1}) 
+  =
+  match al with
+  | [] -> 1
+  | _ -> 0
+
+let get_ancestor_list_head_level_or_zero #t
+  (al:ancestor_list t)
+  : Tot nat 
+  =
+  match al with
+  | [] -> 0
+  | hd::_ -> hd.level
+
+private let get_ancestor_list_decreaser_tuple #t
+  (al:ancestor_list t)
+  : Tot (nat & nat)
+  =
+  ((get_one_if_ancestor_list_is_empty_or_zero al), (get_ancestor_list_head_level_or_zero al))
+
+//---|
+
+//--- ancestor_list proofs ---
+
+let lemma_ancestor_list_head_level_is_descending #t
+  (al:ancestor_list t)
+  : Lemma 
+    (requires (Cons? al) /\ (Cons? (L.tl al)))
+    (ensures 
+      ((get_ancestor_list_head_level_or_zero (L.tl al)) > (get_ancestor_list_head_level_or_zero al))
+    )
+  =
+  ()
+
+let lemma_concatenate_as_ancestor_list_is_decreasing #t
+  (al:ancestor_list t) (node:N.node t)
+  : Lemma
+    (requires (is_concatenatable_to_ancestor_list node al))
+    (ensures 
+      ( let al2 = concatenate_as_ancestor_list node al in
+        let (al_1, al_2) = get_ancestor_list_decreaser_tuple al in
+        let (al2_1, al2_2) = get_ancestor_list_decreaser_tuple al2 in
+        ( (al2_1 < al_1) \/ ( (al2_1 = al_1) /\ (al2_2 < al_2) ) )
+      ) 
+    )
+  =
+  ()
+
+//---|
+
 //--- propositions ---
 
 let node_list_is_subchildren_of_node #t
@@ -113,7 +173,7 @@ let node_list_is_subchildren_of_node #t
 
 //---|
 
-//--- theory members 2 ---
+//--- theory members 3 ---
 let to_parent_child_selector #t #t2 (selector:N.node t -> t2) 
   : Tot (parent_child_selector t t2) =
   fun 
@@ -201,9 +261,8 @@ let aggregate_left_to_right #t #t2
   : Pure t2
     (requires
       (N.is_branch parent) /\
-      ( let mi = N.try_get_index (N.get_children parent) successor_child in
-        ((N.to_int mi) > 0)
-      )
+      (is_parent parent successor_child) /\
+      ( exists (i:pos). (i < (N.get_children_length parent)) && ((N.get_child_at parent i) = successor_child) )
     )
     (ensures fun r -> true)
   =
@@ -225,9 +284,9 @@ let rec aggregate_children #t #t2
     (requires 
       (node_list_is_subchildren_of_node subchildren parent) /\
       ( (subchildren = (N.get_children parent)) \/ (subchildren << (N.get_children parent)) ) /\
-      ( (Cons? subchildren) ==> (
+      (*( (Cons? subchildren) ==> (
         (((N.get_children_length parent) - (L.length subchildren)) >= 0) /\
-        ( (N.get_child_at parent ((N.get_children_length parent) - (L.length subchildren))) = (L.hd subchildren) )) ) /\
+        ( (N.get_child_at parent ((N.get_children_length parent) - (L.length subchildren))) = (L.hd subchildren) )) ) /\*)
       ((subchildren = (N.get_children parent)) <==>
        (None? maybe_aggregated)
       )
@@ -247,12 +306,11 @@ let rec aggregate_children #t #t2
             parent parent_value selector_for_child to_first_child_from_parent hd current_ancestors
       | Some prev_aggregated -> 
           assert (subchildren << (N.get_children parent));
-          assert (((N.get_children_length parent) - (L.length subchildren)) > 0 );
-          assert (hd <> (N.get_child_at parent 0));
-          aggregate_left_to_right
-            parent prev_aggregated selector_for_child from_left_to_right hd current_ancestors
-                                 
-      //from_left_to_right prev_aggregated (selector_for_child hd current_ancestors)
+          //assert (((N.get_children_length parent) - (L.length subchildren)) > 0 );
+          //assert (hd <> (N.get_child_at parent 0));
+          //aggregate_left_to_right
+          //  parent prev_aggregated selector_for_child from_left_to_right hd current_ancestors                       
+          from_left_to_right prev_aggregated (selector_for_child hd current_ancestors)
     ) in
     //let head_child_value = selector_for_child hd current_ancestors in
     //let fallback_factory:(t2 -> t2) = (fun v -> (to_first_child_from_parent v parent_value)) in
