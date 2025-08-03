@@ -103,6 +103,18 @@ and walk_as_child #t #t2
     walk_as_child premise ancestor_context next_index parent_selector_value (Some next_aggregated_value)
 
 
+let walk_as_root #t #t2
+  (selector: N.node t -> t2)
+  (premise: walk_premise t t2)
+  (root: N.node t)
+  : Tot t2 =
+  let selector_value = selector root in
+  match (N.is_leaf root) with
+  | true -> selector_value
+  | false ->
+  let next_ancestor_context = (Ac.AContext [root] []) in
+  let walk_as_child_value = walk_as_child premise next_ancestor_context 0 selector_value (None #t2) in
+  premise.walk_as_child_to_parent_aggregator walk_as_child_value selector_value
 
 
 //---|
