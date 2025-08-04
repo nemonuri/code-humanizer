@@ -34,7 +34,7 @@ let has_index #t
 let to_int #t
   (#node_list:T.node_list t)
   (source:T.maybe_node_list_index node_list)
-  : Pure int True
+  : Pure (Common.nat_or_minus_one) True
     (ensures fun r -> 
       match has_index source with
       | true -> (r >= 0) && (is_node_list_index r node_list)

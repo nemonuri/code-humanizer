@@ -10,6 +10,8 @@ let aggregated_identity (t:Type)
   fun aggregated aggregating -> aggregated
 
 let zero_or_one = n:nat{n <= 1}
+
+let nat_or_minus_one = n:int{n >= -1}
 //---|
 
 //--- propositions ---

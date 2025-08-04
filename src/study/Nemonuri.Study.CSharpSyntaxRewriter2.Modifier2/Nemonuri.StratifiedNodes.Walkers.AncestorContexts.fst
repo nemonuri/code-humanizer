@@ -34,12 +34,14 @@ let get_subselector #t #t2
 let rec walk_as_node #t #t2
   (premise: walk_premise t t2)
   (ancestor_context: Ac.ancestor_context t)
-  (index: N.node_list_index (Ac.get_head_ancestor_children ancestor_context))
+  (maybe_index: N.maybe_node_list_index (Ac.get_head_ancestor_children_or_empty ancestor_context))
   (node: N.node t)
   : Pure t2
     (requires 
-      (Ac.is_prependable_to_ancestor_context node index ancestor_context) &&
-      ((N.get_child_at (Ac.get_head_ancestor ancestor_context) index) = node)
+      (Ac.is_prependable_to_ancestor_context node (N.to_int maybe_index) ancestor_context) /\
+      ( (N.ISome? maybe_index) ==> 
+        ((N.get_child_at (Ac.get_head_ancestor ancestor_context) (N.to_int maybe_index)) = node)
+      )
     )
     //(ensures fun r -> premise.verifier ancestor_context index node r )
     (ensures fun r -> true )
@@ -57,17 +59,18 @@ let rec walk_as_node #t #t2
       (Acs.get_subselector selector_info) in
   *)
   //let selector_value = subselector index node in
-  let selector_value = premise.selector premise.verifier ancestor_context index node in
+  let index_or_minus_one = (N.to_int maybe_index) in
+  let selector_value = premise.selector premise.verifier ancestor_context index_or_minus_one node in
   match (N.is_leaf node) with
   | true -> selector_value
   | false ->
-  let next_ancestor_context = Ac.prepend_to_ancestor_context node index ancestor_context in
+  let next_ancestor_context = Ac.prepend_to_ancestor_context node index_or_minus_one ancestor_context in
   let walk_as_child_value = walk_as_child premise next_ancestor_context 0 selector_value (None #t2) in
   premise.walk_as_child_to_parent_aggregator walk_as_child_value selector_value
   
 and walk_as_child #t #t2
   (premise: walk_premise t t2)
-  (ancestor_context: Ac.ancestor_context t)
+  (ancestor_context: Ac.ancestor_context t{Ac.ACons? ancestor_context})
   (index: N.node_list_index (Ac.get_head_ancestor_children ancestor_context))
   (parent_selector_value: t2)
   (maybe_aggregated_value: option t2{ (None? maybe_aggregated_value) <==> (index = 0) })
@@ -86,7 +89,10 @@ and walk_as_child #t #t2
   let head_ancestor = (Ac.get_head_ancestor ancestor_context) in
   let node = (N.get_child_at head_ancestor index) in
   assume (C.is_parent head_ancestor node);
-  let walk_as_node_value = walk_as_node premise ancestor_context index node in
+  let walk_as_node_value = 
+    walk_as_node premise ancestor_context 
+    (N.to_maybe_node_list_index index (Ac.get_head_ancestor_children ancestor_context)) 
+    node in
   let children_length = (N.get_children_length (Ac.get_head_ancestor ancestor_context)) in
   let next_aggregated_value = (
     if (index = 0) then
@@ -104,10 +110,15 @@ and walk_as_child #t #t2
 
 
 let walk_as_root #t #t2
-  (selector: N.node t -> t2)
   (premise: walk_premise t t2)
   (root: N.node t)
   : Tot t2 =
+  walk_as_node #t
+    premise
+    (Ac.ANil)
+    (N.INone [])
+    root
+(*
   let selector_value = selector root in
   match (N.is_leaf root) with
   | true -> selector_value
@@ -115,6 +126,7 @@ let walk_as_root #t #t2
   let next_ancestor_context = (Ac.AContext [root] []) in
   let walk_as_child_value = walk_as_child premise next_ancestor_context 0 selector_value (None #t2) in
   premise.walk_as_child_to_parent_aggregator walk_as_child_value selector_value
+*)
 
 
 //---|

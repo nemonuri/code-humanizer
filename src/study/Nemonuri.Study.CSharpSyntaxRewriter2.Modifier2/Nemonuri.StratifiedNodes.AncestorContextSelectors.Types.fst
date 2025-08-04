@@ -12,7 +12,7 @@ module Ac = Nemonuri.StratifiedNodes.AncestorContexts
 type ancestor_context_given_selector_result_verifier
   (t: eqtype) (t2: Type) =
   (ancestor_context: Ac.ancestor_context t) ->
-  (index: nat) ->
+  (index: Common.nat_or_minus_one) ->
   (node: N.node t) -> 
   (result: t2) ->
   Pure bool 
@@ -22,7 +22,7 @@ type ancestor_context_given_selector_result_verifier
 type ancestor_context_given_selector (t: eqtype) (t2: Type) =
   (verifier: ancestor_context_given_selector_result_verifier t t2) ->
   (ancestor_context: Ac.ancestor_context t) ->
-  (index: nat) ->
+  (index: Common.nat_or_minus_one) ->
   (node: N.node t) -> 
   Pure t2 
   (requires Ac.is_prependable_to_ancestor_context node index ancestor_context ) 
@@ -31,7 +31,7 @@ type ancestor_context_given_selector (t: eqtype) (t2: Type) =
 type ancestor_context_and_verifier_given_selector (t: eqtype) (t2: Type) 
   (verifier: ancestor_context_given_selector_result_verifier t t2) =
   (ancestor_context: Ac.ancestor_context t) ->
-  (index: nat) ->
+  (index: Common.nat_or_minus_one) ->
   (node: N.node t) -> 
   Pure t2 
   (requires Ac.is_prependable_to_ancestor_context node index ancestor_context ) 
@@ -40,7 +40,7 @@ type ancestor_context_and_verifier_given_selector (t: eqtype) (t2: Type)
 type ancestor_context_given_subselector (t: eqtype) (t2: Type)
   (verifier: ancestor_context_given_selector_result_verifier t t2)
   (ancestor_context: Ac.ancestor_context t) =
-  (index: nat) ->
+  (index: Common.nat_or_minus_one) ->
   (node: N.node t) -> 
   Pure t2 
   (requires Ac.is_prependable_to_ancestor_context node index ancestor_context ) 

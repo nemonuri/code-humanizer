@@ -14,56 +14,87 @@ let get_ancestors #t
   (ancestor_context:T.ancestor_context t)
   : Tot (C.ancestor_list t)
   =
-  T.AContext?.ancestors ancestor_context
+  match ancestor_context with
+  | T.ANil -> []
+  | T.ACons ancestors _ -> ancestors
 
 let get_indexes #t
   (ancestor_context:T.ancestor_context t)
   : Tot (list nat)
   =
-  T.AContext?.indexes ancestor_context
+  match ancestor_context with
+  | T.ANil -> []
+  | T.ACons _ indexes -> indexes
 
-private let has_head_ancestor #t
+let has_head_ancestor #t
   (ancestor_context:T.ancestor_context t)
-  : Tot bool =
-  Cons? (get_ancestors ancestor_context)
+  : Pure (bool) True 
+    (ensures fun b -> 
+      match b with
+      | false -> true
+      | true -> Cons? (get_ancestors ancestor_context)
+    )
+  =
+  T.ACons? ancestor_context
+  //Cons? (get_ancestors ancestor_context)
 
+[@@expect_failure]
 private let _ = assert (
   forall t ancestor_context.
   has_head_ancestor #t ancestor_context
-) //...의미없구나
+)
 
 let get_head_ancestor #t
-  (ancestor_context:T.ancestor_context t)
+  (ancestor_context:T.ancestor_context t{has_head_ancestor ancestor_context})
   : Tot (N.node t)
   =
   L.hd (get_ancestors ancestor_context)
 
 let get_head_ancestor_children #t
-  (ancestor_context:T.ancestor_context t)
+  (ancestor_context:T.ancestor_context t{has_head_ancestor ancestor_context})
   : Tot (N.node_list t)
   =
   N.get_children (get_head_ancestor ancestor_context)
 
+let get_head_ancestor_children_or_empty #t
+  (ancestor_context:T.ancestor_context t)
+  : Tot (N.node_list t)
+  =
+  match (has_head_ancestor ancestor_context) with
+  | true -> get_head_ancestor_children ancestor_context
+  | false -> []
+
 let is_prependable_to_ancestor_context #t
-  (node:N.node t) (index:nat) (ancestor_context:T.ancestor_context t)
+  (node:N.node t) 
+  (maybe_index:Common.nat_or_minus_one) 
+  (ancestor_context:T.ancestor_context t)
   : Tot bool
   =
-  let ancestors = (get_ancestors ancestor_context) in
+  match ancestor_context with
+  | T.ANil -> (maybe_index = -1)
+  | T.ACons ancestors indexes -> 
+  (maybe_index >= 0) &&
   (C.is_concatenatable_to_ancestor_list node ancestors) &&
-  (Id.has_index (L.hd ancestors) node index)
+  (Id.has_index (L.hd ancestors) node maybe_index)
 
 let prepend_to_ancestor_context #t
-  (node:N.node t) (index:nat) (ancestor_context:T.ancestor_context t)
+  (node:N.node t) (maybe_index:Common.nat_or_minus_one) 
+  (ancestor_context:T.ancestor_context t)
   : Pure (T.ancestor_context t)
-    (requires is_prependable_to_ancestor_context node index ancestor_context)
+    (requires is_prependable_to_ancestor_context node maybe_index ancestor_context)
     (ensures fun r -> 
+      ((T.ACons? r) && (T.ACons? ancestor_context)) ==>
       ((L.tl (get_ancestors r)) = (get_ancestors ancestor_context)) &&
       ((L.tl (get_indexes r)) = (get_indexes ancestor_context))
     )
   = 
-  let new_ancestors = C.concatenate_as_ancestor_list node (get_ancestors ancestor_context) in
-  let new_indexes = index::(get_indexes ancestor_context) in
-  T.AContext new_ancestors new_indexes
+  match ancestor_context with
+  | T.ANil -> T.ACons [node] []
+  | T.ACons ancestors indexes -> (
+    let new_ancestors = C.concatenate_as_ancestor_list node ancestors in
+    let new_indexes = maybe_index::indexes in
+    T.ACons new_ancestors new_indexes
+  )
 
 let next_heads_given_ancestor_context #t (node:N.node t) (index:nat) =
   ac:T.ancestor_context t{ is_prependable_to_ancestor_context node index ac }
