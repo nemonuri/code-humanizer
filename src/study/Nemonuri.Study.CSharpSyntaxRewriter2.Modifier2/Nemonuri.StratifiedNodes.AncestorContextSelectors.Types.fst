@@ -19,6 +19,17 @@ type ancestor_context_given_selector_result_verifier
   (requires Ac.is_prependable_to_ancestor_context node index ancestor_context ) 
   (ensures fun r -> true)
 
+(*
+type ancestor_context_given_aggregator (t: eqtype) (t2: Type) =
+  (verifier: ancestor_context_given_selector_result_verifier t t2) ->
+  (ancestor_context: Ac.ancestor_context t) ->
+  (index: Common.nat_or_minus_one) ->
+  (node: N.node t) ->  
+  Pure t2 
+  (requires Ac.is_prependable_to_ancestor_context node index ancestor_context ) 
+  (ensures fun r -> verifier ancestor_context index node r )
+*)
+
 type ancestor_context_given_selector (t: eqtype) (t2: Type) =
   (verifier: ancestor_context_given_selector_result_verifier t t2) ->
   (ancestor_context: Ac.ancestor_context t) ->

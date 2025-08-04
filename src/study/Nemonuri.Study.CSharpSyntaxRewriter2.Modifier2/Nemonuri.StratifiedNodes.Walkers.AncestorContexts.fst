@@ -6,6 +6,7 @@ module C = Nemonuri.StratifiedNodes.Children
 module Common = Nemonuri.StratifiedNodes.Common
 module Ac = Nemonuri.StratifiedNodes.AncestorContexts
 module Acs = Nemonuri.StratifiedNodes.AncestorContextSelectors
+module Va = Nemonuri.StratifiedNodes.VerifiableAggregators
 
 //--- type definitions ---
 
@@ -14,9 +15,9 @@ type walk_premise (t: eqtype) (t2: Type) =
 | WPremise:
   (verifier: Acs.ancestor_context_given_selector_result_verifier t t2) ->
   (selector: Acs.ancestor_context_given_selector t t2) ->
-  (first_child_to_parent_aggregator:Common.aggregator t2) ->
-  (left_to_right_aggregator:Common.aggregator t2) ->
-  (walk_as_child_to_parent_aggregator:Common.aggregator t2) ->
+  (first_child_to_parent_aggregator:Va.verifiable_aggregator_context t2) ->
+  (left_to_right_aggregator:Va.verifiable_aggregator_context t2) ->
+  (walk_as_child_to_parent_aggregator:Va.verifiable_aggregator_context t2) ->
   walk_premise t t2
 
 //---|
@@ -66,7 +67,7 @@ let rec walk_as_node #t #t2
   | false ->
   let next_ancestor_context = Ac.prepend_to_ancestor_context node index_or_minus_one ancestor_context in
   let walk_as_child_value = walk_as_child premise next_ancestor_context 0 selector_value (None #t2) in
-  premise.walk_as_child_to_parent_aggregator walk_as_child_value selector_value
+  (Va.to_aggregator premise.walk_as_child_to_parent_aggregator) walk_as_child_value selector_value
   
 and walk_as_child #t #t2
   (premise: walk_premise t t2)
@@ -96,10 +97,11 @@ and walk_as_child #t #t2
   let children_length = (N.get_children_length (Ac.get_head_ancestor ancestor_context)) in
   let next_aggregated_value = (
     if (index = 0) then
-      (premise.first_child_to_parent_aggregator walk_as_node_value parent_selector_value)
+      ((Va.to_aggregator premise.first_child_to_parent_aggregator)
+        walk_as_node_value parent_selector_value)
     else (
       let Some aggregated_value = maybe_aggregated_value in
-      premise.left_to_right_aggregator aggregated_value walk_as_node_value
+      (Va.to_aggregator premise.left_to_right_aggregator) aggregated_value walk_as_node_value
     )
   ) in
   let next_index = index + 1 in

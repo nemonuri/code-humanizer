@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="Nemonuri.Bijections.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Common.fst" />
+    <Compile Include="Nemonuri.StratifiedNodes.VerifiableAggregators.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Internals.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Base.Types.fst" />
     <Compile Include="Nemonuri.StratifiedNodes.Nodes.Base.Members.fst" />

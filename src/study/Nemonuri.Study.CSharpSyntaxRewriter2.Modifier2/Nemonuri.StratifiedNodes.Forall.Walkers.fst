@@ -29,7 +29,7 @@ let for_all_children_and_self_values #t (t2:Type)
   | true -> (for_all_children_values t2 node selector predicate)
 
 
-
+(*
 let for_all_nodes #t
   (node:N.node t)
   (node_predicate:N.node t -> Tot bool)
@@ -119,11 +119,6 @@ let lemma6 #t
       (node_predicate node) /\ (node_predicate (N.get_child_at node 0))
     )
     (ensures for_all_nodes node node_predicate)
-(*
-      forall child_node. 
-      (C.is_parent node child_node) ==>
-      (node1_satisfies_for_all_nodes_is_equivalent_to_node2_satisfies_predicate node child_node node_predicate)
-*)
   =
   ()
 
@@ -172,6 +167,7 @@ let lemma10 #t
     (ensures node1_satisfies_for_all_nodes_entails_node2_satisfies_predicate node node node_predicate)
   = 
   ()
+*)
 
 (*
 let rec lemma11 #t
