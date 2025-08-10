@@ -11,45 +11,60 @@ public class WalkingTheory_Test
         _output = output;
     }
 
-    [Fact]
-    public void TryWalkAsRoot_ForAll()
+    [Theory]
+    [MemberData(nameof(ForallData))]
+    public void TryWalkAsRoot_WhenBaseOnCreateForallPremiseUsingTryAggregator
+    (
+        RoseNode<int> roseNode, bool expected
+    )
     {
         // Arrange
-        RoseNode<int> roseNode =
-            RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(1, [1, 2, 3]);
         RoseNodePremise<int> roseNodePremise = new();
-        AdHocRoseNodeAggregatingPremise<int, bool> aggregatingPremise = new
-        (
-            defaultSeedProvider: () => true,
-            tryAggregator: (bool seed, WalkingNodeInfo<RoseNode<int>> source, out bool aggregated) =>
-            {
-                if (seed == false)
-                {
-                    aggregated = false;
-                    return true;
-                }
-
-                var child = source.ChildAndIndex.Child;
-                if (child is null) { goto Fail; }
-
-                int value = roseNodePremise.GetValue(child);
-                aggregated = (value >= 0);
-
-                _output.WriteLine($"{nameof(TryWalkAsRoot_ForAll)}, {nameof(value)}: {value}, {nameof(aggregated)}: {aggregated}");
-                return true;
-
-            Fail:
-                aggregated = false;
-                return false;
-            }
-        );
+        AdHocRoseNodeAggregatingPremise<int, bool> aggregatingPremise =
+            RoseNodeAggregatingPremiseTestTheory.CreateForallPremiseUsingTryAggregator
+            (
+                roseNodePremise,
+                static i => i >= 0
+            );
 
         // Act
         bool success = WalkingTheory.TryWalkAsRoot(aggregatingPremise, roseNodePremise, roseNode, out var walkedValue);
 
         // Assert
         Assert.True(success);
-        Assert.True(walkedValue);
+        Assert.Equal(expected, walkedValue);
     }
+
+    [Theory]
+    [MemberData(nameof(ForallData))]
+    public void TryWalkAsRoot_WhenBaseOnCreateForallPremiseUsingOptionalAggregator
+    (
+        RoseNode<int> roseNode, bool expected
+    )
+    {
+        // Arrange
+        RoseNodePremise<int> roseNodePremise = new();
+        AdHocRoseNodeAggregatingPremise<int, bool> aggregatingPremise =
+            RoseNodeAggregatingPremiseTestTheory.CreateForallPremiseUsingOptionalAggregator
+            (
+                roseNodePremise,
+                static i => i >= 0
+            );
+
+        // Act
+        bool success = WalkingTheory.TryWalkAsRoot(aggregatingPremise, roseNodePremise, roseNode, out var walkedValue);
+
+        // Assert
+        Assert.True(success);
+        Assert.Equal(expected, walkedValue);
+    }
+
+    public static TheoryData<RoseNode<int>, bool> ForallData => new()
+    {
+        { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(1, [1, 2, 3]), true},
+        { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(2, [0, 4, 9, 11]), true},
+        { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(-1, [3, 9, 2]), false},
+        { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(2, [0, 4, -9, 11]), false},
+    };
 
 }
