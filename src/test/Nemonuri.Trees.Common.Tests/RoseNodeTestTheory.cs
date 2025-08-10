@@ -10,6 +10,6 @@ public static class RoseNodeTestTheory
         IEnumerable<T>? childrenValues
     )
     { 
-        return new(nodeValue, childrenValues?.Select(a => new RoseNode<T>(a)));
+        return new(nodeValue, [.. childrenValues?.Select(a => new RoseNode<T>(a))??[]]);
     }
 }
