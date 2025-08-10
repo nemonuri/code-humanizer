@@ -16,6 +16,14 @@ public class AdHocAggregatingPremise<TSource, TTarget> : IAggregatingPremise<TSo
         TryAggregator = tryAggregator;
     }
 
+    public AdHocAggregatingPremise
+    (
+        Func<TTarget> defaultSeedProvider,
+        OptionalAggregator<TSource, TTarget> optionalAggregator
+    )
+    : this(defaultSeedProvider, optionalAggregator.ToTryAggregator())
+    { }
+
     public TTarget DefaultSeed => DefaultSeedProvider.Invoke();
 
     public bool TryAggregate(TTarget seed, TSource source, [NotNullWhen(true)] out TTarget? aggregated) =>

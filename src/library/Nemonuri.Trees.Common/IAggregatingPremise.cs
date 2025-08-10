@@ -12,10 +12,3 @@ public interface IAggregatingPremise<TSource, TTarget>
         [NotNullWhen(true)] out TTarget? aggregated
     );
 }
-
-public delegate bool TryAggregator<TSource, TTarget>
-(
-    TTarget seed,
-    TSource source,
-    [NotNullWhen(true)] out TTarget? aggregated
-);

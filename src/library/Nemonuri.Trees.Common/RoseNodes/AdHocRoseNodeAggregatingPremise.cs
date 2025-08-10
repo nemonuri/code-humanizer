@@ -13,9 +13,22 @@ public class AdHocRoseNodeAggregatingPremise<T, TTarget>
         _internalPremise = internalPremise;
     }
 
-    public AdHocRoseNodeAggregatingPremise(Func<TTarget> defaultSeedProvider, TryAggregator<WalkingNodeInfo<RoseNode<T>>, TTarget> tryAggregator)
+    public AdHocRoseNodeAggregatingPremise
+    (
+        Func<TTarget> defaultSeedProvider,
+        TryAggregator<WalkingNodeInfo<RoseNode<T>>, TTarget> tryAggregator
+    )
     : this(new(defaultSeedProvider, tryAggregator))
     { }
+
+    public AdHocRoseNodeAggregatingPremise
+    (
+        Func<TTarget> defaultSeedProvider,
+        OptionalAggregator<WalkingNodeInfo<RoseNode<T>>, TTarget> optionalAggregator
+    )
+    : this(new(defaultSeedProvider, optionalAggregator))
+    { }
+
 
     public TTarget DefaultSeed => _internalPremise.DefaultSeed;
 
