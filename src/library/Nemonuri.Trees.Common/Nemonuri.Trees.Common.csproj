@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Nemonuri.Trees</RootNamespace>
   </PropertyGroup>
-  
+
   <!-- NugetPropsDirectory -->
     <Import Project="$(NugetPropsDirectory)CommunityToolkit.Diagnostics.props" />
   <!-- /NugetPropsDirectory -->

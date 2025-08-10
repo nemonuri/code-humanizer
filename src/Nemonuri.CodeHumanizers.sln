@@ -11,6 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{9EFC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Trees.Common", "library\Nemonuri.Trees.Common\Nemonuri.Trees.Common.csproj", "{34E2B128-831D-4D97-A68E-7DB5EBFAC10F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpSyntaxRewriter3", "study\Nemonuri.Study.CSharpSyntaxRewriter3\Nemonuri.Study.CSharpSyntaxRewriter3.csproj", "{C2427E6C-F666-4F75-84CF-291BB23E3F87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{82E7D19B-8295-4522-8BED-576386D4461D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Trees.Common.Tests", "test\Nemonuri.Trees.Common.Tests\Nemonuri.Trees.Common.Tests.csproj", "{57AD7824-A685-4754-971B-7C20D1E8CC68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,8 +30,18 @@ Global
 		{34E2B128-831D-4D97-A68E-7DB5EBFAC10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34E2B128-831D-4D97-A68E-7DB5EBFAC10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34E2B128-831D-4D97-A68E-7DB5EBFAC10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2427E6C-F666-4F75-84CF-291BB23E3F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2427E6C-F666-4F75-84CF-291BB23E3F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2427E6C-F666-4F75-84CF-291BB23E3F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2427E6C-F666-4F75-84CF-291BB23E3F87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57AD7824-A685-4754-971B-7C20D1E8CC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57AD7824-A685-4754-971B-7C20D1E8CC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57AD7824-A685-4754-971B-7C20D1E8CC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57AD7824-A685-4754-971B-7C20D1E8CC68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{34E2B128-831D-4D97-A68E-7DB5EBFAC10F} = {9EFC75CE-49CF-41D7-9E57-92E005AEA48E}
+		{C2427E6C-F666-4F75-84CF-291BB23E3F87} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
+		{57AD7824-A685-4754-971B-7C20D1E8CC68} = {82E7D19B-8295-4522-8BED-576386D4461D}
 	EndGlobalSection
 EndGlobal

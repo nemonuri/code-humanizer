@@ -20,7 +20,7 @@ public class AncestorContext<TNode>
     public AncestorContext(IChildrenProvider<TNode> premise) : this(premise, default)
     { }
 
-    public IReadOnlyList<ChildAndIndex<TNode>>? ChildAndIndexSequence => _childAndIndexSequence;
+    public IReadOnlyList<ChildAndIndex<TNode>> ChildAndIndexSequence => _childAndIndexSequence;
 
     public bool TryPushChildAndIndex(TNode child, int index) =>
         TryPushChildAndIndex(new(child, index));
