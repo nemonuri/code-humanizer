@@ -56,18 +56,9 @@ public static class RoseNodeAggregatingPremiseTestTheory
         (
             defaultSeedProvider: () => true,
             optionalAggregator: (seed, source) =>
-            {
-                if (seed == false) { return (false, true); }
-
-                if (source.ChildAndIndex.Child is not { } child)
-                {
-                    return (false, false);
-                }
-                else
-                {
-                    return (predicate(roseNodePremise.GetValue(child)), true);
-                }
-            }
+                seed == false ? (false, true) :
+                (source.ChildAndIndex.Child is not { } child) ? (false, false) :
+                (predicate(roseNodePremise.GetValue(child)), true)
         );
 
         return aggregatingPremise;
