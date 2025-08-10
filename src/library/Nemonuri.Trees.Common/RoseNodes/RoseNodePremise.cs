@@ -1,4 +1,4 @@
-namespace Nemonuri.Trees;
+namespace Nemonuri.Trees.RoseNodes;
 
 public class RoseNodePremise<T> : IRoseNodePremise<T, RoseNode<T>>
 {
