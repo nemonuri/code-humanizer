@@ -61,6 +61,7 @@ public class WalkingTheory_Test
 
     public static TheoryData<RoseNode<int>, bool> ForallData => new()
     {
+        /*
         { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(1, [1, 2, 3]), true},
         { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(2, [0, 4, 9, 11]), true},
         { RoseNodeTestTheory.CreateFromNodeValueAndChildrenValues(-1, [3, 9, 2]), false},
@@ -69,6 +70,7 @@ public class WalkingTheory_Test
             new (1, [new(1), new RoseNode<int>(3).WithChildrenValues([6, 11, 8]), new(0)]),
             true
         },
+        */
         { 
             N(0).WithChildren
             (

@@ -77,9 +77,18 @@ public static class WalkingTheory
             goto Fail;
         }
 
+        AdHocAggregatingPremise<WalkingNodeInfo<TNode>, TTarget> nextAggregatingPremise = new
+        (
+            defaultSeedProvider: () => aggregatingPremise.DefaultSeed,
+            tryAggregator: (TTarget seed, WalkingNodeInfo<TNode> source, [NotNullWhen(true)] out TTarget? aggregated) =>
+            {
+                return TryWalkAsNode(aggregatingPremise, source.AncestorContext, source.ChildAndIndex, out aggregated);
+            }
+        );
+
         if
         (
-            !aggregatingPremise.TryAggregateAll
+            !nextAggregatingPremise.TryAggregateAll
             (
                 ancestorContext.Premise.GetChildren(parent)
                     .Select

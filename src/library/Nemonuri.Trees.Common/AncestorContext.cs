@@ -129,5 +129,3 @@ public class AncestorContext<TNode>
         }
     }
 }
-
-//public delegate T Aggregator<T>(T aggregated, T aggregating);
