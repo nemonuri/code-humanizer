@@ -36,18 +36,18 @@ public static class IndexSequenceTheory
         Debug.Assert(inserted is not null);
         Guard.IsFalse(inserted.IsReferencingRoot);
 
-        // Check `inserted` is shorter or equal than `source`
+        // Check `inserted` is shorter or equal than `source` (:= p0)
         if (!(inserted.Count <= source.Count)) { return source; }
 
         int updatingIndex = inserted.Count - 1;
 
-        // Check `inserted` and `source` are structurally equal until `updatingIndex`
+        // Check `inserted` and `source` are structurally equal until `updatingIndex` (:= p1)
         for (int i = 0; i < updatingIndex; i++)
         {
             if (!(inserted[i] == source[i])) { return source; }
         }
 
-        // Check `inserted[updatingIndex]` is less or equal than `source[updatingIndex]`
+        // Check `inserted[updatingIndex]` is less or equal than `source[updatingIndex]` (:= p2)
         if (!(inserted[updatingIndex] <= source[updatingIndex]))
         { return source; }
 
@@ -64,17 +64,17 @@ public static class IndexSequenceTheory
         Debug.Assert(source is not null);
         Debug.Assert(subtreeRoot is not null);
 
-        // Check `subtreeRoot` is referencing root
+        // Check `subtreeRoot` is referencing root (:= p0)
         if (subtreeRoot.IsReferencingRoot)
         {
             bound = source;
             return true;
         }
 
-        // Check `subtreeRoot` is shorter or equal than `source`
+        // Check `subtreeRoot` is shorter or equal than `source` (:= p1)
         if (!(subtreeRoot.Count <= source.Count)) { goto Fail; }
 
-        // Check `source` start with `subtreeRoot`
+        // Check `source` start with `subtreeRoot` (:= p2)
         for (int i = 0; i < subtreeRoot.Count; i++)
         {
             if (!(subtreeRoot[i] == source[i])) { goto Fail; }
@@ -87,23 +87,5 @@ public static class IndexSequenceTheory
         bound = default;
         return false;
     }
-
-    /*
-        public static IndexSequence UpdateAsRemoved
-        (
-            this IndexSequence source,
-            IndexSequence removed
-        )
-        {
-            Debug.Assert(source is not null);
-            Debug.Assert(removed is not null);
-            Guard.IsFalse(removed.IsReferencingRoot);
-
-            // Check `removed` is shorter or equal than `source`
-            if (!(removed.Count <= source.Count)) { return source; }
-
-
-        }
-    */
 
 }

@@ -35,7 +35,7 @@ public class IndexSequence : IReadOnlyList<int>
 
     public IndexSequence Slice(int start, int length)
     {
-        Guard.IsInRange(start, 0, Count);
+        Guard.IsInRange(start, 0, Count+1);
         Guard.IsGreaterThanOrEqualTo(length, 0);
         Guard.IsLessThanOrEqualTo(start + length, Count);
 
