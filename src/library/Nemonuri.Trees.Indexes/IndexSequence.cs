@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Nemonuri.Trees.Indexes;
 
+[CollectionBuilder(typeof(IndexSequenceTheory), nameof(IndexSequenceTheory.CreateIndexSequence))]
 public class IndexSequence : IReadOnlyList<int>
 {
     private readonly ImmutableList<int> _internalList;
@@ -21,4 +23,13 @@ public class IndexSequence : IReadOnlyList<int>
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public bool IsReferencingRoot => _internalList.Count == 0;
+
+    public IndexSequence SetItem(int index, int value)
+    {
+        Guard.IsInRange(index, 0, Count);
+
+        return new IndexSequence(_internalList.SetItem(index, value));
+    }
 }
