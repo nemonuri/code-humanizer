@@ -130,8 +130,8 @@ public static class IndexSequenceTheory
             if (!(removed[i] == source[i])) { goto Default; }
         }
 
-        // Check `inserted[updatingIndex]` is less or equal than `source[updatingIndex]` (:= p2)
-        if (!(removed[updatingIndex] <= source[updatingIndex]))
+        // Check `removed[updatingIndex]` is less than `source[updatingIndex]` (:= p2)
+        if (!(removed[updatingIndex] < source[updatingIndex]))
         { goto Default; }
 
         var resultSource = source.SetItem(updatingIndex, source[updatingIndex] - 1);

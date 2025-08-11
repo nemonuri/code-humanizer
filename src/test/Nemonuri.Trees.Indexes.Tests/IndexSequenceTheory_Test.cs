@@ -82,4 +82,44 @@ public class IndexSequenceTheory_Test
         { [1, 2, 3, 4, 5], [1, 2, 2], false, [] },
         { [2, 2, 5, 5], [2, 5], false, [] },
     };
+
+    [Theory]
+    [MemberData(nameof(UpdateAsRemoved_Data))]
+    public void UpdateAsRemoved
+    (
+        int[] sourceAsArray,
+        int[] removedAsArray,
+        bool expectedBoundInRemovedSubtree,
+        int[] expectedIndexSequence
+    )
+    {
+        // Arrange
+        IndexSequence source = [.. sourceAsArray];
+        IndexSequence removed = [.. removedAsArray];
+
+        // Act
+        var actual = source.UpdateAsRemoved(removed);
+
+        // Assert
+        Assert.Equal(expectedBoundInRemovedSubtree, actual.BoundInRemovedSubtree);
+        Assert.Equal(expectedIndexSequence.AsSpan(), [.. actual.IndexSequence]);
+    }
+
+    public static TheoryData<int[], int[], bool, int[]> UpdateAsRemoved_Data => new()
+    {
+        // (~p3 /\ p0 /\ p1 /\ p2) ==> (~boundInRemovedSubtree /\ (indexSequence <> source))
+        { [1, 2, 4], [1, 1], false, [1, 1, 4] },
+        { [1, 2, 4], [1, 2, 3], false, [1, 2, 3] },
+
+        // p3 ==> (boundInRemovedSubtree)
+        { [1, 2, 4], [1,2], true, [4] },
+        { [1, 2, 4], [1,2,4], true, [] },
+        { [1, 2, 4], [], true, [1,2,4] },
+
+        // ~p0 ==> (~boundInRemovedSubtree /\ (indexSequence == source))
+        { [1, 2, 4], [1,2,4,5], false, [1,2,4] },
+
+        // ~p2 ==> (~boundInRemovedSubtree /\ (indexSequence == source))
+        { [1, 2, 4], [1,2,5], false, [1,2,4] },
+    };
 }
