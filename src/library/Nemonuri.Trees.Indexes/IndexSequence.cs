@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Nemonuri.Trees.Indexes;
 
@@ -35,7 +36,7 @@ public class IndexSequence : IReadOnlyList<int>
 
     public IndexSequence Slice(int start, int length)
     {
-        Guard.IsInRange(start, 0, Count+1);
+        Guard.IsInRange(start, 0, Count + 1);
         Guard.IsGreaterThanOrEqualTo(length, 0);
         Guard.IsLessThanOrEqualTo(start + length, Count);
 
@@ -46,5 +47,17 @@ public class IndexSequence : IReadOnlyList<int>
         }
 
         return new IndexSequence(builder.ToImmutable());
+    }
+
+    public override string ToString()
+    {
+        StringBuilder sb = new StringBuilder()
+        .Append(nameof(IndexSequence))
+        .Append(" { ")
+        .Append('[').AppendJoin(',', _internalList).Append(']')
+        .Append(", ")
+        .Append($"{nameof(Count)} = {Count}")
+        .Append(" }");
+        return sb.ToString();
     }
 }
