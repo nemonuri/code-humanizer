@@ -32,4 +32,19 @@ public class IndexSequence : IReadOnlyList<int>
 
         return new IndexSequence(_internalList.SetItem(index, value));
     }
+
+    public IndexSequence Slice(int start, int length)
+    {
+        Guard.IsInRange(start, 0, Count);
+        Guard.IsGreaterThanOrEqualTo(length, 0);
+        Guard.IsLessThanOrEqualTo(start + length, Count);
+
+        var builder = ImmutableList<int>.Empty.ToBuilder();
+        for (int i = 0; i < length; i++)
+        {
+            builder.Add(_internalList[start + i]);
+        }
+
+        return new IndexSequence(builder.ToImmutable());
+    }
 }

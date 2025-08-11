@@ -32,6 +32,8 @@ public static class IndexSequenceTheory
         IndexSequence inserted
     )
     {
+        Debug.Assert(source is not null);
+        Debug.Assert(inserted is not null);
         Guard.IsFalse(inserted.IsReferencingRoot);
 
         // Check `inserted` is shorter or equal than `source`
@@ -51,6 +53,57 @@ public static class IndexSequenceTheory
 
         return source.SetItem(updatingIndex, source[updatingIndex] + 1);
     }
-    
+
+    public static bool TryGetBoundInSubtree
+    (
+        this IndexSequence source,
+        IndexSequence subtreeRoot,
+        [NotNullWhen(true)] out IndexSequence? bound
+    )
+    {
+        Debug.Assert(source is not null);
+        Debug.Assert(subtreeRoot is not null);
+
+        // Check `subtreeRoot` is referencing root
+        if (subtreeRoot.IsReferencingRoot)
+        {
+            bound = source;
+            return true;
+        }
+
+        // Check `subtreeRoot` is shorter or equal than `source`
+        if (!(subtreeRoot.Count <= source.Count)) { goto Fail; }
+
+        // Check `source` start with `subtreeRoot`
+        for (int i = 0; i < subtreeRoot.Count; i++)
+        {
+            if (!(subtreeRoot[i] == source[i])) { goto Fail; }
+        }
+
+        bound = source[subtreeRoot.Count..];
+        return true;
+
+    Fail:
+        bound = default;
+        return false;
+    }
+
+    /*
+        public static IndexSequence UpdateAsRemoved
+        (
+            this IndexSequence source,
+            IndexSequence removed
+        )
+        {
+            Debug.Assert(source is not null);
+            Debug.Assert(removed is not null);
+            Guard.IsFalse(removed.IsReferencingRoot);
+
+            // Check `removed` is shorter or equal than `source`
+            if (!(removed.Count <= source.Count)) { return source; }
+
+
+        }
+    */
 
 }
