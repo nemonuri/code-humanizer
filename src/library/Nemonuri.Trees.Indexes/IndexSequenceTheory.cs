@@ -59,6 +59,22 @@ public static class IndexSequenceTheory
         this IndexSequence source,
         IndexSequence subtreeRoot,
         [NotNullWhen(true)] out IndexSequence? bound
+    ) =>
+    TryGetBoundInSubtreeCore(source, subtreeRoot, checkOnly: false, out bound);
+
+    public static bool CanGetBoundInSubtree
+    (
+        this IndexSequence source,
+        IndexSequence subtreeRoot
+    ) =>
+    TryGetBoundInSubtreeCore(source, subtreeRoot, checkOnly: true, out _);
+
+    private static bool TryGetBoundInSubtreeCore
+    (
+        this IndexSequence source,
+        IndexSequence subtreeRoot,
+        bool checkOnly,
+        [NotNullWhen(true)] out IndexSequence? bound
     )
     {
         Debug.Assert(source is not null);
@@ -80,12 +96,49 @@ public static class IndexSequenceTheory
             if (!(subtreeRoot[i] == source[i])) { goto Fail; }
         }
 
-        bound = source[subtreeRoot.Count..];
+        bound = checkOnly ? source : source[subtreeRoot.Count..];
         return true;
 
     Fail:
         bound = default;
         return false;
+    }
+
+    public static UpdateAsRemovedResult UpdateAsRemoved
+    (
+        this IndexSequence source,
+        IndexSequence removed
+    )
+    {
+        Debug.Assert(source is not null);
+        Debug.Assert(removed is not null);
+
+        // Check `source` can bound in `removed` (:= p3)
+        if (source.TryGetBoundInSubtree(removed, out var bound))
+        {
+            return new(boundInRemovedSubtree: true, bound);
+        }
+
+        // Check `removed` is shorter or equal than `source` (:= p0)
+        if (!(removed.Count <= source.Count)) { goto Default; }
+
+        int updatingIndex = removed.Count - 1;
+
+        // Check `removed` and `source` are structurally equal until `updatingIndex` (:= p1)
+        for (int i = 0; i < updatingIndex; i++)
+        {
+            if (!(removed[i] == source[i])) { goto Default; }
+        }
+
+        // Check `inserted[updatingIndex]` is less or equal than `source[updatingIndex]` (:= p2)
+        if (!(removed[updatingIndex] <= source[updatingIndex]))
+        { goto Default; }
+
+        var resultSource = source.SetItem(updatingIndex, source[updatingIndex] - 1);
+        return new(boundInRemovedSubtree: false, resultSource);
+
+    Default:
+        return new(boundInRemovedSubtree: false, source);
     }
 
 }
