@@ -64,3 +64,30 @@ public static class RoseNodeAggregatingPremiseTestTheory
         return aggregatingPremise;
     }
 }
+
+public static class RoseNodeAggregating2DPremiseTestTheory
+{
+    public static AdHocRoseNodeAggregating2DPremise<T, bool>
+    CreateForallPremiseUsingOptionalAggregator<T>
+    (
+        RoseNodePremise<T> roseNodePremise,
+        Func<T?, bool> predicate
+    )
+    {
+        Assert.NotNull(roseNodePremise);
+        Assert.NotNull(predicate);
+
+        AdHocRoseNodeAggregating2DPremise<T, bool> aggregatingPremise = new
+        (
+            defaultSeedProvider: () => true,
+            optionalAggregator: (childrenSeed, siblingsSeed, source) =>
+            {
+                if (!(childrenSeed && siblingsSeed)) { return (false, true); }
+                if (!source.IndexedPath.TryGetLastNode(out var node)) { return (false, false); }
+                return (predicate(node.Value), true);
+            }
+        );
+
+        return aggregatingPremise;
+    }
+}

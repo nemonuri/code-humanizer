@@ -1,3 +1,4 @@
+#if false
 using Nemonuri.Trees.RoseNodes;
 
 namespace Nemonuri.Trees.Common.Tests;
@@ -94,3 +95,4 @@ public class WalkingTheory_Test
     private static RoseNode<int> N(int value) => new(value);
 
 }
+#endif

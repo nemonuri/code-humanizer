@@ -21,7 +21,7 @@ public static class Aggregator2DTheory
             [NotNullWhen(true)] out TTarget? aggregated
         )
         {
-            var result = optionalAggregator(siblingsSeed, siblingsSeed, source);
+            var result = optionalAggregator(siblingsSeed, childrenSeed, source);
             aggregated = result.Item2 ? result.Item1 : default;
             return aggregated is not null;
         }
