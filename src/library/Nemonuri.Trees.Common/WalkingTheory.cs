@@ -2,47 +2,29 @@ namespace Nemonuri.Trees;
 
 public static class WalkingTheory
 {
-    [Conditional("DEBUG")]
-    internal static void AssertTrySelectRequirements<TNode>
+    public static bool TryWalkAsRoot<TNode, TTarget>
     (
-        AncestorContext<TNode> ancestorContext,
-        ChildAndIndex<TNode> childAndIndex
-    )
-    {
-        Debug.Assert(ancestorContext is not null);
-        Debug.Assert(ancestorContext.CanPushChildAndIndex(childAndIndex));
-    }
-
-    public static bool TryWalkAsNode<TNode, TTarget>
-    (
-        this IAggregatingPremise<WalkingNodeInfo<TNode>, TTarget> aggregatingPremise,
-        AncestorContext<TNode> ancestorContext,
-        ChildAndIndex<TNode> childAndIndex,
+        IAggregatingPremise<IndexedPathWithNodePremise<TNode>, TTarget> aggregatingPremise,
+        IChildrenProvider<TNode> nodePremise,
+        TNode root,
         [NotNullWhen(true)] out TTarget? walkedValue
     )
     {
         Debug.Assert(aggregatingPremise is not null);
-        Debug.Assert(ancestorContext is not null);
+        Debug.Assert(nodePremise is not null);
+        Debug.Assert(root is not null);
 
-        if (!ancestorContext.TryPushChildAndIndex(childAndIndex))
-        { goto Fail; }
+        IndexedPath<TNode> indexedPath = new(root);
 
-        if (!aggregatingPremise.TryWalkChildren(ancestorContext, out var walkChildrenValue))
-        { goto Fail; }
-
-        if (!ancestorContext.TryPopChildAndIndex(out _))
+        if (!TryWalkChildren(aggregatingPremise, nodePremise, indexedPath, out var childrenAggregated))
         { goto Fail; }
 
         if
         (
             !aggregatingPremise.TryAggregate
             (
-                walkChildrenValue,
-                new WalkingNodeInfo<TNode>
-                {
-                    AncestorContext = ancestorContext,
-                    ChildAndIndex = childAndIndex
-                },
+                aggregatingPremise.DefaultSeed, childrenAggregated,
+                new IndexedPathWithNodePremise<TNode>(indexedPath, nodePremise),
                 out walkedValue
             )
         )
@@ -57,80 +39,55 @@ public static class WalkingTheory
 
     public static bool TryWalkChildren<TNode, TTarget>
     (
-        this IAggregatingPremise<WalkingNodeInfo<TNode>, TTarget> aggregatingPremise,
-        AncestorContext<TNode> ancestorContext,
-        [NotNullWhen(true)] out TTarget? walkedValue
+        IAggregatingPremise<IndexedPathWithNodePremise<TNode>, TTarget> aggregatingPremise,
+        IChildrenProvider<TNode> nodePremise,
+        IndexedPath<TNode> indexedPath,
+        [NotNullWhen(true)] out TTarget? childrenAggregated
     )
     {
         Debug.Assert(aggregatingPremise is not null);
-        Debug.Assert(ancestorContext is not null);
+        Debug.Assert(nodePremise is not null);
 
-        if (!ancestorContext.TryPeekChildAndIndex(out var childAndIndex))
-        {
-            goto Fail;
-        }
-
-        (var parent, var _) = childAndIndex;
-
-        if (parent is null)
-        {
-            goto Fail;
-        }
-
-        AdHocAggregatingPremise<WalkingNodeInfo<TNode>, TTarget> nextAggregatingPremise = new
-        (
-            defaultSeedProvider: () => aggregatingPremise.DefaultSeed,
-            tryAggregator: (TTarget seed, WalkingNodeInfo<TNode> source, [NotNullWhen(true)] out TTarget? aggregated) =>
-            {
-                return TryWalkAsNode(aggregatingPremise, source.AncestorContext, source.ChildAndIndex, out aggregated);
-            }
-        );
-
-        if
-        (
-            !nextAggregatingPremise.TryAggregateAll
-            (
-                ancestorContext.Premise.GetChildren(parent)
-                    .Select
-                    (
-                        (n, i) => new WalkingNodeInfo<TNode>()
-                        {
-                            AncestorContext = ancestorContext,
-                            ChildAndIndex = new ChildAndIndex<TNode>(n, i)
-                        }
-                    ),
-                out walkedValue
-            )
-        )
+        if (!indexedPath.TryGetLastNode(out var node))
         { goto Fail; }
 
-        return true;
+        childrenAggregated = aggregatingPremise.DefaultSeed;
+
+        int childIndex = 0;
+        foreach (var child in nodePremise.GetChildren(node))
+        {
+            var childIndexedPath = indexedPath.Push(child, childIndex);
+
+            if
+            (
+                !TryWalkChildren
+                (
+                    aggregatingPremise, nodePremise, childIndexedPath,
+                    out var grandChildrenAggregated
+                )
+            )
+            { goto Fail; }
+
+
+            if
+            (
+                !aggregatingPremise.TryAggregate
+                (
+                    childrenAggregated, grandChildrenAggregated,
+                    new(childIndexedPath, nodePremise),
+                    out var nextChildrenAggregated
+                )
+            )
+            { goto Fail; }
+
+            childrenAggregated = nextChildrenAggregated;
+            childIndex++;
+        }
+
+        return childrenAggregated is not null;
 
     Fail:
-        walkedValue = default;
+        childrenAggregated = default;
         return false;
-    }
-
-    public static bool TryWalkAsRoot<TNode, TTarget>
-    (
-        this IAggregatingPremise<WalkingNodeInfo<TNode>, TTarget> aggregatingPremise,
-        IChildrenProvider<TNode> premise,
-        TNode root,
-        [NotNullWhen(true)] out TTarget? walkedValue
-    )
-    {
-        Debug.Assert(aggregatingPremise is not null);
-        Debug.Assert(premise is not null);
-        Debug.Assert(root is not null);
-
-        AncestorContext<TNode> ancestorContext = new(premise);
-
-        return
-            aggregatingPremise.TryWalkAsNode
-            (
-                ancestorContext,
-                new ChildAndIndex<TNode>(root),
-                out walkedValue
-            );
     }
 }

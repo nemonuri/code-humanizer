@@ -1,12 +1,12 @@
-﻿
+
 namespace Nemonuri.Trees.RoseNodes;
 
 public class AdHocRoseNodeAggregatingPremise<T, TTarget>
-    : IAggregatingPremise<WalkingNodeInfo<RoseNode<T>>, TTarget>
+    : IAggregatingPremise<IndexedPathWithNodePremise<RoseNode<T>>, TTarget>
 {
-    private readonly AdHocAggregatingPremise<WalkingNodeInfo<RoseNode<T>>, TTarget> _internalPremise;
+    private readonly AdHocAggregatingPremise<IndexedPathWithNodePremise<RoseNode<T>>, TTarget> _internalPremise;
 
-    private AdHocRoseNodeAggregatingPremise(AdHocAggregatingPremise<WalkingNodeInfo<RoseNode<T>>, TTarget> internalPremise)
+    private AdHocRoseNodeAggregatingPremise(AdHocAggregatingPremise<IndexedPathWithNodePremise<RoseNode<T>>, TTarget> internalPremise)
     {
         Debug.Assert(internalPremise is not null);
 
@@ -16,7 +16,7 @@ public class AdHocRoseNodeAggregatingPremise<T, TTarget>
     public AdHocRoseNodeAggregatingPremise
     (
         Func<TTarget> defaultSeedProvider,
-        TryAggregator<WalkingNodeInfo<RoseNode<T>>, TTarget> tryAggregator
+        TryAggregator<IndexedPathWithNodePremise<RoseNode<T>>, TTarget> tryAggregator
     )
     : this(new(defaultSeedProvider, tryAggregator))
     { }
@@ -24,14 +24,17 @@ public class AdHocRoseNodeAggregatingPremise<T, TTarget>
     public AdHocRoseNodeAggregatingPremise
     (
         Func<TTarget> defaultSeedProvider,
-        OptionalAggregator<WalkingNodeInfo<RoseNode<T>>, TTarget> optionalAggregator
+        OptionalAggregator<IndexedPathWithNodePremise<RoseNode<T>>, TTarget> optionalAggregator
     )
     : this(new(defaultSeedProvider, optionalAggregator))
     { }
 
-
     public TTarget DefaultSeed => _internalPremise.DefaultSeed;
 
-    public bool TryAggregate(TTarget seed, WalkingNodeInfo<RoseNode<T>> source, [NotNullWhen(true)] out TTarget? aggregated) =>
-        _internalPremise.TryAggregate(seed, source, out aggregated);
+    public bool TryAggregate
+    (
+        TTarget siblingsSeed, TTarget childrenSeed, IndexedPathWithNodePremise<RoseNode<T>> source,
+        [NotNullWhen(true)] out TTarget? aggregated
+    ) =>
+    _internalPremise.TryAggregate(siblingsSeed, childrenSeed, source, out aggregated);
 }

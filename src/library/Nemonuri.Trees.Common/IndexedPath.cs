@@ -2,8 +2,6 @@ using System.Collections;
 
 namespace Nemonuri.Trees;
 
-//public delegate T Aggregator<T>(T aggregated, T aggregating);
-
 public readonly struct IndexedPath<TNode> : IReadOnlyList<NodeWithIndex<TNode>>
 {
     private readonly ImmutableList<NodeWithIndex<TNode>> _internalList;

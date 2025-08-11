@@ -15,12 +15,13 @@ public static class AggregatorTheory
 
         bool TryAggregatorImpl
         (
-            TTarget seed,
+            TTarget siblingsSeed,
+            TTarget childrenSeed,
             TSource source,
             [NotNullWhen(true)] out TTarget? aggregated
         )
         {
-            var result = optionalAggregator(seed, source);
+            var result = optionalAggregator(siblingsSeed, childrenSeed, source);
             aggregated = result.Item2 ? result.Item1 : default;
             return aggregated is not null;
         }
@@ -29,13 +30,15 @@ public static class AggregatorTheory
 
 public delegate bool TryAggregator<TSource, TTarget>
 (
-    TTarget seed,
+    TTarget siblingsSeed,
+    TTarget childrenSeed,
     TSource source,
     [NotNullWhen(true)] out TTarget? aggregated
 );
 
 public delegate (TTarget?, bool) OptionalAggregator<TSource, TTarget>
 (
-    TTarget seed,
+    TTarget siblingsSeed,
+    TTarget childrenSeed,
     TSource source
 );

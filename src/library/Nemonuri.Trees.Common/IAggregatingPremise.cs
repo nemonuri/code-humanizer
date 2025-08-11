@@ -4,10 +4,11 @@ namespace Nemonuri.Trees;
 public interface IAggregatingPremise<TSource, TTarget>
 {
     TTarget DefaultSeed { get; }
-
+    
     bool TryAggregate
     (
-        TTarget seed,
+        TTarget siblingsSeed,
+        TTarget childrenSeed,
         TSource source,
         [NotNullWhen(true)] out TTarget? aggregated
     );
