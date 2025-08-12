@@ -1,194 +1,194 @@
-IndexSequence { [0,0], Count = 2 }, Kind = UsingKeyword, {using}
-IndexSequence { [0,1,0,0], Count = 4 }, Kind = IdentifierToken, {System}
-IndexSequence { [0,1,0], Count = 3 }, Kind = IdentifierName, {System}
-IndexSequence { [0,1,1], Count = 3 }, Kind = DotToken, {.}
-IndexSequence { [0,1,2,0], Count = 4 }, Kind = IdentifierToken, {Diagnostics}
-IndexSequence { [0,1,2], Count = 3 }, Kind = IdentifierName, {Diagnostics}
-IndexSequence { [0,1], Count = 2 }, Kind = QualifiedName, {System.Diagnostics}
-IndexSequence { [0,2], Count = 2 }, Kind = SemicolonToken, {;}
-IndexSequence { [0], Count = 1 }, Kind = UsingDirective, {using System.Diagnostics;}
-IndexSequence { [1,0], Count = 2 }, Kind = NamespaceKeyword, {namespace}
-IndexSequence { [1,1,0,0,0], Count = 5 }, Kind = IdentifierToken, {System}
-IndexSequence { [1,1,0,0], Count = 4 }, Kind = IdentifierName, {System}
-IndexSequence { [1,1,0,1], Count = 4 }, Kind = DotToken, {.}
-IndexSequence { [1,1,0,2,0], Count = 5 }, Kind = IdentifierToken, {Collections}
-IndexSequence { [1,1,0,2], Count = 4 }, Kind = IdentifierName, {Collections}
-IndexSequence { [1,1,0], Count = 3 }, Kind = QualifiedName, {System.Collections}
-IndexSequence { [1,1,1], Count = 3 }, Kind = DotToken, {.}
-IndexSequence { [1,1,2,0], Count = 4 }, Kind = IdentifierToken, {Generic}
-IndexSequence { [1,1,2], Count = 3 }, Kind = IdentifierName, {Generic}
-IndexSequence { [1,1], Count = 2 }, Kind = QualifiedName, {System.Collections.Generic}
-IndexSequence { [1,2], Count = 2 }, Kind = OpenBraceToken, {{}
-IndexSequence { [1,3,0], Count = 3 }, Kind = InternalKeyword, {internal}
-IndexSequence { [1,3,1], Count = 3 }, Kind = SealedKeyword, {sealed}
-IndexSequence { [1,3,2], Count = 3 }, Kind = ClassKeyword, {class}
-IndexSequence { [1,3,3], Count = 3 }, Kind = IdentifierToken, {ICollectionDebugView}
-IndexSequence { [1,3,4,0], Count = 4 }, Kind = LessThanToken, {<}
-IndexSequence { [1,3,4,1,0], Count = 5 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,4,1], Count = 4 }, Kind = TypeParameter, {T}
-IndexSequence { [1,3,4,2], Count = 4 }, Kind = GreaterThanToken, {>}
-IndexSequence { [1,3,4], Count = 3 }, Kind = TypeParameterList, {<T>}
-IndexSequence { [1,3,5], Count = 3 }, Kind = OpenBraceToken, {{}
-IndexSequence { [1,3,6,0], Count = 4 }, Kind = PrivateKeyword, {private}
-IndexSequence { [1,3,6,1], Count = 4 }, Kind = ReadOnlyKeyword, {readonly}
-IndexSequence { [1,3,6,2,0,0], Count = 6 }, Kind = IdentifierToken, {ICollection}
-IndexSequence { [1,3,6,2,0,1,0], Count = 7 }, Kind = LessThanToken, {<}
-IndexSequence { [1,3,6,2,0,1,1,0], Count = 8 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,6,2,0,1,1], Count = 7 }, Kind = IdentifierName, {T}
-IndexSequence { [1,3,6,2,0,1,2], Count = 7 }, Kind = GreaterThanToken, {>}
-IndexSequence { [1,3,6,2,0,1], Count = 6 }, Kind = TypeArgumentList, {<T>}
-IndexSequence { [1,3,6,2,0], Count = 5 }, Kind = GenericName, {ICollection<T>}
-IndexSequence { [1,3,6,2,1,0], Count = 6 }, Kind = IdentifierToken, {_collection}
-IndexSequence { [1,3,6,2,1], Count = 5 }, Kind = VariableDeclarator, {_collection}
-IndexSequence { [1,3,6,2], Count = 4 }, Kind = VariableDeclaration, {ICollection<T> _collection}
-IndexSequence { [1,3,6,3], Count = 4 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,6], Count = 3 }, Kind = FieldDeclaration, {private readonly ICollection<T> _collection;}
-IndexSequence { [1,3,7,0], Count = 4 }, Kind = PublicKeyword, {public}
-IndexSequence { [1,3,7,1], Count = 4 }, Kind = IdentifierToken, {ICollectionDebugView}
-IndexSequence { [1,3,7,2,0], Count = 5 }, Kind = OpenParenToken, {(}
-IndexSequence { [1,3,7,2,1,0,0], Count = 7 }, Kind = IdentifierToken, {ICollection}
-IndexSequence { [1,3,7,2,1,0,1,0], Count = 8 }, Kind = LessThanToken, {<}
-IndexSequence { [1,3,7,2,1,0,1,1,0], Count = 9 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,7,2,1,0,1,1], Count = 8 }, Kind = IdentifierName, {T}
-IndexSequence { [1,3,7,2,1,0,1,2], Count = 8 }, Kind = GreaterThanToken, {>}
-IndexSequence { [1,3,7,2,1,0,1], Count = 7 }, Kind = TypeArgumentList, {<T>}
-IndexSequence { [1,3,7,2,1,0], Count = 6 }, Kind = GenericName, {ICollection<T>}
-IndexSequence { [1,3,7,2,1,1], Count = 6 }, Kind = IdentifierToken, {collection}
-IndexSequence { [1,3,7,2,1], Count = 5 }, Kind = Parameter, {ICollection<T> collection}
-IndexSequence { [1,3,7,2,2], Count = 5 }, Kind = CloseParenToken, {)}
-IndexSequence { [1,3,7,2], Count = 4 }, Kind = ParameterList, {(ICollection<T> collection)}
-IndexSequence { [1,3,7,3,0], Count = 5 }, Kind = OpenBraceToken, {{}
-IndexSequence { [1,3,7,3,1,0,0,0,0], Count = 9 }, Kind = IdentifierToken, {ArgumentNullException}
-IndexSequence { [1,3,7,3,1,0,0,0], Count = 8 }, Kind = IdentifierName, {ArgumentNullException}
-IndexSequence { [1,3,7,3,1,0,0,1], Count = 8 }, Kind = DotToken, {.}
-IndexSequence { [1,3,7,3,1,0,0,2,0], Count = 9 }, Kind = IdentifierToken, {ThrowIfNull}
-IndexSequence { [1,3,7,3,1,0,0,2], Count = 8 }, Kind = IdentifierName, {ThrowIfNull}
-IndexSequence { [1,3,7,3,1,0,0], Count = 7 }, Kind = SimpleMemberAccessExpression, {ArgumentNullException.ThrowIfNull}
-IndexSequence { [1,3,7,3,1,0,1,0], Count = 8 }, Kind = OpenParenToken, {(}
-IndexSequence { [1,3,7,3,1,0,1,1,0,0], Count = 10 }, Kind = IdentifierToken, {collection}
-IndexSequence { [1,3,7,3,1,0,1,1,0], Count = 9 }, Kind = IdentifierName, {collection}
-IndexSequence { [1,3,7,3,1,0,1,1], Count = 8 }, Kind = Argument, {collection}
-IndexSequence { [1,3,7,3,1,0,1,2], Count = 8 }, Kind = CloseParenToken, {)}
-IndexSequence { [1,3,7,3,1,0,1], Count = 7 }, Kind = ArgumentList, {(collection)}
-IndexSequence { [1,3,7,3,1,0], Count = 6 }, Kind = InvocationExpression, {ArgumentNullException.ThrowIfNull(collection)}
-IndexSequence { [1,3,7,3,1,1], Count = 6 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,7,3,1], Count = 5 }, Kind = ExpressionStatement, {ArgumentNullException.ThrowIfNull(collection);}
-IndexSequence { [1,3,7,3,2,0,0,0], Count = 8 }, Kind = IdentifierToken, {_collection}
-IndexSequence { [1,3,7,3,2,0,0], Count = 7 }, Kind = IdentifierName, {_collection}
-IndexSequence { [1,3,7,3,2,0,1], Count = 7 }, Kind = EqualsToken, {=}
-IndexSequence { [1,3,7,3,2,0,2,0], Count = 8 }, Kind = IdentifierToken, {collection}
-IndexSequence { [1,3,7,3,2,0,2], Count = 7 }, Kind = IdentifierName, {collection}
-IndexSequence { [1,3,7,3,2,0], Count = 6 }, Kind = SimpleAssignmentExpression, {_collection = collection}
-IndexSequence { [1,3,7,3,2,1], Count = 6 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,7,3,2], Count = 5 }, Kind = ExpressionStatement, {_collection = collection;}
-IndexSequence { [1,3,7,3,3], Count = 5 }, Kind = CloseBraceToken, {}}
-IndexSequence { [1,3,7,3], Count = 4 }, Kind = Block, {{
+[0,0], Kind = UsingKeyword, {using}
+[0,1,0,0], Kind = IdentifierToken, {System}
+[0,1,0], Kind = IdentifierName, {System}
+[0,1,1], Kind = DotToken, {.}
+[0,1,2,0], Kind = IdentifierToken, {Diagnostics}
+[0,1,2], Kind = IdentifierName, {Diagnostics}
+[0,1], Kind = QualifiedName, {System.Diagnostics}
+[0,2], Kind = SemicolonToken, {;}
+[0], Kind = UsingDirective, {using System.Diagnostics;}
+[1,0], Kind = NamespaceKeyword, {namespace}
+[1,1,0,0,0], Kind = IdentifierToken, {System}
+[1,1,0,0], Kind = IdentifierName, {System}
+[1,1,0,1], Kind = DotToken, {.}
+[1,1,0,2,0], Kind = IdentifierToken, {Collections}
+[1,1,0,2], Kind = IdentifierName, {Collections}
+[1,1,0], Kind = QualifiedName, {System.Collections}
+[1,1,1], Kind = DotToken, {.}
+[1,1,2,0], Kind = IdentifierToken, {Generic}
+[1,1,2], Kind = IdentifierName, {Generic}
+[1,1], Kind = QualifiedName, {System.Collections.Generic}
+[1,2], Kind = OpenBraceToken, {{}
+[1,3,0], Kind = InternalKeyword, {internal}
+[1,3,1], Kind = SealedKeyword, {sealed}
+[1,3,2], Kind = ClassKeyword, {class}
+[1,3,3], Kind = IdentifierToken, {ICollectionDebugView}
+[1,3,4,0], Kind = LessThanToken, {<}
+[1,3,4,1,0], Kind = IdentifierToken, {T}
+[1,3,4,1], Kind = TypeParameter, {T}
+[1,3,4,2], Kind = GreaterThanToken, {>}
+[1,3,4], Kind = TypeParameterList, {<T>}
+[1,3,5], Kind = OpenBraceToken, {{}
+[1,3,6,0], Kind = PrivateKeyword, {private}
+[1,3,6,1], Kind = ReadOnlyKeyword, {readonly}
+[1,3,6,2,0,0], Kind = IdentifierToken, {ICollection}
+[1,3,6,2,0,1,0], Kind = LessThanToken, {<}
+[1,3,6,2,0,1,1,0], Kind = IdentifierToken, {T}
+[1,3,6,2,0,1,1], Kind = IdentifierName, {T}
+[1,3,6,2,0,1,2], Kind = GreaterThanToken, {>}
+[1,3,6,2,0,1], Kind = TypeArgumentList, {<T>}
+[1,3,6,2,0], Kind = GenericName, {ICollection<T>}
+[1,3,6,2,1,0], Kind = IdentifierToken, {_collection}
+[1,3,6,2,1], Kind = VariableDeclarator, {_collection}
+[1,3,6,2], Kind = VariableDeclaration, {ICollection<T> _collection}
+[1,3,6,3], Kind = SemicolonToken, {;}
+[1,3,6], Kind = FieldDeclaration, {private readonly ICollection<T> _collection;}
+[1,3,7,0], Kind = PublicKeyword, {public}
+[1,3,7,1], Kind = IdentifierToken, {ICollectionDebugView}
+[1,3,7,2,0], Kind = OpenParenToken, {(}
+[1,3,7,2,1,0,0], Kind = IdentifierToken, {ICollection}
+[1,3,7,2,1,0,1,0], Kind = LessThanToken, {<}
+[1,3,7,2,1,0,1,1,0], Kind = IdentifierToken, {T}
+[1,3,7,2,1,0,1,1], Kind = IdentifierName, {T}
+[1,3,7,2,1,0,1,2], Kind = GreaterThanToken, {>}
+[1,3,7,2,1,0,1], Kind = TypeArgumentList, {<T>}
+[1,3,7,2,1,0], Kind = GenericName, {ICollection<T>}
+[1,3,7,2,1,1], Kind = IdentifierToken, {collection}
+[1,3,7,2,1], Kind = Parameter, {ICollection<T> collection}
+[1,3,7,2,2], Kind = CloseParenToken, {)}
+[1,3,7,2], Kind = ParameterList, {(ICollection<T> collection)}
+[1,3,7,3,0], Kind = OpenBraceToken, {{}
+[1,3,7,3,1,0,0,0,0], Kind = IdentifierToken, {ArgumentNullException}
+[1,3,7,3,1,0,0,0], Kind = IdentifierName, {ArgumentNullException}
+[1,3,7,3,1,0,0,1], Kind = DotToken, {.}
+[1,3,7,3,1,0,0,2,0], Kind = IdentifierToken, {ThrowIfNull}
+[1,3,7,3,1,0,0,2], Kind = IdentifierName, {ThrowIfNull}
+[1,3,7,3,1,0,0], Kind = SimpleMemberAccessExpression, {ArgumentNullException.ThrowIfNull}
+[1,3,7,3,1,0,1,0], Kind = OpenParenToken, {(}
+[1,3,7,3,1,0,1,1,0,0], Kind = IdentifierToken, {collection}
+[1,3,7,3,1,0,1,1,0], Kind = IdentifierName, {collection}
+[1,3,7,3,1,0,1,1], Kind = Argument, {collection}
+[1,3,7,3,1,0,1,2], Kind = CloseParenToken, {)}
+[1,3,7,3,1,0,1], Kind = ArgumentList, {(collection)}
+[1,3,7,3,1,0], Kind = InvocationExpression, {ArgumentNullException.ThrowIfNull(collection)}
+[1,3,7,3,1,1], Kind = SemicolonToken, {;}
+[1,3,7,3,1], Kind = ExpressionStatement, {ArgumentNullException.ThrowIfNull(collection);}
+[1,3,7,3,2,0,0,0], Kind = IdentifierToken, {_collection}
+[1,3,7,3,2,0,0], Kind = IdentifierName, {_collection}
+[1,3,7,3,2,0,1], Kind = EqualsToken, {=}
+[1,3,7,3,2,0,2,0], Kind = IdentifierToken, {collection}
+[1,3,7,3,2,0,2], Kind = IdentifierName, {collection}
+[1,3,7,3,2,0], Kind = SimpleAssignmentExpression, {_collection = collection}
+[1,3,7,3,2,1], Kind = SemicolonToken, {;}
+[1,3,7,3,2], Kind = ExpressionStatement, {_collection = collection;}
+[1,3,7,3,3], Kind = CloseBraceToken, {}}
+[1,3,7,3], Kind = Block, {{
             ArgumentNullException.ThrowIfNull(collection);
 
             _collection = collection;
         }}
-IndexSequence { [1,3,7], Count = 3 }, Kind = ConstructorDeclaration, {public ICollectionDebugView(ICollection<T> collection)
+[1,3,7], Kind = ConstructorDeclaration, {public ICollectionDebugView(ICollection<T> collection)
         {
             ArgumentNullException.ThrowIfNull(collection);
 
             _collection = collection;
         }}
-IndexSequence { [1,3,8,0,0], Count = 5 }, Kind = OpenBracketToken, {[}
-IndexSequence { [1,3,8,0,1,0,0], Count = 7 }, Kind = IdentifierToken, {DebuggerBrowsable}
-IndexSequence { [1,3,8,0,1,0], Count = 6 }, Kind = IdentifierName, {DebuggerBrowsable}
-IndexSequence { [1,3,8,0,1,1,0], Count = 7 }, Kind = OpenParenToken, {(}
-IndexSequence { [1,3,8,0,1,1,1,0,0,0], Count = 10 }, Kind = IdentifierToken, {DebuggerBrowsableState}
-IndexSequence { [1,3,8,0,1,1,1,0,0], Count = 9 }, Kind = IdentifierName, {DebuggerBrowsableState}
-IndexSequence { [1,3,8,0,1,1,1,0,1], Count = 9 }, Kind = DotToken, {.}
-IndexSequence { [1,3,8,0,1,1,1,0,2,0], Count = 10 }, Kind = IdentifierToken, {RootHidden}
-IndexSequence { [1,3,8,0,1,1,1,0,2], Count = 9 }, Kind = IdentifierName, {RootHidden}
-IndexSequence { [1,3,8,0,1,1,1,0], Count = 8 }, Kind = SimpleMemberAccessExpression, {DebuggerBrowsableState.RootHidden}
-IndexSequence { [1,3,8,0,1,1,1], Count = 7 }, Kind = AttributeArgument, {DebuggerBrowsableState.RootHidden}
-IndexSequence { [1,3,8,0,1,1,2], Count = 7 }, Kind = CloseParenToken, {)}
-IndexSequence { [1,3,8,0,1,1], Count = 6 }, Kind = AttributeArgumentList, {(DebuggerBrowsableState.RootHidden)}
-IndexSequence { [1,3,8,0,1], Count = 5 }, Kind = Attribute, {DebuggerBrowsable(DebuggerBrowsableState.RootHidden)}
-IndexSequence { [1,3,8,0,2], Count = 5 }, Kind = CloseBracketToken, {]}
-IndexSequence { [1,3,8,0], Count = 4 }, Kind = AttributeList, {[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]}
-IndexSequence { [1,3,8,1], Count = 4 }, Kind = PublicKeyword, {public}
-IndexSequence { [1,3,8,2,0,0], Count = 6 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,8,2,0], Count = 5 }, Kind = IdentifierName, {T}
-IndexSequence { [1,3,8,2,1,0], Count = 6 }, Kind = OpenBracketToken, {[}
-IndexSequence { [1,3,8,2,1,1,0], Count = 7 }, Kind = OmittedArraySizeExpressionToken, {}
-IndexSequence { [1,3,8,2,1,1], Count = 6 }, Kind = OmittedArraySizeExpression, {}
-IndexSequence { [1,3,8,2,1,2], Count = 6 }, Kind = CloseBracketToken, {]}
-IndexSequence { [1,3,8,2,1], Count = 5 }, Kind = ArrayRankSpecifier, {[]}
-IndexSequence { [1,3,8,2], Count = 4 }, Kind = ArrayType, {T[]}
-IndexSequence { [1,3,8,3], Count = 4 }, Kind = IdentifierToken, {Items}
-IndexSequence { [1,3,8,4,0], Count = 5 }, Kind = OpenBraceToken, {{}
-IndexSequence { [1,3,8,4,1,0], Count = 6 }, Kind = GetKeyword, {get}
-IndexSequence { [1,3,8,4,1,1,0], Count = 7 }, Kind = OpenBraceToken, {{}
-IndexSequence { [1,3,8,4,1,1,1,0,0,0,0], Count = 11 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,8,4,1,1,1,0,0,0], Count = 10 }, Kind = IdentifierName, {T}
-IndexSequence { [1,3,8,4,1,1,1,0,0,1,0], Count = 11 }, Kind = OpenBracketToken, {[}
-IndexSequence { [1,3,8,4,1,1,1,0,0,1,1,0], Count = 12 }, Kind = OmittedArraySizeExpressionToken, {}
-IndexSequence { [1,3,8,4,1,1,1,0,0,1,1], Count = 11 }, Kind = OmittedArraySizeExpression, {}
-IndexSequence { [1,3,8,4,1,1,1,0,0,1,2], Count = 11 }, Kind = CloseBracketToken, {]}
-IndexSequence { [1,3,8,4,1,1,1,0,0,1], Count = 10 }, Kind = ArrayRankSpecifier, {[]}
-IndexSequence { [1,3,8,4,1,1,1,0,0], Count = 9 }, Kind = ArrayType, {T[]}
-IndexSequence { [1,3,8,4,1,1,1,0,1,0], Count = 10 }, Kind = IdentifierToken, {items}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,0], Count = 11 }, Kind = EqualsToken, {=}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,0], Count = 12 }, Kind = NewKeyword, {new}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,0,0], Count = 14 }, Kind = IdentifierToken, {T}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,0], Count = 13 }, Kind = IdentifierName, {T}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,0], Count = 14 }, Kind = OpenBracketToken, {[}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1,0,0], Count = 16 }, Kind = IdentifierToken, {_collection}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1,0], Count = 15 }, Kind = IdentifierName, {_collection}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1,1], Count = 15 }, Kind = DotToken, {.}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1,2,0], Count = 16 }, Kind = IdentifierToken, {Count}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1,2], Count = 15 }, Kind = IdentifierName, {Count}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,1], Count = 14 }, Kind = SimpleMemberAccessExpression, {_collection.Count}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1,2], Count = 14 }, Kind = CloseBracketToken, {]}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1,1], Count = 13 }, Kind = ArrayRankSpecifier, {[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1,1], Count = 12 }, Kind = ArrayType, {T[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1,1], Count = 11 }, Kind = ArrayCreationExpression, {new T[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,0,1,1], Count = 10 }, Kind = EqualsValueClause, {= new T[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,0,1], Count = 9 }, Kind = VariableDeclarator, {items = new T[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,0], Count = 8 }, Kind = VariableDeclaration, {T[] items = new T[_collection.Count]}
-IndexSequence { [1,3,8,4,1,1,1,1], Count = 8 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,8,4,1,1,1], Count = 7 }, Kind = LocalDeclarationStatement, {T[] items = new T[_collection.Count];}
-IndexSequence { [1,3,8,4,1,1,2,0,0,0,0], Count = 11 }, Kind = IdentifierToken, {_collection}
-IndexSequence { [1,3,8,4,1,1,2,0,0,0], Count = 10 }, Kind = IdentifierName, {_collection}
-IndexSequence { [1,3,8,4,1,1,2,0,0,1], Count = 10 }, Kind = DotToken, {.}
-IndexSequence { [1,3,8,4,1,1,2,0,0,2,0], Count = 11 }, Kind = IdentifierToken, {CopyTo}
-IndexSequence { [1,3,8,4,1,1,2,0,0,2], Count = 10 }, Kind = IdentifierName, {CopyTo}
-IndexSequence { [1,3,8,4,1,1,2,0,0], Count = 9 }, Kind = SimpleMemberAccessExpression, {_collection.CopyTo}
-IndexSequence { [1,3,8,4,1,1,2,0,1,0], Count = 10 }, Kind = OpenParenToken, {(}
-IndexSequence { [1,3,8,4,1,1,2,0,1,1,0,0], Count = 12 }, Kind = IdentifierToken, {items}
-IndexSequence { [1,3,8,4,1,1,2,0,1,1,0], Count = 11 }, Kind = IdentifierName, {items}
-IndexSequence { [1,3,8,4,1,1,2,0,1,1], Count = 10 }, Kind = Argument, {items}
-IndexSequence { [1,3,8,4,1,1,2,0,1,2], Count = 10 }, Kind = CommaToken, {,}
-IndexSequence { [1,3,8,4,1,1,2,0,1,3,0,0], Count = 12 }, Kind = NumericLiteralToken, {0}
-IndexSequence { [1,3,8,4,1,1,2,0,1,3,0], Count = 11 }, Kind = NumericLiteralExpression, {0}
-IndexSequence { [1,3,8,4,1,1,2,0,1,3], Count = 10 }, Kind = Argument, {0}
-IndexSequence { [1,3,8,4,1,1,2,0,1,4], Count = 10 }, Kind = CloseParenToken, {)}
-IndexSequence { [1,3,8,4,1,1,2,0,1], Count = 9 }, Kind = ArgumentList, {(items, 0)}
-IndexSequence { [1,3,8,4,1,1,2,0], Count = 8 }, Kind = InvocationExpression, {_collection.CopyTo(items, 0)}
-IndexSequence { [1,3,8,4,1,1,2,1], Count = 8 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,8,4,1,1,2], Count = 7 }, Kind = ExpressionStatement, {_collection.CopyTo(items, 0);}
-IndexSequence { [1,3,8,4,1,1,3,0], Count = 8 }, Kind = ReturnKeyword, {return}
-IndexSequence { [1,3,8,4,1,1,3,1,0], Count = 9 }, Kind = IdentifierToken, {items}
-IndexSequence { [1,3,8,4,1,1,3,1], Count = 8 }, Kind = IdentifierName, {items}
-IndexSequence { [1,3,8,4,1,1,3,2], Count = 8 }, Kind = SemicolonToken, {;}
-IndexSequence { [1,3,8,4,1,1,3], Count = 7 }, Kind = ReturnStatement, {return items;}
-IndexSequence { [1,3,8,4,1,1,4], Count = 7 }, Kind = CloseBraceToken, {}}
-IndexSequence { [1,3,8,4,1,1], Count = 6 }, Kind = Block, {{
+[1,3,8,0,0], Kind = OpenBracketToken, {[}
+[1,3,8,0,1,0,0], Kind = IdentifierToken, {DebuggerBrowsable}
+[1,3,8,0,1,0], Kind = IdentifierName, {DebuggerBrowsable}
+[1,3,8,0,1,1,0], Kind = OpenParenToken, {(}
+[1,3,8,0,1,1,1,0,0,0], Kind = IdentifierToken, {DebuggerBrowsableState}
+[1,3,8,0,1,1,1,0,0], Kind = IdentifierName, {DebuggerBrowsableState}
+[1,3,8,0,1,1,1,0,1], Kind = DotToken, {.}
+[1,3,8,0,1,1,1,0,2,0], Kind = IdentifierToken, {RootHidden}
+[1,3,8,0,1,1,1,0,2], Kind = IdentifierName, {RootHidden}
+[1,3,8,0,1,1,1,0], Kind = SimpleMemberAccessExpression, {DebuggerBrowsableState.RootHidden}
+[1,3,8,0,1,1,1], Kind = AttributeArgument, {DebuggerBrowsableState.RootHidden}
+[1,3,8,0,1,1,2], Kind = CloseParenToken, {)}
+[1,3,8,0,1,1], Kind = AttributeArgumentList, {(DebuggerBrowsableState.RootHidden)}
+[1,3,8,0,1], Kind = Attribute, {DebuggerBrowsable(DebuggerBrowsableState.RootHidden)}
+[1,3,8,0,2], Kind = CloseBracketToken, {]}
+[1,3,8,0], Kind = AttributeList, {[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]}
+[1,3,8,1], Kind = PublicKeyword, {public}
+[1,3,8,2,0,0], Kind = IdentifierToken, {T}
+[1,3,8,2,0], Kind = IdentifierName, {T}
+[1,3,8,2,1,0], Kind = OpenBracketToken, {[}
+[1,3,8,2,1,1,0], Kind = OmittedArraySizeExpressionToken, {}
+[1,3,8,2,1,1], Kind = OmittedArraySizeExpression, {}
+[1,3,8,2,1,2], Kind = CloseBracketToken, {]}
+[1,3,8,2,1], Kind = ArrayRankSpecifier, {[]}
+[1,3,8,2], Kind = ArrayType, {T[]}
+[1,3,8,3], Kind = IdentifierToken, {Items}
+[1,3,8,4,0], Kind = OpenBraceToken, {{}
+[1,3,8,4,1,0], Kind = GetKeyword, {get}
+[1,3,8,4,1,1,0], Kind = OpenBraceToken, {{}
+[1,3,8,4,1,1,1,0,0,0,0], Kind = IdentifierToken, {T}
+[1,3,8,4,1,1,1,0,0,0], Kind = IdentifierName, {T}
+[1,3,8,4,1,1,1,0,0,1,0], Kind = OpenBracketToken, {[}
+[1,3,8,4,1,1,1,0,0,1,1,0], Kind = OmittedArraySizeExpressionToken, {}
+[1,3,8,4,1,1,1,0,0,1,1], Kind = OmittedArraySizeExpression, {}
+[1,3,8,4,1,1,1,0,0,1,2], Kind = CloseBracketToken, {]}
+[1,3,8,4,1,1,1,0,0,1], Kind = ArrayRankSpecifier, {[]}
+[1,3,8,4,1,1,1,0,0], Kind = ArrayType, {T[]}
+[1,3,8,4,1,1,1,0,1,0], Kind = IdentifierToken, {items}
+[1,3,8,4,1,1,1,0,1,1,0], Kind = EqualsToken, {=}
+[1,3,8,4,1,1,1,0,1,1,1,0], Kind = NewKeyword, {new}
+[1,3,8,4,1,1,1,0,1,1,1,1,0,0], Kind = IdentifierToken, {T}
+[1,3,8,4,1,1,1,0,1,1,1,1,0], Kind = IdentifierName, {T}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,0], Kind = OpenBracketToken, {[}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1,0,0], Kind = IdentifierToken, {_collection}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1,0], Kind = IdentifierName, {_collection}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1,1], Kind = DotToken, {.}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1,2,0], Kind = IdentifierToken, {Count}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1,2], Kind = IdentifierName, {Count}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,1], Kind = SimpleMemberAccessExpression, {_collection.Count}
+[1,3,8,4,1,1,1,0,1,1,1,1,1,2], Kind = CloseBracketToken, {]}
+[1,3,8,4,1,1,1,0,1,1,1,1,1], Kind = ArrayRankSpecifier, {[_collection.Count]}
+[1,3,8,4,1,1,1,0,1,1,1,1], Kind = ArrayType, {T[_collection.Count]}
+[1,3,8,4,1,1,1,0,1,1,1], Kind = ArrayCreationExpression, {new T[_collection.Count]}
+[1,3,8,4,1,1,1,0,1,1], Kind = EqualsValueClause, {= new T[_collection.Count]}
+[1,3,8,4,1,1,1,0,1], Kind = VariableDeclarator, {items = new T[_collection.Count]}
+[1,3,8,4,1,1,1,0], Kind = VariableDeclaration, {T[] items = new T[_collection.Count]}
+[1,3,8,4,1,1,1,1], Kind = SemicolonToken, {;}
+[1,3,8,4,1,1,1], Kind = LocalDeclarationStatement, {T[] items = new T[_collection.Count];}
+[1,3,8,4,1,1,2,0,0,0,0], Kind = IdentifierToken, {_collection}
+[1,3,8,4,1,1,2,0,0,0], Kind = IdentifierName, {_collection}
+[1,3,8,4,1,1,2,0,0,1], Kind = DotToken, {.}
+[1,3,8,4,1,1,2,0,0,2,0], Kind = IdentifierToken, {CopyTo}
+[1,3,8,4,1,1,2,0,0,2], Kind = IdentifierName, {CopyTo}
+[1,3,8,4,1,1,2,0,0], Kind = SimpleMemberAccessExpression, {_collection.CopyTo}
+[1,3,8,4,1,1,2,0,1,0], Kind = OpenParenToken, {(}
+[1,3,8,4,1,1,2,0,1,1,0,0], Kind = IdentifierToken, {items}
+[1,3,8,4,1,1,2,0,1,1,0], Kind = IdentifierName, {items}
+[1,3,8,4,1,1,2,0,1,1], Kind = Argument, {items}
+[1,3,8,4,1,1,2,0,1,2], Kind = CommaToken, {,}
+[1,3,8,4,1,1,2,0,1,3,0,0], Kind = NumericLiteralToken, {0}
+[1,3,8,4,1,1,2,0,1,3,0], Kind = NumericLiteralExpression, {0}
+[1,3,8,4,1,1,2,0,1,3], Kind = Argument, {0}
+[1,3,8,4,1,1,2,0,1,4], Kind = CloseParenToken, {)}
+[1,3,8,4,1,1,2,0,1], Kind = ArgumentList, {(items, 0)}
+[1,3,8,4,1,1,2,0], Kind = InvocationExpression, {_collection.CopyTo(items, 0)}
+[1,3,8,4,1,1,2,1], Kind = SemicolonToken, {;}
+[1,3,8,4,1,1,2], Kind = ExpressionStatement, {_collection.CopyTo(items, 0);}
+[1,3,8,4,1,1,3,0], Kind = ReturnKeyword, {return}
+[1,3,8,4,1,1,3,1,0], Kind = IdentifierToken, {items}
+[1,3,8,4,1,1,3,1], Kind = IdentifierName, {items}
+[1,3,8,4,1,1,3,2], Kind = SemicolonToken, {;}
+[1,3,8,4,1,1,3], Kind = ReturnStatement, {return items;}
+[1,3,8,4,1,1,4], Kind = CloseBraceToken, {}}
+[1,3,8,4,1,1], Kind = Block, {{
                 T[] items = new T[_collection.Count];
                 _collection.CopyTo(items, 0);
                 return items;
             }}
-IndexSequence { [1,3,8,4,1], Count = 5 }, Kind = GetAccessorDeclaration, {get
+[1,3,8,4,1], Kind = GetAccessorDeclaration, {get
             {
                 T[] items = new T[_collection.Count];
                 _collection.CopyTo(items, 0);
                 return items;
             }}
-IndexSequence { [1,3,8,4,2], Count = 5 }, Kind = CloseBraceToken, {}}
-IndexSequence { [1,3,8,4], Count = 4 }, Kind = AccessorList, {{
+[1,3,8,4,2], Kind = CloseBraceToken, {}}
+[1,3,8,4], Kind = AccessorList, {{
             get
             {
                 T[] items = new T[_collection.Count];
@@ -196,7 +196,7 @@ IndexSequence { [1,3,8,4], Count = 4 }, Kind = AccessorList, {{
                 return items;
             }
         }}
-IndexSequence { [1,3,8], Count = 3 }, Kind = PropertyDeclaration, {[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+[1,3,8], Kind = PropertyDeclaration, {[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
@@ -206,8 +206,8 @@ IndexSequence { [1,3,8], Count = 3 }, Kind = PropertyDeclaration, {[DebuggerBrow
                 return items;
             }
         }}
-IndexSequence { [1,3,9], Count = 3 }, Kind = CloseBraceToken, {}}
-IndexSequence { [1,3], Count = 2 }, Kind = ClassDeclaration, {internal sealed class ICollectionDebugView<T>
+[1,3,9], Kind = CloseBraceToken, {}}
+[1,3], Kind = ClassDeclaration, {internal sealed class ICollectionDebugView<T>
     {
         private readonly ICollection<T> _collection;
 
@@ -229,8 +229,8 @@ IndexSequence { [1,3], Count = 2 }, Kind = ClassDeclaration, {internal sealed cl
             }
         }
     }}
-IndexSequence { [1,4], Count = 2 }, Kind = CloseBraceToken, {}}
-IndexSequence { [1], Count = 1 }, Kind = NamespaceDeclaration, {namespace System.Collections.Generic
+[1,4], Kind = CloseBraceToken, {}}
+[1], Kind = NamespaceDeclaration, {namespace System.Collections.Generic
 {
     internal sealed class ICollectionDebugView<T>
     {
@@ -255,8 +255,8 @@ IndexSequence { [1], Count = 1 }, Kind = NamespaceDeclaration, {namespace System
         }
     }
 }}
-IndexSequence { [2], Count = 1 }, Kind = EndOfFileToken, {}
-IndexSequence { [], Count = 0 }, Kind = CompilationUnit, {using System.Diagnostics;
+[2], Kind = EndOfFileToken, {}
+[], Kind = CompilationUnit, {using System.Diagnostics;
 
 namespace System.Collections.Generic
 {

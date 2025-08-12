@@ -1,9 +1,10 @@
 namespace Nemonuri.Study.CSharpSyntaxRewriter3;
 
+#if false
 internal static class WalkingTheory
 {
     /*
-    # Method1
+    Method1
 
     입력
     - 임의의 SyntaxTree
@@ -13,7 +14,7 @@ internal static class WalkingTheory
     */
 
     /*
-    # Method2
+    Method2
 
     입력
     - 임의의 SyntaxTree
@@ -22,9 +23,9 @@ internal static class WalkingTheory
     - 바꿔치기할 argument 의 expression 및 관련 정보들이 있는 SyntaxTree
 
     */
-    
+
     /*
-    # Method3
+    Method3
 
     입력
     - 임의의 Index Sequence 들
@@ -35,3 +36,4 @@ internal static class WalkingTheory
 
     */
 }
+#endif

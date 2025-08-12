@@ -54,7 +54,8 @@ var aggregatePremise = new AdHocIndexedPathAggregatingPremise<SyntaxNodeOrToken,
         if (!source.IndexedPath.TryGetLastNode(out var lastNode))
         { throw new InvalidOperationException(); }
 
-        sb.Append(source.IndexedPath.ToIndexSequence().ToString())
+        source.IndexedPath.ToIndexSequence().PrintInternalList(sb);
+        sb
         .Append(", ")
         .Append($"Kind = {lastNode.Kind()}").Append(", ")
         .Append('{').Append(lastNode.ToString().Trim()).Append('}')

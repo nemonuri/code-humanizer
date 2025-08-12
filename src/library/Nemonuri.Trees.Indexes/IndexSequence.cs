@@ -53,11 +53,30 @@ public class IndexSequence : IReadOnlyList<int>
     {
         StringBuilder sb = new StringBuilder()
         .Append(nameof(IndexSequence))
-        .Append(" { ")
-        .Append('[').AppendJoin(',', _internalList).Append(']')
-        .Append(", ")
-        .Append($"{nameof(Count)} = {Count}")
-        .Append(" }");
+        .Append(" { ");
+        if (PrintMembers(sb))
+        { 
+            sb.Append(' ');
+        }
+        sb.Append('}');
         return sb.ToString();
+    }
+
+    public bool PrintInternalList(StringBuilder stringBuilder)
+    {
+        stringBuilder
+        .Append('[').AppendJoin(',', _internalList).Append(']');
+        return true;
+    }
+
+    public bool PrintMembers(StringBuilder stringBuilder)
+    {
+        stringBuilder.Append("InternalList = ");
+        if (PrintInternalList(stringBuilder))
+        {
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append($"{nameof(Count)} = {Count}");
+        return true;
     }
 }
