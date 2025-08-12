@@ -53,4 +53,32 @@ public class Int32ReadOnlyListCompareTheory_Test
         { [1,4,5,8] },
         { [2,3,0,0,0,9,8,1] },
     };
+
+    [Theory]
+    [MemberData(nameof(CompareFromDownLeftToTopRight_Data))]
+    public void CompareFromDownLeftToTopRight
+    (
+        int[]? x,
+        int[]? y,
+        int expected
+    )
+    {
+        // Arrage
+
+        // Act
+        int actual = Int32ReadOnlyListCompareTheory.CompareFromDownLeftToTopRight(x, y);
+        actual = Math.Sign(actual);
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    public static TheoryData<int[]?, int[]?, int> CompareFromDownLeftToTopRight_Data => new()
+    {
+        { null, null, 0 },
+        { [1,3,5,7], [1,3,5,7], 0 },
+        { [1,3,5,5], [1,3,5,7], -1 },
+        { [1,3,5], [1,3,5,7], 1 },
+        { [1,3,4,7], [1,3,5,3], -1 },
+    };
 }
