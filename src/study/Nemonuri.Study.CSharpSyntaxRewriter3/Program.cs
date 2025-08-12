@@ -1,4 +1,5 @@
 ﻿
+using System.Text;
 using Nemonuri.Study.CSharpSyntaxRewriter3;
 
 
@@ -16,11 +17,33 @@ if (CommandParsingTheory.Parse(args) is not { } parseResult) { return 1; }
 
 SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(parseResult.TargetFile.FullName));
 
-if (RewriteWalkingTheory.TryGetRewriteSourceInfoRoseNode(tree, out var rewriteSourceInfoRoseNode))
-{
-    return 0;
-}
-else
+if (!RewriteWalkingTheory.TryGetRewriteSourceInfoRoseNode(tree, out var rewriteSourceInfoRoseNode))
 {
     return 1;
 }
+
+if (!RewriteWalkingTheory.TryGetSortedRewriteSourceInfos(rewriteSourceInfoRoseNode, out var sortedRewriteSourceInfos))
+{ 
+    return 1;
+}
+
+Console.WriteLine
+(
+    string.Join
+    (
+        Environment.NewLine,
+        sortedRewriteSourceInfos.Select
+        (
+            static a =>
+            {
+                StringBuilder sb = new();
+                a.IndexSequence.PrintInternalList(sb);
+                sb.AppendLine();
+                sb.AppendLine(a.SyntaxNode.ToString()).Append("---");
+                return sb.ToString();
+            }
+        )
+    )
+);
+
+return 0;

@@ -13,12 +13,9 @@ internal static class RewriteWalkingTheory
             if (!source.IndexedPath.TryGetLastNode(out var syntaxNodeOrToken))
             { return (default, false); }
 
-            if (syntaxNodeOrToken.AsNode() is ArgumentSyntax argument)
+            if (syntaxNodeOrToken.AsNode() is { } node1 && SyntaxNodeTheory.IsArgumentSyntaxAndHasComplexExpression(node1))
             {
-                if (!(argument.Expression is IdentifierNameSyntax or LiteralExpressionSyntax))
-                {
-                    return CreateResult(siblingsSeed, childrenSeed, source, argument);
-                }
+                return CreateResult(siblingsSeed, childrenSeed, source, node1);
             }
             else if (syntaxNodeOrToken.AsNode() is BlockSyntax block)
             {
@@ -41,7 +38,7 @@ internal static class RewriteWalkingTheory
                 IndexedPathWithNodePremise<SyntaxNodeOrToken> source,
                 SyntaxNode syntaxNode
             )
-            { 
+            {
                 RoseNode<RewriteSourceInfo> newNode = new(new(syntaxNode, source.IndexedPath.ToIndexSequence()), [.. childrenSeed]);
                 return (siblingsSeed.Add(newNode), true);
             }
@@ -79,5 +76,57 @@ internal static class RewriteWalkingTheory
             rewriteSourceInfoRoseNode = default;
             return false;
         }
+    }
+
+    private static readonly RoseNodePremise<RewriteSourceInfo> s_rewriteSourceInfoRoseNodePremise = new();
+
+    private static readonly
+    AdHocRoseNodeAggregatingPremise<RewriteSourceInfo, ImmutableList<RewriteSourceInfo>>
+    s_isArgumentSyntaxAndHasComplexExpressionAggregatingPremise = new
+    (
+        defaultSeedProvider: static () => [],
+        optionalAggregator: static (siblingsSeed, childrenSeed, source) =>
+        {
+            if (!source.IndexedPath.TryGetLastNode(out var lastNode))
+            { return (default, false); }
+
+            if
+            (
+                lastNode.Value is { } node &&
+                node.SyntaxNode.IsArgumentSyntaxAndHasComplexExpression()
+            )
+            {
+                return (siblingsSeed.AddRange(childrenSeed).Add(node), true);
+            }
+            else
+            {
+                return (siblingsSeed.AddRange(childrenSeed), true);
+            }
+        }
+    );
+
+    public static bool TryGetSortedRewriteSourceInfos
+    (
+        RoseNode<RewriteSourceInfo> rewriteSourceInfoRoseNode,
+        [NotNullWhen(true)] out RewriteSourceInfo[]? sortedRewriteSourceInfos
+    )
+    {
+        if
+        (
+            WalkingTheory.TryWalkAsRoot
+            (
+                s_isArgumentSyntaxAndHasComplexExpressionAggregatingPremise,
+                s_rewriteSourceInfoRoseNodePremise,
+                rewriteSourceInfoRoseNode,
+                out var rewriteSourceInfos
+            )
+        )
+        {
+            sortedRewriteSourceInfos = rewriteSourceInfos.Sort().ToArray();
+            return true;
+        }
+
+        sortedRewriteSourceInfos = default;
+        return false;
     }
 }

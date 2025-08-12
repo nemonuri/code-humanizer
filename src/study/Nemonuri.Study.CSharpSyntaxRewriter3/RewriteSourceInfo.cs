@@ -1,6 +1,6 @@
 namespace Nemonuri.Study.CSharpSyntaxRewriter3;
 
-internal class RewriteSourceInfo
+internal class RewriteSourceInfo : IComparable<RewriteSourceInfo>
 {
     public RewriteSourceInfo(SyntaxNode syntaxNode, IndexSequence indexSequence)
     {
@@ -13,4 +13,9 @@ internal class RewriteSourceInfo
 
     public SyntaxNode SyntaxNode { get; }
     public IndexSequence IndexSequence { get; }
+
+    public int CompareTo(RewriteSourceInfo? other)
+    {
+        return Int32ReadOnlyListCompareTheory.CompareFromDownLeftToTopRight(this.IndexSequence, other?.IndexSequence);
+    }
 }
