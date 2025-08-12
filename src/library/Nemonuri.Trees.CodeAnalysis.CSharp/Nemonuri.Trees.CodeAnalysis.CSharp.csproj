@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  
+  <!-- NugetProps -->
+    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
+  <!-- /NugetProps -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nemonuri.Trees.Indexes\Nemonuri.Trees.Indexes.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -14,7 +14,6 @@
   <!-- /NugetProps -->
 
   <ItemGroup>
-    <ProjectReference Include="..\..\library\Nemonuri.Trees.Common\Nemonuri.Trees.Common.csproj" />
     <ProjectReference Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />
     <ProjectReference Include="..\..\library\Nemonuri.Trees.Indexes\Nemonuri.Trees.Indexes.csproj" />
   </ItemGroup>
