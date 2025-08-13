@@ -27,23 +27,36 @@ if (!RewriteWalkingTheory.TryGetSortedRewriteSourceInfos(rewriteSourceInfoRoseNo
     return 1;
 }
 
-Console.WriteLine
-(
-    string.Join
-    (
-        Environment.NewLine,
-        sortedRewriteSourceInfos.Select
-        (
-            static a =>
-            {
-                StringBuilder sb = new();
-                a.IndexSequence.PrintInternalList(sb);
-                sb.AppendLine();
-                sb.AppendLine(a.SyntaxNode.ToString()).Append("---");
-                return sb.ToString();
-            }
-        )
-    )
-);
+//WriteRewriteSourceInfosToConsole(sortedRewriteSourceInfos);
+
+var newTree = RewriteSourceInfoTheory.CreateRewritedSyntaxTree(sortedRewriteSourceInfos);
+Console.WriteLine(newTree.ToString());
+
+//Console.WriteLine("---");
+//WriteRewriteSourceInfosToConsole(sortedRewriteSourceInfos);
 
 return 0;
+
+/*
+static void WriteRewriteSourceInfosToConsole(RewriteSourceInfo[] rewriteSourceInfos)
+{
+    Console.WriteLine
+    (
+        string.Join
+        (
+            Environment.NewLine,
+            rewriteSourceInfos.Select
+            (
+                static a =>
+                {
+                    StringBuilder sb = new();
+                    a.IndexSequence.PrintInternalList(sb);
+                    sb.AppendLine();
+                    sb.AppendLine(a.SyntaxNode.ToString()).Append("---");
+                    return sb.ToString();
+                }
+            )
+        )
+    );
+}
+*/

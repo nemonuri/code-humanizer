@@ -67,4 +67,19 @@ public readonly struct IndexedPath<TNode> : IReadOnlyList<NodeWithIndex<TNode>>
         lastNode = default;
         return false;
     }
+
+    public bool TryGetRootNode([NotNullWhen(true)] out TNode? rootNode)
+    {
+        if (!HasRoot) { goto Fail; }
+
+        if (_internalList[0].Node is not { } node)
+        { goto Fail; }
+
+        rootNode = node;
+        return true;
+        
+    Fail:
+        rootNode = default;
+        return false;
+    }
 }

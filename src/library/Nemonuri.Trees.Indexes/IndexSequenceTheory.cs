@@ -30,11 +30,22 @@ public static class IndexSequenceTheory
     (
         this IndexSequence source,
         IndexSequence inserted
+    ) =>
+    UpdateAsInserted(source, inserted, 1);
+
+    public static IndexSequence UpdateAsInserted
+    (
+        this IndexSequence source,
+        IndexSequence inserted,
+        int insertingCount
     )
     {
         Debug.Assert(source is not null);
         Debug.Assert(inserted is not null);
         Guard.IsFalse(inserted.IsReferencingRoot);
+        Guard.IsGreaterThanOrEqualTo(insertingCount, 0);
+
+        if (insertingCount == 0) { return source; }
 
         // Check `inserted` is shorter or equal than `source` (:= p0)
         if (!(inserted.Count <= source.Count)) { return source; }
@@ -51,7 +62,7 @@ public static class IndexSequenceTheory
         if (!(inserted[updatingIndex] <= source[updatingIndex]))
         { return source; }
 
-        return source.SetItem(updatingIndex, source[updatingIndex] + 1);
+        return source.SetItem(updatingIndex, source[updatingIndex] + insertingCount);
     }
 
     public static bool TryGetBoundInSubtree

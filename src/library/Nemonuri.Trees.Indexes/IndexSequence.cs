@@ -55,7 +55,7 @@ public class IndexSequence : IReadOnlyList<int>
         .Append(nameof(IndexSequence))
         .Append(" { ");
         if (PrintMembers(sb))
-        { 
+        {
             sb.Append(' ');
         }
         sb.Append('}');
@@ -78,5 +78,13 @@ public class IndexSequence : IReadOnlyList<int>
         }
         stringBuilder.Append($"{nameof(Count)} = {Count}");
         return true;
+    }
+
+    public bool CanPop() => _internalList.Count > 0;
+
+    public IndexSequence Pop()
+    {
+        Guard.IsGreaterThan(Count, 0);
+        return new(_internalList.RemoveAt(_internalList.Count - 1));
     }
 }

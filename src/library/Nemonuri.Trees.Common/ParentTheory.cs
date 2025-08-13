@@ -110,4 +110,32 @@ public static class ParentTheory
             return equalityComparer.Equals(maybeChild, child);
         }
     }
+
+    public static bool TryGetDecendentOrSelfAt<TNode>
+    (
+        this IChildrenProvider<TNode> premise,
+        TNode source,
+        IEnumerable<int> indexSequence,
+        [NotNullWhen(true)] out TNode? decendentOrSelf
+    )
+    {
+        Debug.Assert(premise is not null);
+        Debug.Assert(source is not null);
+        Debug.Assert(indexSequence is not null);
+
+        TNode currentNode = source;
+        foreach (var index in indexSequence)
+        {
+            if (!premise.TryGetChildAt(currentNode, index, out var nextNode))
+            {
+                decendentOrSelf = default;
+                return false;
+            }
+
+            currentNode = nextNode;
+        }
+
+        decendentOrSelf = currentNode;
+        return true;
+    }
 }

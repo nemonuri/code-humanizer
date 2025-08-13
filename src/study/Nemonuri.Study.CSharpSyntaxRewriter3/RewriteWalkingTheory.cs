@@ -39,7 +39,7 @@ internal static class RewriteWalkingTheory
                 SyntaxNode syntaxNode
             )
             {
-                RoseNode<RewriteSourceInfo> newNode = new(new(syntaxNode, source.IndexedPath.ToIndexSequence()), [.. childrenSeed]);
+                RoseNode<RewriteSourceInfo> newNode = new(new(syntaxNode, source.IndexedPath), [.. childrenSeed]);
                 return (siblingsSeed.Add(newNode), true);
             }
         }
