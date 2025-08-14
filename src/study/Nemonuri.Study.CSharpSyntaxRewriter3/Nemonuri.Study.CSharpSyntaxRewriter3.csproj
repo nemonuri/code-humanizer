@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- NugetProps -->
-    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
-    <Import Project="$(NugetPropsDirectory)System.CommandLine.props" />
-    <Import Project="$(NugetPropsDirectory)CommunityToolkit.Diagnostics.props" />
-  <!-- /NugetProps -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />

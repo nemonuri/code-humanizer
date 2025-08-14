@@ -6,9 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   
-  <!-- NugetProps -->
-    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
-  <!-- /NugetProps -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Nemonuri.Trees.Indexes\Nemonuri.Trees.Indexes.csproj" />

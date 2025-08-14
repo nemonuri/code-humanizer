@@ -16,9 +16,9 @@
     <ProjectReference Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />
   </ItemGroup>
   
-  <!-- NugetProps -->
-    <Import Project="$(NugetPropsDirectory)System.CommandLine.props" />
-    <Import Project="$(NugetPropsDirectory)CommunityToolkit.Diagnostics.props" />
-  <!-- /NugetProps -->
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" />
+  </ItemGroup>
 
 </Project>

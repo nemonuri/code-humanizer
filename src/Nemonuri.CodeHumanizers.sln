@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpSyntax
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Trees.Indexes.Tests", "test\Nemonuri.Trees.Indexes.Tests\Nemonuri.Trees.Indexes.Tests.csproj", "{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpAICommentor1", "study\Nemonuri.Study.CSharpAICommentor1\Nemonuri.Study.CSharpAICommentor1.csproj", "{40107F85-DF24-439E-BFF1-756FB24FDCB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,5 +72,6 @@ Global
 		{D836990A-A155-4290-A593-E77154F2B0D8} = {8EF7B7FF-1B96-42B0-976D-078C3127B3D4}
 		{38BEE37F-6BF9-4EAD-B4DC-23F6E557BEA6} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
 		{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C} = {82E7D19B-8295-4522-8BED-576386D4461D}
+		{40107F85-DF24-439E-BFF1-756FB24FDCB6} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
 	EndGlobalSection
 EndGlobal

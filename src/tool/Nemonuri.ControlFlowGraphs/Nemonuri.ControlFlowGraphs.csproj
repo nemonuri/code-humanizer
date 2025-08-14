@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- NugetProps -->
-    <Import Project="$(NugetPropsDirectory)Microsoft.CodeAnalysis.CSharp.props" />
-  <!-- /NugetProps -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj" />
   </ItemGroup>

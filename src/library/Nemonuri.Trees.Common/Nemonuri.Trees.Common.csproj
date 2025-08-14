@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <!-- NugetPropsDirectory -->
-    <Import Project="$(NugetPropsDirectory)CommunityToolkit.Diagnostics.props" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" />
   <!-- /NugetPropsDirectory -->
 
 </Project>
