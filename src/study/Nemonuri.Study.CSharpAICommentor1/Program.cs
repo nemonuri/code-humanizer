@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+using Nemonuri.Study.CSharpAICommentor1;
+
+//
+
+StatusModel.AssertConfiured();
+
+//
+
+StatusModel.AssertOriginalSyntaxTreeIsValid();

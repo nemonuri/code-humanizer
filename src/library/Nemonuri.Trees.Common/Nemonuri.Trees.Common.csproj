@@ -7,8 +7,8 @@
     <RootNamespace>Nemonuri.Trees</RootNamespace>
   </PropertyGroup>
 
-  <!-- NugetPropsDirectory -->
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" />
-  <!-- /NugetPropsDirectory -->
+  </ItemGroup>
 
 </Project>
