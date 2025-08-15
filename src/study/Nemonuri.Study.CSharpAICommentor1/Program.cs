@@ -1,10 +1,22 @@
 ﻿
 using Nemonuri.Study.CSharpAICommentor1;
 
+// 
+
+StatusForTest.AssertConfigured();
+
+// 
+
+StatusForTest.AssertOriginalSyntaxTreeIsValid();
+
 //
 
-StatusModel.AssertConfiured();
+StatusForTest.AssertRewritedSyntaxTreeIsValid();
 
 //
 
-StatusModel.AssertOriginalSyntaxTreeIsValid();
+StatusForTest.AssertCommentTriviaAddedTreeIsValid();
+
+//
+
+StatusForTest.AssertAICommentedCodeIsValid();

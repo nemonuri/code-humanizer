@@ -5,24 +5,30 @@ internal static class Constants
     public const string E2eTest = "E2E_TEST";
 }
 
-internal class StatusModel
+internal class StatusForTest
 {
-    private readonly static StatusModel s_instance = new();
+    private readonly static StatusForTest s_instance = new();
 
-    private StatusModel() { }
+    private StatusForTest() { }
 
     public Func<CSharpSyntaxTree>? OriginalSyntaxTreeProvider { get; set; }
 
     public CSharpSyntaxTree? OriginalSyntaxTree { get; set; }
 
+    public CSharpSyntaxTree? RewritedSyntaxTree { get; set; }
+
+    public CSharpSyntaxTree? CommentTriviaAddedTree { get; set; }
+
+    public string? AICommentedCode { get; set; }
+
     [Conditional(Constants.E2eTest)]
-    public static void Update(Action<StatusModel> updator)
+    public static void Update(Action<StatusForTest> updator)
     {
         updator(s_instance);
     }
 
     [Conditional(Constants.E2eTest)]
-    public static void AssertConfiured()
+    public static void AssertConfigured()
     {
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider is not null);
 
@@ -40,7 +46,19 @@ internal class StatusModel
     }
 
     [Conditional(Constants.E2eTest)]
-    public static void Assertsdf()
+    public static void AssertRewritedSyntaxTreeIsValid()
+    {
+
+    }
+
+    [Conditional(Constants.E2eTest)]
+    public static void AssertCommentTriviaAddedTreeIsValid()
+    {
+
+    }
+    
+    [Conditional(Constants.E2eTest)]
+    public static void AssertAICommentedCodeIsValid()
     {
         
     }
