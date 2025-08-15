@@ -1,9 +1,6 @@
 namespace Nemonuri.Study.CSharpAICommentor1;
 
-internal static class Constants
-{
-    public const string E2eTest = "E2E_TEST";
-}
+using C = Constants;
 
 internal class StatusForTest
 {
@@ -21,20 +18,20 @@ internal class StatusForTest
 
     public string? AICommentedCode { get; set; }
 
-    [Conditional(Constants.E2eTest)]
+    [Conditional(C.E2eTest)]
     public static void Update(Action<StatusForTest> updator)
     {
         updator(s_instance);
     }
 
-    [Conditional(Constants.E2eTest)]
+    [Conditional(C.E2eTest)]
     public static void AssertConfigured()
     {
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider is not null);
 
     }
 
-    [Conditional(Constants.E2eTest)]
+    [Conditional(C.E2eTest)]
     public static void AssertOriginalSyntaxTreeIsValid()
     {
         Debug.Assert(s_instance.OriginalSyntaxTree is not null);
@@ -45,21 +42,21 @@ internal class StatusForTest
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider.Invoke().IsEquivalentTo(s_instance.OriginalSyntaxTree));
     }
 
-    [Conditional(Constants.E2eTest)]
+    [Conditional(C.E2eTest)]
     public static void AssertRewritedSyntaxTreeIsValid()
     {
 
     }
 
-    [Conditional(Constants.E2eTest)]
+    [Conditional(C.E2eTest)]
     public static void AssertCommentTriviaAddedTreeIsValid()
     {
 
     }
-    
-    [Conditional(Constants.E2eTest)]
+
+    [Conditional(C.E2eTest)]
     public static void AssertAICommentedCodeIsValid()
     {
-        
+
     }
 }

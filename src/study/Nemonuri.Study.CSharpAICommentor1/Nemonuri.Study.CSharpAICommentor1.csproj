@@ -6,12 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <E2eTest>false</E2eTest>
-    <DefineConstants Condition=" '$(E2eTest)' == 'true' ">$(DefineConstants);E2E_TEST</DefineConstants>
+    <DefineConstants 
+      Condition=" ('$(E2eTest)' == 'true') and ('$(Configuration)' == 'Debug') "
+    >$(DefineConstants);E2E_TEST</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
   </ItemGroup>
 
 </Project>
