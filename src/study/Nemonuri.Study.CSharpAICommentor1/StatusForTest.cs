@@ -8,7 +8,7 @@ internal class StatusForTest
 
     private StatusForTest() { }
 
-    public Func<CSharpSyntaxTree>? OriginalSyntaxTreeProvider { get; set; }
+    public Func<CSharpSyntaxTree?>? OriginalSyntaxTreeProvider { get; set; }
 
     public CSharpSyntaxTree? OriginalSyntaxTree { get; set; }
 
@@ -39,7 +39,7 @@ internal class StatusForTest
         Debug.Assert(!s_instance.OriginalSyntaxTree.GetRoot().IsMissing);
 
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider is not null);
-        Debug.Assert(s_instance.OriginalSyntaxTreeProvider.Invoke().IsEquivalentTo(s_instance.OriginalSyntaxTree));
+        Debug.Assert(s_instance.OriginalSyntaxTreeProvider.Invoke()?.IsEquivalentTo(s_instance.OriginalSyntaxTree) ?? false);
     }
 
     [Conditional(C.E2eTest)]
