@@ -2,6 +2,7 @@
 namespace Nemonuri.Study.CSharpAICommentor1;
 
 using C = Constants;
+using OllamaSharp;
 
 public class AICommentorEngine : IEngineEntryConfig
 {
@@ -34,6 +35,19 @@ public class AICommentorEngine : IEngineEntryConfig
 
         StatusForTest.Update(s => s.OriginalSyntaxTree = originalSyntaxTree);
         StatusForTest.AssertOriginalSyntaxTreeIsValid();
+
+        //--- Try connect to Ollama server ---
+        Debug.Assert(OllamaServerUri is not null);
+
+        HttpClient httpClient = new HttpClient() { BaseAddress = OllamaServerUri };
+        OllamaApiClient ollamaApiClient = new(OllamaServerUri);
+
+        //--- Check ollama server is alive ---
+        httpClient.Timeout = TimeSpan.FromSeconds(10);
+        string ollamaVersion = await ollamaApiClient.GetVersionAsync(cancellationToken).ConfigureAwait(false);
+        //---|
+
+        //---|
 
         // TODO: more implmentaion
 

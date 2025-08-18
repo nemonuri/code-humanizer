@@ -17,6 +17,7 @@
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="Nemonuri.Trees" />
     <PackageReference Include="Nemonuri.Trees.Indexes" />
+    <PackageReference Include="OllamaSharp" />
   </ItemGroup>
 
 </Project>
