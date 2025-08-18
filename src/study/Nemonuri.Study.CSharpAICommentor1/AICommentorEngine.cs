@@ -20,6 +20,7 @@ public class AICommentorEngine : IEngineEntryConfig
 
         if (cancellationToken.IsCancellationRequested) { return CreateErrorResult(); }
 
+        
         var originalSyntaxTree = await CreateCSharpSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
         if (originalSyntaxTree is null)
         { return CreateErrorResult("Cannot create csharp syntax tree."); }
@@ -28,7 +29,8 @@ public class AICommentorEngine : IEngineEntryConfig
         if (originalSyntaxTreeRoot is null)
         { return CreateErrorResult("Cannot get csharp syntax root."); }
 
-        // TODO: Root 노드에, missing 노드가 포함되어 있는지 확인하는 메서드 구현
+        if (SyntaxNodeTheory.ContainsMissingNodeOrToken(originalSyntaxTreeRoot))
+        { return CreateErrorResult("The source code has syntax error."); }
 
         StatusForTest.Update(s => s.OriginalSyntaxTree = originalSyntaxTree);
         StatusForTest.AssertOriginalSyntaxTreeIsValid();
@@ -54,7 +56,7 @@ public class AICommentorEngine : IEngineEntryConfig
                 ensuredSourceCode = SourceCode;
                 break;
             case ({ }, null):
-                ensuredSourceCode = await File.ReadAllTextAsync(SourceFileInfo.FullName).ConfigureAwait(false);
+                ensuredSourceCode = await File.ReadAllTextAsync(SourceFileInfo.FullName, cancellationToken).ConfigureAwait(false);
                 break;
             default:
                 return default;

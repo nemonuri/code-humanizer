@@ -36,7 +36,7 @@ internal class StatusForTest
     {
         Debug.Assert(s_instance.OriginalSyntaxTree is not null);
         Debug.Assert(s_instance.OriginalSyntaxTree.HasCompilationUnitRoot);
-        Debug.Assert(!s_instance.OriginalSyntaxTree.GetRoot().IsMissing);
+        Debug.Assert(!SyntaxNodeTheory.ContainsMissingNodeOrToken(s_instance.OriginalSyntaxTree.GetRoot()));
 
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider is not null);
         Debug.Assert(s_instance.OriginalSyntaxTreeProvider.Invoke()?.IsEquivalentTo(s_instance.OriginalSyntaxTree) ?? false);

@@ -4,3 +4,5 @@ global using Microsoft.CodeAnalysis.CSharp.Syntax;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using CommunityToolkit.Diagnostics;
+global using Nemonuri.Trees;
+global using Nemonuri.Trees.Indexes;

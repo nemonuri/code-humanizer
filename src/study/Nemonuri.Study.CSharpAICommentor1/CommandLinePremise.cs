@@ -117,6 +117,8 @@ public class CommandLinePremise
                     config.TemplateEngineArguments = parseResult.GetValue(TemplateEngineArguments);
                     config.EnableLog = parseResult.GetValue(EnableLog);
                     config.LogDirectoryInfo = parseResult.GetRequiredValue(LogDirectoryInfo);
+
+                    _entryConfig = config;
                 }
                 catch (InvalidOperationException e)
                 {
