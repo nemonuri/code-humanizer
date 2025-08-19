@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\library\Nemonuri.Trees.Common\Nemonuri.Trees.Common.csproj" />
+    <ProjectReference Include="..\..\library\Nemonuri.OllamaRunning\Nemonuri.OllamaRunning.csproj" />
   </ItemGroup>
 
   <ItemGroup>

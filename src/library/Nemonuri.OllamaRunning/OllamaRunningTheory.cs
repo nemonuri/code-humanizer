@@ -9,21 +9,18 @@ public static class OllamaRunningTheory
     public static async Task<OllamaApiClientOrErrorMessage>
     GetClientAfterEnsuringOllamaServerRunningAsync
     (
-        HttpClient httpClient,
         Uri? serverUri = null,
-        string ollamaAppCommand = OllamaRunningConstants.DefaultOllamaAppCommand,
+        bool enableRunningLocalOllamaServer = false,
+        string localOllamaServerCommand = OllamaRunningConstants.DefaultOllamaAppCommand,
         CancellationToken cancellationToken = default
     )
     {
-        Guard.IsNotNull(httpClient);
-
-        Uri? oldHttpClientBaseAddress = httpClient.BaseAddress;
         Uri ensuredServerUri = serverUri ?? OllamaRunningConstants.DefaultOllamaServerUri;
 
+        OllamaApiClient? ollamaApiClient = null;
         try
         {
-            httpClient.BaseAddress = ensuredServerUri;
-            OllamaApiClient ollamaApiClient = new(httpClient);
+            ollamaApiClient = new(ensuredServerUri);
 
             //--- Ping to ollama server, to test server of given URI is alive ---
             using CancellationTokenSource timerCts = new();
@@ -31,14 +28,19 @@ public static class OllamaRunningTheory
             timerCts.CancelAfter(TimeSpan.FromSeconds(10));
 
             bool pingSuccessed = false;
+            string? pingFailMessage = null;
             try
             {
                 string version = await ollamaApiClient.GetVersionAsync(combinedCts.Token).ConfigureAwait(false);
                 pingSuccessed = !string.IsNullOrWhiteSpace(version);
+                if (!pingSuccessed)
+                { 
+                    pingFailMessage = $"{GetDebugLogPrefix()}[Ping to ollama server] Invalid {nameof(ollamaApiClient.GetVersionAsync)} result. Value = {version}";
+                }
             }
             catch (OperationCanceledException) when (timerCts.IsCancellationRequested)
             {
-                Debug.WriteLine($"{GetDebugLogPrefix()}[Ping to ollama server] Timeout");
+                pingFailMessage = $"{GetDebugLogPrefix()}[Ping to ollama server] Timeout";
                 pingSuccessed = false;
             }
             //---|
@@ -46,7 +48,11 @@ public static class OllamaRunningTheory
             //--- Run local ollama client, if server of given URI is not alive ---
             if (!pingSuccessed)
             {
-
+                if (!enableRunningLocalOllamaServer)
+                {
+                    ollamaApiClient.Dispose();
+                    return OllamaApiClientOrErrorMessage.ErrorMessage(pingFailMessage ?? "");
+                }
             }
             //---|
 
@@ -58,14 +64,11 @@ public static class OllamaRunningTheory
         catch (Exception e)
         {
             Debug.WriteLine(e.ToString());
+            ollamaApiClient?.Dispose();
             return OllamaApiClientOrErrorMessage.ErrorMessage
             (
                 $"{GetDebugLogPrefix()}[Error] {e.Message}"
             );
-        }
-        finally
-        {
-            httpClient.BaseAddress = oldHttpClientBaseAddress;
         }
 
         static string GetDebugLogPrefix() => $"[{nameof(OllamaRunningTheory)}][{nameof(GetClientAfterEnsuringOllamaServerRunningAsync)}]";
