@@ -10,6 +10,7 @@
     <PackageVersion Include="RoslynQuoter" Version="1.0.1" />  
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.8.0" />
     <PackageVersion Include="OllamaSharp" Version="5.3.4" />
+    <PackageVersion Include="SumSharp" Version="2.3.0" />
   </ItemGroup>
   
   <ItemGroup>

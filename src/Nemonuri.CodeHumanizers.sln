@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Trees.Indexes.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpAICommentor1", "study\Nemonuri.Study.CSharpAICommentor1\Nemonuri.Study.CSharpAICommentor1.csproj", "{40107F85-DF24-439E-BFF1-756FB24FDCB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.CommandLines.Common", "library\Nemonuri.CommandLines.Common\Nemonuri.CommandLines.Common.csproj", "{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.OllamaRunning", "library\Nemonuri.OllamaRunning\Nemonuri.OllamaRunning.csproj", "{A9EE9D27-D225-437A-89BA-D6C5D2360D07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +39,10 @@ Global
 		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40107F85-DF24-439E-BFF1-756FB24FDCB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9EE9D27-D225-437A-89BA-D6C5D2360D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9EE9D27-D225-437A-89BA-D6C5D2360D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9EE9D27-D225-437A-89BA-D6C5D2360D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9EE9D27-D225-437A-89BA-D6C5D2360D07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +51,6 @@ Global
 		{D836990A-A155-4290-A593-E77154F2B0D8} = {8EF7B7FF-1B96-42B0-976D-078C3127B3D4}
 		{0E4B4B67-E9C9-4C4C-85B4-BFFA4099842C} = {82E7D19B-8295-4522-8BED-576386D4461D}
 		{40107F85-DF24-439E-BFF1-756FB24FDCB6} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
-		{12AC2ED3-F6C7-4490-AAEE-6C099DEB5367} = {9EFC75CE-49CF-41D7-9E57-92E005AEA48E}
+		{A9EE9D27-D225-437A-89BA-D6C5D2360D07} = {9EFC75CE-49CF-41D7-9E57-92E005AEA48E}
 	EndGlobalSection
 EndGlobal
