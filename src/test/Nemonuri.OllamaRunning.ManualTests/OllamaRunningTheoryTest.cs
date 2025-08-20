@@ -29,7 +29,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
-    public async Task CheckLocalOllamaServerRunningStateAsync()
+    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsNotRunning_ShouldIdleValue()
     {
         // Arrange
         Console.WriteLine("Please do these:");
@@ -47,6 +47,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
 
         // Assert
         _output.WriteLine(actual.ToString());
+        Assert.True(actual.IsValue);
         Assert.Equal(LocalOllamaServerRunningState.Idle, actual.AsValueOrDefault);
     }
 }

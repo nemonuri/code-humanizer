@@ -106,6 +106,14 @@ public static class OllamaRunningTheory
                 }
             }
 
+            Debug.WriteLine
+            (
+                $"""
+                [{nameof(CheckLocalOllamaServerRunningStateAsync)}] Starting local ollama host process. 
+                {nameof(process)} = {process}
+                """
+            );
+
             if (!process.Start())
             {
                 return "Cannot start local Ollama server version checking process.";
@@ -122,11 +130,27 @@ public static class OllamaRunningTheory
 
             string errorString = errorStringBuilder.ToString();
             string stdoutString = new(stdoutBlock, 0, stdoutBlockEnsuredLength);
+
+            Debug.WriteLine
+            (
+                $"""
+                [{nameof(CheckLocalOllamaServerRunningStateAsync)}] Process closed. 
+                {nameof(errorString)} = {errorString}
+                {nameof(stdoutString)} = {stdoutString}
+                """
+            );
             //---|
 
             //--- Solve local ollama server running state ---
             if (stdoutString.Contains("ollama version is"))
             {
+                Debug.WriteLine
+                (
+                    $"""
+                    [{nameof(CheckLocalOllamaServerRunningStateAsync)}] local ollama server running state solved. 
+                    result = {LocalOllamaServerRunningState.Running}
+                    """
+                );
                 return LocalOllamaServerRunningState.Running;
             }
             else if
@@ -135,16 +159,37 @@ public static class OllamaRunningTheory
                 stdoutString.Contains("client version is")
             )
             {
+                Debug.WriteLine
+                (
+                    $"""
+                    [{nameof(CheckLocalOllamaServerRunningStateAsync)}] local ollama server running state solved. 
+                    result = {LocalOllamaServerRunningState.Idle}
+                    """
+                );
                 return LocalOllamaServerRunningState.Idle;
             }
             else
             {
+                Debug.WriteLine
+                (
+                    $"""
+                    [{nameof(CheckLocalOllamaServerRunningStateAsync)}] Cannot solve local ollama server running state. 
+                    result = {errorString}
+                    """
+                );
                 return errorString;
             }
             //---|
         }
         catch (Exception e)
         {
+            Debug.WriteLine
+            (
+                $"""
+                [{nameof(CheckLocalOllamaServerRunningStateAsync)}] Unexpected exception raised. 
+                exception = {e}
+                """
+            );
             return $"{e.Message}";
         }
     }   
