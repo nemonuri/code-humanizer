@@ -34,4 +34,8 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\Nemonuri.OllamaRunning\Nemonuri.OllamaRunning.csproj" />
+  </ItemGroup>
+
 </Project>
