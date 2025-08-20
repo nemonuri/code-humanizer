@@ -24,7 +24,10 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
     }
 
     [Fact]
-    public void Dummy() { }
+    public void Dummy()
+    {
+        _testOutput.WriteLine($"{nameof(_entryFixture)} = {_entryFixture}");
+    }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
     public void CheckLocalOllamaServerRunningStateAsync()
