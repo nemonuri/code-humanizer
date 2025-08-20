@@ -23,6 +23,9 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         _entryFixture = entryFixture;
     }
 
+    [Fact]
+    public void Dummy() { }
+
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
     public void CheckLocalOllamaServerRunningStateAsync()
     {
