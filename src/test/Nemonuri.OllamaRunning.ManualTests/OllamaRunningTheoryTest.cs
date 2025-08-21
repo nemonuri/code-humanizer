@@ -29,7 +29,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
-    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsNotRunning_ShouldIdleValue()
+    public async Task GetLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsNotRunning_ShouldIdleValue()
     {
         // Arrange
         Console.WriteLine("Please do these:");
@@ -39,7 +39,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.CheckLocalOllamaServerRunningStateAsync
+        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
@@ -52,7 +52,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
-    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsRunning_ShouldRunningValue()
+    public async Task GetLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsRunning_ShouldRunningValue()
     {
         // Arrange
         Console.WriteLine("Please do these:");
@@ -62,7 +62,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.CheckLocalOllamaServerRunningStateAsync
+        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
@@ -75,7 +75,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
-    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaHostCommandIsWrong_ShouldErrorMessage()
+    public async Task GetLocalOllamaServerRunningStateAsync_WhenLocalOllamaHostCommandIsWrong_ShouldErrorMessage()
     {
         // Arrange
         Console.WriteLine("Please do these:");
@@ -84,7 +84,7 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.CheckLocalOllamaServerRunningStateAsync
+        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.InvalidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
