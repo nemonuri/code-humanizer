@@ -2,18 +2,20 @@
 
 namespace Nemonuri.Failures;
 
-public class Failure<TData>
+public class Failure<TFailInfo>
 {
-    public Failure(TData data, string message)
+    public Failure(TFailInfo failInfo, string? message)
     {
-        Guard.IsNotNull(data);
-        Guard.IsNotNull(message);
+        Guard.IsNotNull(failInfo);
 
-        Data = data;
-        Message = message;
+        FailInfo = failInfo;
+        Message = message ?? "";
     }
 
-    public TData Data { get; }
+    public Failure(TFailInfo data) : this(data, null)
+    { }
+
+    public TFailInfo FailInfo { get; }
 
     public string Message { get; }
 }
