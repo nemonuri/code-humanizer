@@ -50,4 +50,48 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.True(actual.IsValue);
         Assert.Equal(LocalOllamaServerRunningState.Idle, actual.AsValueOrDefault);
     }
+
+    [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
+    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaServerIsRunning_ShouldRunningValue()
+    {
+        // Arrange
+        Console.WriteLine("Please do these:");
+        Console.WriteLine($"1. Check '{_entryFixture.ValidLocalOllamaHostCommand}' is correct local Ollama host command.");
+        Console.WriteLine($"2. Check local Ollama server is running.");
+        Console.WriteLine("Type 'y' and press 'Enter' to continue..");
+        Assert.Equal("y", Console.ReadLine());
+
+        // Act
+        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.CheckLocalOllamaServerRunningStateAsync
+        (
+            localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        _output.WriteLine(actual.ToString());
+        Assert.True(actual.IsValue);
+        Assert.Equal(LocalOllamaServerRunningState.Running, actual.AsValueOrDefault);
+    }
+
+    [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
+    public async Task CheckLocalOllamaServerRunningStateAsync_WhenLocalOllamaHostCommandIsWrong_ShouldErrorMessage()
+    {
+        // Arrange
+        Console.WriteLine("Please do these:");
+        Console.WriteLine($"1. Check '{_entryFixture.InvalidLocalOllamaHostCommand}' is wrong local Ollama host command.");
+        Console.WriteLine("Type 'y' and press 'Enter' to continue..");
+        Assert.Equal("y", Console.ReadLine());
+
+        // Act
+        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.CheckLocalOllamaServerRunningStateAsync
+        (
+            localOllamaHostCommand: _entryFixture.InvalidLocalOllamaHostCommand,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        _output.WriteLine(actual.ToString());
+        Assert.True(actual.IsErrorMessage);
+    }
 }
