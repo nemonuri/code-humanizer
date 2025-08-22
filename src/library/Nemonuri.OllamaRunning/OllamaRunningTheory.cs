@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Nemonuri.Failures;
@@ -9,6 +10,81 @@ namespace Nemonuri.OllamaRunning;
 
 public static partial class OllamaRunningTheory
 {
+    public static async
+    Task<GetOllamaServerVersionResult>
+    GetOllamaServerVersionAsync
+    (
+        Uri? serverUri = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        const string methodLabel = $"[{nameof(GetOllamaServerVersionAsync)}]";
+
+        Uri ensuredServerUri = serverUri ?? OllamaRunningConstants.DefaultOllamaServerUri;
+        OllamaApiClient? ollamaApiClient = null;
+        StrongBox<bool> timeOutedBox = new(false);
+        TimeSpan timeLimit = TimeSpan.FromSeconds(10);
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            ollamaApiClient = new(ensuredServerUri);
+            Debug.WriteLine($"{methodLabel} {nameof(OllamaApiClient)} created. Uri = {ollamaApiClient.Uri}");
+
+            //--- Request version to given ollama server URI ---
+            using CancellationTokenSource timerCts = new();
+            var timerCt = timerCts.Token;
+            timerCt.UnsafeRegister
+            (
+                static obj =>
+                {
+                    if (obj is StrongBox<bool> v1) { v1.Value = true; }
+                },
+                timeOutedBox
+            );
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timerCt);
+            timerCts.CancelAfter(timeLimit);
+
+            Debug.WriteLine($"{methodLabel} Run {nameof(OllamaApiClient)}.{nameof(ollamaApiClient.GetVersionAsync)}. TimeLimit = {timeLimit}");
+            string versionResponse = await ollamaApiClient.GetVersionAsync(combinedCts.Token).ConfigureAwait(false);
+            Debug.WriteLine($"{methodLabel} Response = {versionResponse}");
+
+            if (CheckSourceHasCorrectGetVersionResponse(versionResponse))
+            {
+                string msg = "Response is valid.";
+                Debug.WriteLine($"{methodLabel} {msg}");
+                return GetOllamaServerVersionResult.CreateAsValue((ollamaApiClient, versionResponse));
+            }
+            else
+            {
+                string msg = "Response is invalid.";
+                Debug.WriteLine($"{methodLabel} {msg}");
+                return GetOllamaServerVersionResult.CreateAsInvalidResponse(versionResponse, msg);
+            }
+        }
+        catch (OperationCanceledException e)
+        {
+            ollamaApiClient?.Dispose();
+            // Check canceled is raised from timeout.
+            Debug.WriteLine($"{methodLabel} {e.Message}");
+            if (timeOutedBox.Value)
+            {
+                return GetOllamaServerVersionResult.CreateAsTimeOut(timeLimit, e.Message);
+            }
+            else
+            {
+                return GetOllamaServerVersionResult.CreateAsFailure(GetOllamaServerVersionResult.FailInfo.Cancel, e.Message);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine($"{methodLabel}{Environment.NewLine}{e}");
+            ollamaApiClient?.Dispose();
+            throw;
+        }
+    }
+
+
     public static async
     Task<ValueOrFailure<(OllamaApiClient, OllamaLocalServerProcess?), GetClientAfterEnsuringOllamaServerRunningFailInfo>>
     GetClientAfterEnsuringOllamaServerRunningAsync
@@ -22,12 +98,18 @@ public static partial class OllamaRunningTheory
         const string methodLabel = $"[{nameof(GetClientAfterEnsuringOllamaServerRunningAsync)}]";
         const string returnErrorLabel = "[Error]";
 
-        Uri ensuredServerUri = serverUri ?? OllamaRunningConstants.DefaultOllamaServerUri;
-
         OllamaApiClient? ollamaApiClient = null;
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            Debug.WriteLine($"{methodLabel} Run {nameof(GetOllamaServerVersionAsync)}. {nameof(serverUri)} = {serverUri}");
+            GetOllamaServerVersionResult getOllamaServerVersionResult = await GetOllamaServerVersionAsync(serverUri, cancellationToken).ConfigureAwait(false);
+            if (getOllamaServerVersionResult.IsFailure)
+            {
+                Debug.WriteLine($"{methodLabel} {nameof(GetOllamaServerVersionAsync)} Failed.");
+                Debug.WriteLine($"{methodLabel} {nameof(GetOllamaServerVersionResult)} = {getOllamaServerVersionResult}");
+            }
 
             ollamaApiClient = new(ensuredServerUri);
 
@@ -47,7 +129,7 @@ public static partial class OllamaRunningTheory
                 DebugWriteLine(flowLabel1, "OllamaApiClient send GET-Version request.");
                 string versionResponse = await ollamaApiClient.GetVersionAsync(combinedCts.Token).ConfigureAwait(false);
 
-                versionRequestSuccessed = CheckSourceHasCorrectGetVersionResponseClue(versionResponse);
+                versionRequestSuccessed = CheckSourceHasCorrectGetVersionResponse(versionResponse);
                 if (!versionRequestSuccessed)
                 {
                     versionRequestFailMessage = $"Invalid response. {nameof(versionResponse)} = {versionResponse}";
@@ -152,7 +234,7 @@ public static partial class OllamaRunningTheory
     }
 
     public static async
-    Task<ValueOrFailure<LocalOllamaServerRunningState, GetLocalOllamaServerRunningStateFailInfo>>
+    Task<GetLocalOllamaServerRunningStateResult>
     GetLocalOllamaServerRunningStateAsync
     (
         string localOllamaHostCommand = OllamaRunningConstants.DefaultLocalOllamaHostCommand,
@@ -195,11 +277,15 @@ public static partial class OllamaRunningTheory
                 """
             );
 
-            var sof = process.StartOrFail();
-            if (sof.IsFailure)
+            var startOrFailResult = process.StartOrFail();
+            if (startOrFailResult.IsFailure)
             {
-                Debug.WriteLine($"{methodLabel} {sof.AsFailure.Message}");
-                return FailureTheory.Create(GetLocalOllamaServerRunningStateFailInfo.ProcessStartFailed(sof.AsFailure.FailInfo), sof.AsFailure.Message);
+                Debug.WriteLine($"{methodLabel} {startOrFailResult.GetMessage()}");
+                return GetLocalOllamaServerRunningStateResult.CreateAsProcessStartFailed
+                (
+                    value: startOrFailResult.GetFailInfo(),
+                    message: startOrFailResult.GetMessage()
+                );
             }
             //---|
 
@@ -225,7 +311,7 @@ public static partial class OllamaRunningTheory
             //---|
 
             //--- Solve local ollama server running state ---
-            if (CheckSourceHasCorrectGetVersionResponseClue(stdoutString))
+            if (CheckSourceHasCorrectGetVersionResponse(stdoutString))
             {
                 Debug.WriteLine
                 (
@@ -234,7 +320,7 @@ public static partial class OllamaRunningTheory
                     result = {LocalOllamaServerRunningState.Running}
                     """
                 );
-                return LocalOllamaServerRunningState.Running;
+                return GetLocalOllamaServerRunningStateResult.CreateAsValue(LocalOllamaServerRunningState.Running);
             }
             else if
             (
@@ -249,7 +335,7 @@ public static partial class OllamaRunningTheory
                     result = {LocalOllamaServerRunningState.Idle}
                     """
                 );
-                return LocalOllamaServerRunningState.Idle;
+                return GetLocalOllamaServerRunningStateResult.CreateAsValue(LocalOllamaServerRunningState.Running);
             }
             else
             {
@@ -260,20 +346,20 @@ public static partial class OllamaRunningTheory
                     result = {errorString}
                     """
                 );
-                return FailureTheory.Create(GetLocalOllamaServerRunningStateFailInfo.SolveLocalOllamaServerRunningStateFailed, errorString);
+                return GetLocalOllamaServerRunningStateResult.CreateAsFailure(GetLocalOllamaServerRunningStateResult.FailInfo.SolveLocalOllamaServerRunningStateFailed, errorString);
             }
             //---|
         }
         catch (OperationCanceledException e)
         {
-            return FailureTheory.Create(GetLocalOllamaServerRunningStateFailInfo.Canceled, e.Message);
+            return GetLocalOllamaServerRunningStateResult.CreateAsFailure(GetLocalOllamaServerRunningStateResult.FailInfo.Canceled, e.Message);
         }
     }
 
-    private static bool CheckSourceHasCorrectGetVersionResponseClue(string source) =>
+    private static bool CheckSourceHasCorrectGetVersionResponse(string source) =>
         !string.IsNullOrWhiteSpace(source) &&
         source.Contains("ollama version is");
-        
+
 #if false
     public static async Task<DisposableValueOrErrorMessage<Process>>
     RunLocalOllamaServerAsync
