@@ -1,9 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Nemonuri.Failures.Generators;
 
 public record FailSlot
 {
+    [JsonConstructor]
     public FailSlot() { }
 
     [SetsRequiredMembers]

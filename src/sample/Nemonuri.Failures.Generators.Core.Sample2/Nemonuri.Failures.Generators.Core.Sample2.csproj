@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Nemonuri.Failures.Generators</RootNamespace>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nemonuri.Failures\Nemonuri.Failures.csproj" />
+    <ProjectReference
+      Include="..\..\library\Nemonuri.Failures.Generators.Core\Nemonuri.Failures.Generators.Core.csproj" />
   </ItemGroup>
 
 </Project>
