@@ -4,12 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <RootNamespace>Nemonuri.Failures.Generators</RootNamespace>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Diagnostics" />
-    <PackageReference Include="SumSharp" />
+    <ProjectReference Include="..\Nemonuri.Failures\Nemonuri.Failures.csproj" />
   </ItemGroup>
 
 </Project>
