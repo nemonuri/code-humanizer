@@ -39,11 +39,12 @@ public static partial class GeneratingTheory
         string? rootClass,
         string methodAlias,
         string valueType,
-        IEnumerable<FailSlot> failSlots
+        IEnumerable<FailSlot>? failSlots
     )
     {
         string internalClass = methodAlias + "Result";
         bool enableRootClass = !string.IsNullOrWhiteSpace(rootClass);
+        failSlots ??= [];
 
         return
 $$"""

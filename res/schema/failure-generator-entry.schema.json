@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "Usings": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "Namespace": {
+      "type": "string"
+    },
+    "RootClass": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "MethodAlias": {
+      "type": "string"
+    },
+    "ValueType": {
+      "type": "string"
+    },
+    "FailSlots": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "Name"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Namespace",
+    "MethodAlias",
+    "ValueType"
+  ]
+}

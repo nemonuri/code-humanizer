@@ -1,0 +1,12 @@
+{
+    "json.schemas": [
+
+        {
+            "fileMatch": [
+                "**/res/failure-generator-entry/*.json"
+            ],
+            "url": "./res/schema/failure-generator-entry.schema.json"
+        }
+
+    ]
+}

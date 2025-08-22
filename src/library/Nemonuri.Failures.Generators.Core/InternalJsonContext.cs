@@ -4,7 +4,6 @@ namespace Nemonuri.Failures.Generators;
 
 [JsonSourceGenerationOptions(
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-    GenerationMode = JsonSourceGenerationMode.Serialization,
     WriteIndented = true
 )]
 [JsonSerializable(typeof(GenerateCodeEntryData))]
