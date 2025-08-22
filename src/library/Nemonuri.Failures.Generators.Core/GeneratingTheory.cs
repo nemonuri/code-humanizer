@@ -34,15 +34,16 @@ public static partial class GeneratingTheory
 
     public static string GenerateCode
     (
-        IEnumerable<string> usings,
+        IEnumerable<string>? usings,
         string @namespace,
-        string rootClass,
+        string? rootClass,
         string methodAlias,
         string valueType,
         IEnumerable<FailSlot> failSlots
     )
     {
         string internalClass = methodAlias + "Result";
+        bool enableRootClass = !string.IsNullOrWhiteSpace(rootClass);
 
         return
 $$"""
@@ -50,12 +51,16 @@ $$"""
 
 using Nemonuri.Failures;
 using SumSharp;
-{{usings.Select(static str => $"using {str};").JoinStrings()}}
+{{usings?.Select(static str => $"using {str};").JoinStrings()}}
 
 namespace {{@namespace}};
 
+{{(enableRootClass ?
+$$"""
 public static partial class {{rootClass}}
 {
+""" : ""
+)}}
     public partial class {{internalClass}} :
         IValueOrFailure<{{valueType}}, {{internalClass}}.FailInfo>
     {
@@ -102,7 +107,7 @@ public static partial class {{rootClass}}
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 
     }
-}
+{{(enableRootClass ? "}" : "")}}
 """;
     }
 }
