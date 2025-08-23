@@ -127,4 +127,30 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.True(actual.IsValue);
         Assert.Null(actual.GetValue().Server);
     }
+
+    [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
+    public async Task GetClientAfterEnsuringOllamaServerRunningAsync_WhenLocalOllamaServerIsNotRunningAndLocalOllamaHostCommandIsCorrect_ShouldValueAndServerIsNotNull
+    ()
+    {
+        // Arrange
+        Console.WriteLine("Please do these:");
+        Console.WriteLine($"1. Check '{_entryFixture.ValidLocalOllamaHostCommand}' is correct local Ollama host command.");
+        Console.WriteLine("2. Check local Ollama server is not running.");
+        Console.WriteLine($"3. Check local Ollama server URI is {_entryFixture.OllamaServerUri}");
+        Console.WriteLine("Type 'y' and press 'Enter' to continue..");
+        Assert.Equal("y", Console.ReadLine());
+
+        // Act
+        OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningResult actual = await OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningAsync
+        (
+            serverUri: new Uri(_entryFixture.OllamaServerUri),
+            localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
+            enableRunningLocalOllamaServer: true,
+            cancellationToken: TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        Assert.True(actual.IsValue);
+        Assert.NotNull(actual.GetValue().Server);
+    }
 }

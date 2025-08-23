@@ -403,6 +403,7 @@ public static partial class OllamaRunningTheory
             {
                 if (e.Data is { } data)
                 {
+                    Debug.WriteLine($"[{nameof(ErrorDataReceived_Handle)}] {data}");
                     errorStringQueue.Enqueue(data);
                     observingLocalOllamaServerCompletedSignal.Set();
                 }
@@ -417,6 +418,7 @@ public static partial class OllamaRunningTheory
             {
                 if (e.Data is { } data)
                 {
+                    Debug.WriteLine($"[{nameof(OutputDataReceived_Handle)}] {data}");
                     outputStringQueue.Enqueue(data);
                     var match = GetOllamaServerLogListeningOnRegex().Match(data.Trim());
                     if (match.Success)
@@ -445,6 +447,9 @@ public static partial class OllamaRunningTheory
                     $"{msg} {processStartResult.GetMessage()}"
                 );
             }
+
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
             //---|
 
             //--- Observe local Ollama server successfully started ---

@@ -40,6 +40,7 @@ public static partial class ProcessStartingTheory
         public StartOrFailResult(ValueOrFailure<bool, FailInfo> internalSource)
         {
             _internalSource = internalSource;
+            System.Diagnostics.Debug.WriteLine("ProcessStartingTheory.StartOrFailResult constructed. " + ToString());
         }
 
         public static StartOrFailResult CreateAsValue(bool value) =>
@@ -58,5 +59,13 @@ public static partial class ProcessStartingTheory
         public bool GetValue() => _internalSource.GetValue();
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
+
+        public override string ToString() =>
+            "StartOrFailResult {" +
+            (
+                IsValue ? 
+                    ("IsValue = true, Value = " + GetValue()) :
+                    ("IsFailure = true, Value = " + GetFailure())
+            ) + " }";
     }
 }
