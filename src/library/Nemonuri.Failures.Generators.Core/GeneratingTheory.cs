@@ -107,6 +107,13 @@ public static partial class {{rootClass}}
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 
+        public override string ToString() =>
+            "{{internalClass}} {" +
+            (
+                IsValue ? 
+                    ("IsValue = true, Value = " + GetValue()) :
+                    ("IsFailure = true, Value = " + GetFailure())
+            ) + " }";
     }
 {{(enableRootClass ? "}" : "")}}
 """;

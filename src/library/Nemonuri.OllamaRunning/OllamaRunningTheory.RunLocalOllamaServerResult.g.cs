@@ -43,9 +43,21 @@ public static partial class OllamaRunningTheory
         public static RunLocalOllamaServerResult CreateAsFailure(FailInfo failInfo, string message = "") =>
             new(FailureTheory.Create(failInfo, message));
         
+        public static RunLocalOllamaServerResult CreateAsCanceled
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.Canceled, message));
+
         public static RunLocalOllamaServerResult CreateAsProcessStartFailed
         (ProcessStartingTheory.StartOrFailResult.FailInfo value, string message = "") =>
             new(FailureTheory.Create(FailInfo.ProcessStartFailed(value), message));
+
+        public static RunLocalOllamaServerResult CreateAsTimeOut
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.TimeOut, message));
+
+        public static RunLocalOllamaServerResult CreateAsErrorReceivedFromLocalServer
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.ErrorReceivedFromLocalServer, message));
 
 
         public bool IsValue => _internalSource.IsValue;
@@ -56,5 +68,12 @@ public static partial class OllamaRunningTheory
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 
+        public override string ToString() =>
+            "RunLocalOllamaServerResult {" +
+            (
+                IsValue ? 
+                    ("IsValue = true, Value = " + GetValue()) :
+                    ("IsFailure = true, Value = " + GetFailure())
+            ) + " }";
     }
 }

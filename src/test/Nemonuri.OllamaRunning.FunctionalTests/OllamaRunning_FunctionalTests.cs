@@ -33,6 +33,7 @@ public class OllamaRunningTheory_Test
             actual.GetValue().Item1.Dispose();
         }
         Assert.True(actual.IsFailure);
+        Assert.True(actual.GetFailInfo().AsGetOllamaServerVersionFailed.IsSocketError);
         _testOutput.WriteLine(actual.GetMessage());
     }
 }

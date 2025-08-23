@@ -18,4 +18,9 @@ public class Failure<TFailInfo>
     public TFailInfo FailInfo { get; }
 
     public string Message { get; }
+
+    public override string ToString()
+    {
+        return $"Failure<{typeof(TFailInfo).FullName}> {{ {nameof(FailInfo)} = {FailInfo}, {nameof(Message)} = {Message} }}";
+    }
 }

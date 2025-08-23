@@ -14,17 +14,21 @@ public static partial class GeneratingTheory
     {
         Guard.IsNotNullOrEmpty(failSlot.Name);
 
-        static string CreateValuePart(string? type)
+        static (string, string) CreateTypePart(FailSlot fs)
         {
-            return type is { } v ?
-                $"{type} value, " : "";
+            return fs.Type is { } type ?
+                ($"{type} value, ", "(value)")
+                :
+                ("", "");
         }
+
+        var (segment0, segment1) = CreateTypePart(failSlot);
 
         return
 $$"""
 {{indentation}}public static {{internalClass}} CreateAs{{failSlot.Name}}
-{{indentation}}({{CreateValuePart(failSlot.Type)}}string message = "") =>
-{{indentation}}    new(FailureTheory.Create(FailInfo.{{failSlot.Name}}(value), message));
+{{indentation}}({{segment0}}string message = "") =>
+{{indentation}}    new(FailureTheory.Create(FailInfo.{{failSlot.Name}}{{segment1}}, message));
 
 """;
     }

@@ -30,7 +30,7 @@ public readonly struct SocketErrorCode : IEquatable<SocketErrorCode>
     {
         return _value.GetHashCode();
     }
-    
+
     public static bool operator ==(SocketErrorCode left, SocketErrorCode right)
     {
         return left.Equals(right);
@@ -40,4 +40,7 @@ public readonly struct SocketErrorCode : IEquatable<SocketErrorCode>
     {
         return !(left == right);
     }
+
+    public override string ToString() =>
+        $"{GetType().Name} {{ _value = {_value} }}";
 }

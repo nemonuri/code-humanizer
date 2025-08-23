@@ -43,6 +43,10 @@ public static partial class OllamaRunningTheory
         public static GetOllamaServerVersionResult CreateAsFailure(FailInfo failInfo, string message = "") =>
             new(FailureTheory.Create(failInfo, message));
         
+        public static GetOllamaServerVersionResult CreateAsCanceled
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.Canceled, message));
+
         public static GetOllamaServerVersionResult CreateAsInvalidResponse
         (string value, string message = "") =>
             new(FailureTheory.Create(FailInfo.InvalidResponse(value), message));
@@ -64,5 +68,12 @@ public static partial class OllamaRunningTheory
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 
+        public override string ToString() =>
+            "GetOllamaServerVersionResult {" +
+            (
+                IsValue ? 
+                    ("IsValue = true, Value = " + GetValue()) :
+                    ("IsFailure = true, Value = " + GetFailure())
+            ) + " }";
     }
 }
