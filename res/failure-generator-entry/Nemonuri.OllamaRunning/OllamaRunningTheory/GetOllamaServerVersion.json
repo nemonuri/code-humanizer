@@ -1,0 +1,13 @@
+{
+    "Usings": ["OllamaSharp"],
+    "Namespace": "Nemonuri.OllamaRunning",
+    "RootClass": "OllamaRunningTheory",
+    "MethodAlias": "GetOllamaServerVersion",
+    "ValueType": "(OllamaApiClient, string)",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "InvalidResponse", "Type": "string" },
+        { "Name": "TimeOut", "Type": "TimeSpan" },
+        { "Name": "SocketError", "Type": "SocketErrorCode" }
+    ]
+}

@@ -1,6 +1,6 @@
 ﻿namespace Nemonuri.OllamaRunning.FunctionalTests;
 
-using Xunit.Abstractions;
+using Nemonuri.Failures;
 
 public class OllamaRunningTheory_Test
 {
@@ -20,15 +20,20 @@ public class OllamaRunningTheory_Test
         // Arrange
 
         // Act
-        using var actual = await OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningAsync
+        OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningResult actual = await OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningAsync
         (
             serverUri: InvalidUri,
-            enableRunningLocalOllamaServer: false
+            enableRunningLocalOllamaServer: false,
+            cancellationToken: TestContext.Current.CancellationToken
         );
 
         // Assert
-        Assert.True(actual.IsErrorMessage);
-        _testOutput.WriteLine(actual.AsErrorMessage);
+        if (actual.IsValue)
+        {
+            actual.GetValue().Item1.Dispose();
+        }
+        Assert.True(actual.IsFailure);
+        _testOutput.WriteLine(actual.GetMessage());
     }
 }
 

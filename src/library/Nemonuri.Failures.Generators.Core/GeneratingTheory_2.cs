@@ -13,12 +13,17 @@ public static partial class GeneratingTheory
     )
     {
         Guard.IsNotNullOrEmpty(failSlot.Name);
-        Guard.IsNotNullOrEmpty(failSlot.Type);
+
+        static string CreateValuePart(string? type)
+        {
+            return type is { } v ?
+                $"{type} value, " : "";
+        }
 
         return
 $$"""
 {{indentation}}public static {{internalClass}} CreateAs{{failSlot.Name}}
-{{indentation}}({{failSlot.Type}} value, string message = "") =>
+{{indentation}}({{CreateValuePart(failSlot.Type)}}string message = "") =>
 {{indentation}}    new(FailureTheory.Create(FailInfo.{{failSlot.Name}}(value), message));
 
 """;

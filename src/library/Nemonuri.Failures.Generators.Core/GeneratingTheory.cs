@@ -69,9 +69,9 @@ public static partial class {{rootClass}}
         {{failSlots
             .Select(static fs => fs.ToUnionCaseAttributeExpression())
             .JoinStrings(Environment.NewLine + "        ")}}
-        public partial struct FailInfo
+        public partial class FailInfo
         {
-            public readonly FailCode FailCode => (FailCode)(Index + 1);
+            public FailCode FailCode => (FailCode)(Index + 1);
         }
 
         public enum FailCode
@@ -96,7 +96,6 @@ public static partial class {{rootClass}}
             new(FailureTheory.Create(failInfo, message));
         
 {{failSlots
-    .Where(static fs => fs.Type is not null)
     .Select(fs => fs.ToCreateMethodExpression(internalClass, "        "))
     .JoinStrings()}}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -74,8 +75,20 @@ public static partial class OllamaRunningTheory
             }
             else
             {
-                return GetOllamaServerVersionResult.CreateAsFailure(GetOllamaServerVersionResult.FailInfo.Cancel, e.Message);
+                return GetOllamaServerVersionResult.CreateAsFailure(GetOllamaServerVersionResult.FailInfo.Canceled, e.Message);
             }
+        }
+        catch (HttpRequestException e) when (e.InnerException is SocketException se)
+        {
+            ollamaApiClient?.Dispose();
+            Debug.WriteLine($"{methodLabel} {e.Message}");
+            return GetOllamaServerVersionResult.CreateAsSocketError(se.ErrorCode, e.Message);
+        }
+        catch (SocketException e)
+        {
+            ollamaApiClient?.Dispose();
+            Debug.WriteLine($"{methodLabel} {e.Message}");
+            return GetOllamaServerVersionResult.CreateAsSocketError(e.ErrorCode, e.Message);
         }
         catch (Exception e)
         {

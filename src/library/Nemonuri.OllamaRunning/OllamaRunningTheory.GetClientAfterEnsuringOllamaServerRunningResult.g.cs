@@ -18,9 +18,9 @@ public static partial class OllamaRunningTheory
         [UnionCase(nameof(FailCode.LocalOllamaServerIsAlreadyRunning))]
         [UnionCase(nameof(FailCode.RunLocalOllamaServerFailed), typeof(OllamaRunningTheory.RunLocalOllamaServerResult.FailInfo))]
         [UnionCase(nameof(FailCode.GetOllamaServerVersionAgainFailed), typeof(GetOllamaServerVersionResult.FailInfo))]
-        public partial struct FailInfo
+        public partial class FailInfo
         {
-            public readonly FailCode FailCode => (FailCode)(Index + 1);
+            public FailCode FailCode => (FailCode)(Index + 1);
         }
 
         public enum FailCode

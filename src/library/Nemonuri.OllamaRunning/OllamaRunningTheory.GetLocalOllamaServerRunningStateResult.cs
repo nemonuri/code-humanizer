@@ -11,9 +11,9 @@ public static partial class OllamaRunningTheory
         [UnionCase(nameof(FailCode.Canceled))]
         [UnionCase(nameof(FailCode.ProcessStartFailed), typeof(ProcessStartingTheory.StartOrFailResult.FailInfo))]
         [UnionCase(nameof(FailCode.SolveLocalOllamaServerRunningStateFailed))]
-        public partial struct FailInfo
+        public partial class FailInfo
         {
-            public readonly FailCode FailCode =>
+            public FailCode FailCode =>
                 (FailCode)(Index + 1);
         }
 
