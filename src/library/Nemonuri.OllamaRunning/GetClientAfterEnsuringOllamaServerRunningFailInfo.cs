@@ -2,6 +2,7 @@
 
 namespace Nemonuri.OllamaRunning;
 
+#if false
 [UnionCase(nameof(GetClientAfterEnsuringOllamaServerRunningFailCode.Canceled))]
 [UnionCase(
     nameof(GetClientAfterEnsuringOllamaServerRunningFailCode.VersionRequestFailed),
@@ -19,5 +20,4 @@ public enum GetClientAfterEnsuringOllamaServerRunningFailCode
     Canceled = 1,
     VersionRequestFailed = 2
 }
-
-
+#endif
