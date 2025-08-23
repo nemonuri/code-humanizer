@@ -51,7 +51,7 @@ public static partial class OllamaRunningTheory
             string versionResponse = await ollamaApiClient.GetVersionAsync(combinedCts.Token).ConfigureAwait(false);
             Debug.WriteLine($"{methodLabel} Response = {versionResponse}");
 
-            if (CheckSourceHasCorrectGetVersionResponse(versionResponse))
+            if (GetVersionRegex().Match(versionResponse.Trim()).Success)
             {
                 string msg = "Response is valid.";
                 Debug.WriteLine($"{methodLabel} {msg}");
@@ -120,7 +120,11 @@ public static partial class OllamaRunningTheory
 
             //--- Request version to given ollama server URI ---
             Debug.WriteLine($"{methodLabel} Run {nameof(GetOllamaServerVersionAsync)}. {nameof(serverUri)} = {serverUri}");
+#if DEBUG
+            Stopwatch sw = Stopwatch.StartNew();
+#endif
             GetOllamaServerVersionResult getOllamaServerVersionResult = await GetOllamaServerVersionAsync(serverUri, cancellationToken).ConfigureAwait(false);
+            Debug.WriteLine($"{methodLabel} ElapsedMilliseconds = {sw.ElapsedMilliseconds}");
             if (getOllamaServerVersionResult.IsFailure)
             {
                 const string msg1 = $"{nameof(GetOllamaServerVersionAsync)} Failed.";
@@ -371,7 +375,7 @@ public static partial class OllamaRunningTheory
     )
     {
         const string methodLabel = $"[{nameof(RunLocalOllamaServerAsync)}]";
-        
+
         Process? process = null;
         OllamaLocalServerStartInfo? ollamaLocalServerStartInfo = null;
         try
@@ -477,7 +481,7 @@ public static partial class OllamaRunningTheory
                     string.Join(Environment.NewLine, errorStringQueue)
                 );
             }
-            
+
             Debug.WriteLine($"{methodLabel} Confirm local Ollama server successfully started.");
             Debug.Assert(ollamaLocalServerStartInfo is not null);
 
@@ -518,6 +522,9 @@ public static partial class OllamaRunningTheory
         """,
         RegexOptions.ECMAScript | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     internal static partial Regex GetOllamaServerLogListeningOnRegex();
+
+    [GeneratedRegex("""[a-zA-Z\-\+\.0-9]+""", RegexOptions.ECMAScript | RegexOptions.CultureInvariant)]
+    internal static partial Regex GetVersionRegex();
 }
 
 

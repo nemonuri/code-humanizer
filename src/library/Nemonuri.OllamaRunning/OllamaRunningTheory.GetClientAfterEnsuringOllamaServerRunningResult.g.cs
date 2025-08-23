@@ -10,7 +10,7 @@ namespace Nemonuri.OllamaRunning;
 public static partial class OllamaRunningTheory
 {
     public partial class GetClientAfterEnsuringOllamaServerRunningResult :
-        IValueOrFailure<(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?), GetClientAfterEnsuringOllamaServerRunningResult.FailInfo>
+        IValueOrFailure<(OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server), GetClientAfterEnsuringOllamaServerRunningResult.FailInfo>
     {
         [UnionCase(nameof(FailCode.Canceled))]
         [UnionCase(nameof(FailCode.GetOllamaServerVersionFailed), typeof(GetOllamaServerVersionResult.FailInfo))]
@@ -34,15 +34,15 @@ public static partial class OllamaRunningTheory
             GetOllamaServerVersionAgainFailed = 6
         }
 
-        private readonly ValueOrFailure<(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?), FailInfo> _internalSource;
+        private readonly ValueOrFailure<(OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server), FailInfo> _internalSource;
 
-        public GetClientAfterEnsuringOllamaServerRunningResult(ValueOrFailure<(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?), FailInfo> internalSource)
+        public GetClientAfterEnsuringOllamaServerRunningResult(ValueOrFailure<(OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server), FailInfo> internalSource)
         {
             _internalSource = internalSource;
             System.Diagnostics.Debug.WriteLine("GetClientAfterEnsuringOllamaServerRunningResult constructed. " + ToString());
         }
 
-        public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsValue((OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?) value) =>
+        public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsValue((OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server) value) =>
             new(value);
         
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsFailure(FailInfo failInfo, string message = "") =>
@@ -77,7 +77,7 @@ public static partial class OllamaRunningTheory
 
         public bool IsFailure => _internalSource.IsFailure;
 
-        public (OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?) GetValue() => _internalSource.GetValue();
+        public (OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server) GetValue() => _internalSource.GetValue();
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 

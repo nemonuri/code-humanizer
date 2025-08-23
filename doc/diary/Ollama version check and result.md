@@ -15,6 +15,9 @@ PS > ollama --version
 ollama version is 0.9.0
 ```
 
+### OllamaApiClient 로 호출시
+`0.9.0`
+
 ## When local ollama host command is wrong
 
 ```

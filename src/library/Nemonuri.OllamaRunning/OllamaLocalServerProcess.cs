@@ -20,6 +20,9 @@ public class OllamaLocalServerProcess : IDisposable
         _process.Dispose();
         GC.SuppressFinalize(this);
     }
+
+    public override string ToString() =>
+$"OllamaLocalServerProcess {{ Process = {_process}, ListenerAddress = {_listenerAddress}, Version = {_version} }}";
 }
 
 internal record OllamaLocalServerStartInfo(string ListenerAddress, string Version);

@@ -2,7 +2,7 @@
     "Namespace": "Nemonuri.OllamaRunning",
     "RootClass": "OllamaRunningTheory",
     "MethodAlias": "GetClientAfterEnsuringOllamaServerRunning",
-    "ValueType": "(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?)",
+    "ValueType": "(OllamaSharp.OllamaApiClient Client, OllamaLocalServerProcess? Server)",
     "FailSlots": [
         { "Name": "Canceled" },
         { "Name": "GetOllamaServerVersionFailed", "Type": "GetOllamaServerVersionResult.FailInfo" },
