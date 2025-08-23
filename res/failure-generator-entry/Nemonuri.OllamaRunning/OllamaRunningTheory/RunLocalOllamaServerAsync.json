@@ -1,0 +1,13 @@
+{
+    "Usings": ["System.Diagnostics"],
+    "Namespace": "Nemonuri.OllamaRunning",
+    "RootClass": "OllamaRunningTheory",
+    "MethodAlias": "RunLocalOllamaServer",
+    "ValueType": "OllamaLocalServerProcess",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "ProcessStartFailed", "Type": "ProcessStartingTheory.StartOrFailResult.FailInfo" },
+        { "Name": "TimeOut" },
+        { "Name": "ErrorReceivedFromLocalServer" }
+    ]
+}

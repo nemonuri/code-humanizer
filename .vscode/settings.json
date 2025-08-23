@@ -3,7 +3,7 @@
 
         {
             "fileMatch": [
-                "**/res/failure-generator-entry/*.json"
+                "**/res/failure-generator-entry/**/*.json"
             ],
             "url": "./res/schema/failure-generator-entry.schema.json"
         }

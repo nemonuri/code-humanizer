@@ -2,6 +2,7 @@ using SumSharp;
 
 namespace Nemonuri.OllamaRunning;
 
+#if false
 public static partial class OllamaRunningTheory
 {
     public partial class GetClientAfterEnsuringOllamaServerRunningResult
@@ -28,3 +29,4 @@ public static partial class OllamaRunningTheory
     }
 
 }
+#endif

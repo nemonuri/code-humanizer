@@ -1,0 +1,14 @@
+{
+    "Namespace": "Nemonuri.OllamaRunning",
+    "RootClass": "OllamaRunningTheory",
+    "MethodAlias": "GetClientAfterEnsuringOllamaServerRunning",
+    "ValueType": "(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?)",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "GetOllamaServerVersionFailed", "Type": "GetOllamaServerVersionResult.FailInfo" },
+        { "Name": "GetLocalOllamaServerRunningStateFailed", "Type": "GetLocalOllamaServerRunningStateResult.FailInfo" },
+        { "Name": "LocalOllamaServerIsAlreadyRunning" },
+        { "Name": "RunLocalOllamaServerFailed", "Type": "OllamaRunningTheory.RunLocalOllamaServerResult.FailInfo" },
+        { "Name": "GetOllamaServerVersionAgainFailed", "Type": "GetOllamaServerVersionResult.FailInfo" }
+    ]
+}
