@@ -87,6 +87,7 @@ public static partial class {{rootClass}}
         public {{internalClass}}(ValueOrFailure<{{valueType}}, FailInfo> internalSource)
         {
             _internalSource = internalSource;
+            System.Diagnostics.Debug.WriteLine("{{internalClass}} constructed. " + ToString());
         }
 
         public static {{internalClass}} CreateAsValue({{valueType}} value) =>

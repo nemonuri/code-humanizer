@@ -35,6 +35,7 @@ public static partial class OllamaRunningTheory
         public RunLocalOllamaServerResult(ValueOrFailure<OllamaLocalServerProcess, FailInfo> internalSource)
         {
             _internalSource = internalSource;
+            System.Diagnostics.Debug.WriteLine("RunLocalOllamaServerResult constructed. " + ToString());
         }
 
         public static RunLocalOllamaServerResult CreateAsValue(OllamaLocalServerProcess value) =>

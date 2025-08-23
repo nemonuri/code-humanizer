@@ -1,0 +1,11 @@
+{
+    "Namespace": "Nemonuri.OllamaRunning",
+    "RootClass": "OllamaRunningTheory",
+    "MethodAlias": "GetLocalOllamaServerRunningState",
+    "ValueType": "LocalOllamaServerRunningState",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "ProcessStartFailed", "Type": "ProcessStartingTheory.StartOrFailResult.FailInfo" },
+        { "Name": "SolveLocalOllamaServerRunningStateFailed" }
+    ]
+}

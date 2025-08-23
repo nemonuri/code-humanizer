@@ -35,6 +35,7 @@ public static partial class OllamaRunningTheory
         public GetOllamaServerVersionResult(ValueOrFailure<(OllamaApiClient, string), FailInfo> internalSource)
         {
             _internalSource = internalSource;
+            System.Diagnostics.Debug.WriteLine("GetOllamaServerVersionResult constructed. " + ToString());
         }
 
         public static GetOllamaServerVersionResult CreateAsValue((OllamaApiClient, string) value) =>

@@ -39,6 +39,7 @@ public static partial class OllamaRunningTheory
         public GetClientAfterEnsuringOllamaServerRunningResult(ValueOrFailure<(OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?), FailInfo> internalSource)
         {
             _internalSource = internalSource;
+            System.Diagnostics.Debug.WriteLine("GetClientAfterEnsuringOllamaServerRunningResult constructed. " + ToString());
         }
 
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsValue((OllamaSharp.OllamaApiClient, OllamaLocalServerProcess?) value) =>
@@ -47,6 +48,10 @@ public static partial class OllamaRunningTheory
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsFailure(FailInfo failInfo, string message = "") =>
             new(FailureTheory.Create(failInfo, message));
         
+        public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsCanceled
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.Canceled, message));
+
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsGetOllamaServerVersionFailed
         (GetOllamaServerVersionResult.FailInfo value, string message = "") =>
             new(FailureTheory.Create(FailInfo.GetOllamaServerVersionFailed(value), message));
@@ -54,6 +59,10 @@ public static partial class OllamaRunningTheory
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsGetLocalOllamaServerRunningStateFailed
         (GetLocalOllamaServerRunningStateResult.FailInfo value, string message = "") =>
             new(FailureTheory.Create(FailInfo.GetLocalOllamaServerRunningStateFailed(value), message));
+
+        public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsLocalOllamaServerIsAlreadyRunning
+        (string message = "") =>
+            new(FailureTheory.Create(FailInfo.LocalOllamaServerIsAlreadyRunning, message));
 
         public static GetClientAfterEnsuringOllamaServerRunningResult CreateAsRunLocalOllamaServerFailed
         (OllamaRunningTheory.RunLocalOllamaServerResult.FailInfo value, string message = "") =>
@@ -72,5 +81,12 @@ public static partial class OllamaRunningTheory
 
         public Failure<FailInfo> GetFailure() => _internalSource.GetFailure();
 
+        public override string ToString() =>
+            "GetClientAfterEnsuringOllamaServerRunningResult {" +
+            (
+                IsValue ? 
+                    ("IsValue = true, Value = " + GetValue()) :
+                    ("IsFailure = true, Value = " + GetFailure())
+            ) + " }";
     }
 }

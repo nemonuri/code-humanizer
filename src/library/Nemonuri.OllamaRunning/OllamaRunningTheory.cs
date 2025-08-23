@@ -338,7 +338,7 @@ public static partial class OllamaRunningTheory
                     result = {LocalOllamaServerRunningState.Idle}
                     """
                 );
-                return GetLocalOllamaServerRunningStateResult.CreateAsValue(LocalOllamaServerRunningState.Running);
+                return GetLocalOllamaServerRunningStateResult.CreateAsValue(LocalOllamaServerRunningState.Idle);
             }
             else
             {

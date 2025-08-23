@@ -39,16 +39,15 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
+        OllamaRunningTheory.GetLocalOllamaServerRunningStateResult actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
         );
 
         // Assert
-        _output.WriteLine(actual.ToString());
         Assert.True(actual.IsValue);
-        Assert.Equal(LocalOllamaServerRunningState.Idle, actual.AsValueOrDefault);
+        Assert.Equal(LocalOllamaServerRunningState.Idle, actual.GetValue());
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
@@ -62,16 +61,15 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
+        OllamaRunningTheory.GetLocalOllamaServerRunningStateResult actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.ValidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
         );
 
         // Assert
-        _output.WriteLine(actual.ToString());
         Assert.True(actual.IsValue);
-        Assert.Equal(LocalOllamaServerRunningState.Running, actual.AsValueOrDefault);
+        Assert.Equal(LocalOllamaServerRunningState.Running, actual.GetValue());
     }
 
     [Fact(Skip = ManualTestDisabled, SkipUnless = nameof(EnableManualTest))]
@@ -84,14 +82,13 @@ public class OllamaRunningTheoryTest : IClassFixture<OllamaRunningTheoryTestEntr
         Assert.Equal("y", Console.ReadLine());
 
         // Act
-        ValueOrErrorMessage<LocalOllamaServerRunningState> actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
+        OllamaRunningTheory.GetLocalOllamaServerRunningStateResult actual = await OllamaRunningTheory.GetLocalOllamaServerRunningStateAsync
         (
             localOllamaHostCommand: _entryFixture.InvalidLocalOllamaHostCommand,
             cancellationToken: TestContext.Current.CancellationToken
         );
 
         // Assert
-        _output.WriteLine(actual.ToString());
-        Assert.True(actual.IsErrorMessage);
+        Assert.True(actual.IsFailure);
     }
 }
