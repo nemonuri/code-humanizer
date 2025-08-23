@@ -409,7 +409,7 @@ public static partial class OllamaRunningTheory
                 }
             }
 
-            process.ErrorDataReceived += ErrorDataReceived_Handle;
+            //process.ErrorDataReceived += ErrorDataReceived_Handle;
             //---|
 
             //--- subscribe ErrorDataReceived event ---
@@ -433,7 +433,8 @@ public static partial class OllamaRunningTheory
                 }
             }
 
-            process.OutputDataReceived += OutputDataReceived_Handle;
+            //process.OutputDataReceived += OutputDataReceived_Handle;
+            process.ErrorDataReceived += OutputDataReceived_Handle;
             //---|
 
             ProcessStartingTheory.StartOrFailResult processStartResult = process.StartOrFail();
