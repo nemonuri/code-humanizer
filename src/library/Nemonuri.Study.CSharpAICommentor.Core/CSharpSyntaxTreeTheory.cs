@@ -11,8 +11,8 @@ public static partial class CSharpSyntaxTreeTheory
     CreateCSharpSyntaxTreeFromFileAsync
     (
         FileInfo fileInfo,
-        CancellationToken cancellationToken = default,
-        ILogger? logger = null
+        ILogger? logger = null,
+        CancellationToken cancellationToken = default
     )
     {
         Guard.IsNotNull(fileInfo);

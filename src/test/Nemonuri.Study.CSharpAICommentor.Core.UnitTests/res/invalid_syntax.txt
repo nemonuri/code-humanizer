@@ -1,0 +1,110 @@
+systemFileName: System1
+codeFileName: Code1
+affixationFileName: 
+Input prompt: 
+<|im_start|>system
+You are a professional C# programmer.
+
+<RULE>
+1. Write `<summary>` style comment to each method, in Korean.
+</RULE>
+<|im_end|>
+<|im_start|>user
+
+```csharp
+/// <summary>
+/// 원본 파일 경로의 확장자를 새 것으로 교체합니다.
+/// </summary>
+/// <param name = "originalPath">원본 파일 경로</param>
+/// <param name = "extension">교체할 새 확장자</param>
+/// <returns>확장자가 교체된 파일 경로</returns>
+public static string ChangeExtension(string originalPath, string? extension)
+{
+    int lastDotIndex = M1(originalPath);
+    if (M2(lastDotIndex))
+    {
+        return M3(originalPath, extension);
+    }
+    else
+    {
+        Span<char> v2_1 = M4(originalPath, lastDotIndex);
+        return M5(v2_1, extension);
+    }
+}
+
+public static int M1(string originalPath)
+{
+    return originalPath.LastIndexOf('.');
+}
+
+public static bool M2(int lastDotIndex)
+{
+    return lastDotIndex == -1;
+}
+
+public static string M3(string originalPath, string extension)
+{
+    return string.Concat(originalPath, extension);
+}
+
+public static Span<char> M4(string originalPath, int lastDotIndex)
+{
+    return originalPath.AsSpan(0, lastDotIndex);
+}
+
+public static string M5(Span<char> v2_1, string extension)
+{
+    return string.Concat(v2_1, extension);
+}
+```
+
+<|im_end|>
+<|im_start|>assistant
+
+SelectedModel: qwen2.5-coder:0.5b
+```csharp
+/// <summary>
+/// 원본 파일 경로의 확장자를 새 것으로 교체합니다.
+/// </summary>
+/// <param name="originalPath">원본 파일 경로</param>
+/// <param name="extension">교체할 새 확장자</param>
+/// <returns>확장자가 교체된 파일 경로</returns>
+public static string ChangeExtension(string originalPath, string? extension)
+{
+    int lastDotIndex = M1(originalPath);
+    if (M2(lastDotIndex))
+    {
+        return M3(originalPath, extension);
+    }
+    else
+    {
+        Span<char> v2_1 = M4(originalPath, lastDotIndex);
+        return M5(v2_1, extension);
+    }
+}
+
+public static int M1(string originalPath)
+{
+    return originalPath.LastIndexOf('.');
+}
+
+public static bool M2(int lastDotIndex)
+{
+    return lastDotIndex == -1;
+}
+
+public static string M3(string originalPath, string extension)
+{
+    return string.Concat(originalPath, extension);
+}
+
+public static Span<char> M4(string originalPath, int lastDotIndex)
+{
+    return originalPath.AsSpan(0, lastDotIndex);
+}
+
+public static string M5(Span<char> v2_1, string extension)
+{
+    return string.Concat(v2_1, extension);
+}
+```

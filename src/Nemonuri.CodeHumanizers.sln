@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpAIComm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpAICommentor.Core", "library\Nemonuri.Study.CSharpAICommentor.Core\Nemonuri.Study.CSharpAICommentor.Core.csproj", "{46BB9562-C4D3-4E78-8CD5-E29C769832A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Study.CSharpAICommentor.Core.UnitTests", "test\Nemonuri.Study.CSharpAICommentor.Core.UnitTests\Nemonuri.Study.CSharpAICommentor.Core.UnitTests.csproj", "{62819058-422F-412D-BDF5-DE4789180618}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,18 @@ Global
 		{46BB9562-C4D3-4E78-8CD5-E29C769832A4}.Release|x64.Build.0 = Release|Any CPU
 		{46BB9562-C4D3-4E78-8CD5-E29C769832A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{46BB9562-C4D3-4E78-8CD5-E29C769832A4}.Release|x86.Build.0 = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|x64.Build.0 = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Debug|x86.Build.0 = Debug|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|x64.ActiveCfg = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|x64.Build.0 = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|x86.ActiveCfg = Release|Any CPU
+		{62819058-422F-412D-BDF5-DE4789180618}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,5 +72,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{40107F85-DF24-439E-BFF1-756FB24FDCB6} = {AD3D26B3-9E1E-45B2-845C-EC815931252F}
 		{46BB9562-C4D3-4E78-8CD5-E29C769832A4} = {9EFC75CE-49CF-41D7-9E57-92E005AEA48E}
+		{62819058-422F-412D-BDF5-DE4789180618} = {82E7D19B-8295-4522-8BED-576386D4461D}
 	EndGlobalSection
 EndGlobal
