@@ -1,0 +1,12 @@
+{
+    "Namespace": "Nemonuri.Study.CSharpAICommentor",
+    "RootClass": "CSharpSyntaxTreeTheory",
+    "MethodAlias": "CreateCompilationUnitRootedCSharpSyntaxTreeInfo",
+    "ValueType": "CompilationUnitRootedCSharpSyntaxTreeInfo",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "CreateCSharpSyntaxTreeFromFileFailed", "Type": "CSharpSyntaxTreeTheory.CreateCSharpSyntaxTreeFromFileResult.FailInfo" },
+        { "Name": "GetRootFailed" },
+        { "Name": "RootIsNotCompilationUnitSyntax", "Type": "System.Type" }
+    ]
+}

@@ -12,6 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="CommunityToolkit.Diagnostics" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Nemonuri.Trees" />
+    <PackageReference Include="Nemonuri.Trees.Indexes" />
   </ItemGroup>
   
   <ItemGroup>

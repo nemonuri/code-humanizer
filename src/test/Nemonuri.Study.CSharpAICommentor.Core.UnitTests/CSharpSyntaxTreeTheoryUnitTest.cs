@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Nemonuri.Failures;
+using Fc1 = Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeTheory.CreateCompilationUnitRootedCSharpSyntaxTreeInfoResult.FailCode;
 
 namespace Nemonuri.Study.CSharpAICommentor.Core.UnitTests;
 
@@ -20,14 +22,14 @@ public class CSharpSyntaxTreeTheoryUnitTest
 
     [Theory]
     [MemberData(nameof(Data1))]
-    public async Task CreateCSharpSyntaxTreeFromFile
+    public async Task CreateCSharpSyntaxTreeFromFileAsync
     (
         string fileName,
-        bool isValueExpected
+        bool expectedIsValue
     )
     {
         // Arrange
-        ILogger logger = _loggerFactory.CreateLogger(nameof(CSharpSyntaxTreeTheory));
+        ILogger logger = _loggerFactory.CreateLogger(nameof(CreateCSharpSyntaxTreeFromFileAsync));
         string filePath = Path.Combine(AppContext.BaseDirectory, $"res/{fileName}.txt");
         FileInfo fileInfo = new(filePath);
 
@@ -38,7 +40,7 @@ public class CSharpSyntaxTreeTheoryUnitTest
         );
 
         // Assert
-        Assert.Equal(isValueExpected, actual.IsValue);
+        Assert.Equal(expectedIsValue, actual.IsValue);
     }
 
     public static TheoryData<string, bool> Data1 => new()
@@ -46,5 +48,45 @@ public class CSharpSyntaxTreeTheoryUnitTest
         { "valid_syntax", true },
         { "invalid_syntax", true },
         { "not_exist", false }
+    };
+
+    [Theory]
+    [MemberData(nameof(Data2))]
+    public async Task CreateCompilationUnitRootedCSharpSyntaxTreeInfoAsync
+    (
+        string fileName,
+        bool expectedIsValue,
+        Fc1 expectedFailCode,
+        bool expectedIsMissing
+    )
+    {
+        // Arrange
+        ILogger logger = _loggerFactory.CreateLogger(nameof(CreateCompilationUnitRootedCSharpSyntaxTreeInfoAsync));
+        string filePath = Path.Combine(AppContext.BaseDirectory, $"res/{fileName}.txt");
+        FileInfo fileInfo = new(filePath);
+
+        // Act
+        var actual = await CSharpSyntaxTreeTheory.CreateCompilationUnitRootedCSharpSyntaxTreeInfoAsync
+        (
+            fileInfo, logger, TestContext.Current.CancellationToken
+        );
+
+        // Assert
+        Assert.Equal(expectedIsValue, actual.IsValue);
+        if (actual.IsFailure)
+        {
+            Assert.Equal(expectedFailCode, actual.GetFailInfo().FailCode);
+        }
+        if (actual.IsValue)
+        {
+            Assert.Equal(expectedIsMissing, actual.GetValue().IsMissing);
+        }
+    }
+
+    public static TheoryData<string, bool, Fc1, bool> Data2 => new()
+    {
+        { "valid_syntax", true, default, false },
+        { "invalid_syntax", true, default, true },
+        { "not_exist", false, Fc1.CreateCSharpSyntaxTreeFromFileFailed, default }
     };
 }
