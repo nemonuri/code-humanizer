@@ -6,9 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <E2eTest>false</E2eTest>
-    <DefineConstants 
-      Condition=" ('$(E2eTest)' == 'true') and ('$(Configuration)' == 'Debug') "
-    >$(DefineConstants);E2E_TEST</DefineConstants>
+    <DefineConstants Condition=" ('$(E2eTest)' == 'true') and ('$(Configuration)' == 'Debug') ">$(DefineConstants);E2E_TEST</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>
@@ -18,6 +16,11 @@
     <PackageReference Include="Nemonuri.Trees" />
     <PackageReference Include="Nemonuri.Trees.Indexes" />
     <PackageReference Include="OllamaSharp" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\Nemonuri.OllamaRunning\Nemonuri.OllamaRunning.csproj" />
+    <ProjectReference Include="..\..\library\Nemonuri.Study.CSharpAICommentor.Core\Nemonuri.Study.CSharpAICommentor.Core.csproj" />
   </ItemGroup>
 
 </Project>

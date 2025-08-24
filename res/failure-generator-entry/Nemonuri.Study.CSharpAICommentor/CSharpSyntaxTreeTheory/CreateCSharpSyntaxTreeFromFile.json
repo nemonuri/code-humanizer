@@ -1,0 +1,10 @@
+{
+    "Namespace": "Nemonuri.Study.CSharpAICommentor",
+    "RootClass": "CSharpSyntaxTreeTheory",
+    "MethodAlias": "CreateCSharpSyntaxTreeFromFile",
+    "ValueType": "Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "ReadAllTextFailed", "Type": "System.Exception" }
+    ]
+}
