@@ -125,6 +125,7 @@ public class CSharpSyntaxTreeTheoryUnitTest
     public static TheoryData<string> Data3 => new()
     {
         "valid_syntax",
-        "Example1.cs"
+        "Example1.cs",
+        "ConcurrentQueue.cs"
     };
 }
