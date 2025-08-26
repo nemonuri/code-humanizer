@@ -111,11 +111,12 @@ public class CSharpSyntaxTreeTheoryUnitTest
         bool actualSuccess = CSharpSyntaxTreeTheory.TrySeparateComplexArgumentExpressions(comp, out var actualResult);
 
         Assert.True(actualSuccess);
-        _output.WriteLine(actualResult!.ToFullString());
+        _output.WriteLine(Environment.NewLine + actualResult!.ToFullString());
     }
 
     public static TheoryData<string> Data3 => new()
     {
+        "valid_syntax",
         "Example1.cs"
     };
 }

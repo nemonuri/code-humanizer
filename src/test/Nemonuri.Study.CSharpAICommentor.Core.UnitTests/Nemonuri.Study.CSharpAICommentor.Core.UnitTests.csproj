@@ -6,8 +6,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Nemonuri.Study.CSharpAICommentor.Core.UnitTests</RootNamespace>
     <TargetFramework>net9.0</TargetFramework>
-    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
-    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
     <!--
     To enable the Microsoft Testing Platform 'dotnet test' experience, add property:
       <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
@@ -25,6 +25,7 @@
     <None Include="$(MSBuildThisFileDirectory)res/*.*" CopyToOutputDirectory="PreserveNewest" >
       <Link>res/%(FileName)%(Extension)</Link>
     </None>
+    <None Remove="$(MSBuildThisFileDirectory)script/*.*" />
   </ItemGroup>
 
   <ItemGroup>
