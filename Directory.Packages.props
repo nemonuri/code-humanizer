@@ -12,6 +12,9 @@
     <PackageVersion Include="OllamaSharp" Version="5.3.4" />
     <PackageVersion Include="SumSharp" Version="2.3.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
+    <PackageVersion Include="Nemonuri.Trees" Version="0.0.2-preview.1" />
+    <PackageVersion Include="Nemonuri.Trees.Abstractions" Version="0.0.2-preview.1" />
+    <PackageVersion Include="Nemonuri.Trees.Indexes" Version="0.0.2-preview.1" />
 
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
@@ -22,10 +25,4 @@
     <PackageVersion Include="MartinCostello.Logging.XUnit.v3" Version="0.6.0" />
   </ItemGroup>
   
-  <ItemGroup>
-    <!-- TODO: Deploy -->
-    <PackageVersion Include="Nemonuri.Trees" Version="0.0.1" />
-    <PackageVersion Include="Nemonuri.Trees.Abstractions" Version="0.0.1" />
-    <PackageVersion Include="Nemonuri.Trees.Indexes" Version="0.0.1" />
-  </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ public static class SyntaxNodeTheory
         bool success =
         TreeNodeAggregatingTheory.TryAggregateAsRoot
         (
-            rootOriginatedContextAggregator: new RootOriginatedTreeNodeWithIndexSequenceAggregator<SyntaxNodeOrToken>(),
+            contextFromRootAggregator: new IndexedTreeNodesFromRootAggregator<SyntaxNodeOrToken>(),
             treeNodeAggregator: new AdHocTreeNodeAggregator<SyntaxNodeOrToken, bool>
             (
                 defaultSeedProvider: static () => false,
@@ -28,4 +28,6 @@ public static class SyntaxNodeTheory
 
         return success ? aggregated : false;
     }
+
+    //public static bool 
 }

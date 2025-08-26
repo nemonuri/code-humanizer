@@ -6,3 +6,4 @@ global using System.Diagnostics.CodeAnalysis;
 global using CommunityToolkit.Diagnostics;
 global using Nemonuri.Trees;
 global using Nemonuri.Trees.Indexes;
+global using System.Collections.Immutable;

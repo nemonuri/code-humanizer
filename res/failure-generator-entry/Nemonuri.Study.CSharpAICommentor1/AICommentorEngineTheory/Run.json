@@ -1,0 +1,14 @@
+{
+    "Namespace": "Nemonuri.Study.CSharpAICommentor1",
+    "RootClass": "AICommentorEngineTheory",
+    "MethodAlias": "Run",
+    "ValueType": "string",
+    "FailSlots": [
+        { "Name": "Canceled" },
+        { "Name": "CreateCompilationUnitRootedCSharpSyntaxTreeInfoFailed", 
+          "Type": "Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeTheory.CreateCompilationUnitRootedCSharpSyntaxTreeInfoResult.FailInfo" },
+        { "Name": "IsMissing" },
+        { "Name": "GetClientAfterEnsuringOllamaServerRunningFailed", 
+          "Type": "Nemonuri.OllamaRunning.OllamaRunningTheory.GetClientAfterEnsuringOllamaServerRunningResult.FailInfo" }
+    ]
+}
