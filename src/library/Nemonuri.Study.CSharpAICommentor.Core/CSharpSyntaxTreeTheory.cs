@@ -364,6 +364,11 @@ public static partial class CSharpSyntaxTreeTheory
                     )
                 )
             ).NormalizeWhitespace();
+
+            //--- format insertingStatement ---
+            //insertingStatement = insertingStatement
+            //---|
+
             var replacementStatement = statement.ReplaceNode(sourceArgumentExpression, replacementArgumentExpression);
             var replacementStatements = block.Statements
                                             .RemoveAt(statementIndex)

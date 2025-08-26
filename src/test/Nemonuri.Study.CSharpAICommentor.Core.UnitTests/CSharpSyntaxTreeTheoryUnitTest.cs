@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Nemonuri.Failures;
 using Fc1 = Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeTheory.CreateCompilationUnitRootedCSharpSyntaxTreeInfoResult.FailCode;
@@ -111,7 +112,14 @@ public class CSharpSyntaxTreeTheoryUnitTest
         bool actualSuccess = CSharpSyntaxTreeTheory.TrySeparateComplexArgumentExpressions(comp, out var actualResult);
 
         Assert.True(actualSuccess);
-        _output.WriteLine(Environment.NewLine + actualResult!.ToFullString());
+        _output.WriteLine
+        (
+            Environment.NewLine + actualResult!.NormalizeWhitespace
+            (
+                indentation: "    ",
+                elasticTrivia: true
+            ).ToFullString()
+        );
     }
 
     public static TheoryData<string> Data3 => new()
