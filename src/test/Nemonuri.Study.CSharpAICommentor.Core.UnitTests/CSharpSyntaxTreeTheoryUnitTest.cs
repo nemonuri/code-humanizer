@@ -89,4 +89,33 @@ public class CSharpSyntaxTreeTheoryUnitTest
         { "invalid_syntax", true, default, true },
         { "not_exist", false, Fc1.CreateCSharpSyntaxTreeFromFileFailed, default }
     };
+
+    [Theory]
+    [MemberData(nameof(Data3))]
+    public async Task TrySeparateComplexArgumentExpressions
+    (
+        string fileName
+    )
+    {
+        // Arrange
+        string filePath = Path.Combine(AppContext.BaseDirectory, $"res/{fileName}.txt");
+        FileInfo fileInfo = new(filePath);
+
+        // Act
+        var compOrFail = await CSharpSyntaxTreeTheory.CreateCompilationUnitRootedCSharpSyntaxTreeInfoAsync
+        (
+            fileInfo, default, TestContext.Current.CancellationToken
+        );
+
+        var comp = compOrFail.GetValue().Root;
+        bool actualSuccess = CSharpSyntaxTreeTheory.TrySeparateComplexArgumentExpressions(comp, out var actualResult);
+
+        Assert.True(actualSuccess);
+        _output.WriteLine(actualResult!.ToFullString());
+    }
+
+    public static TheoryData<string> Data3 => new()
+    {
+        "Example1.cs"
+    };
 }

@@ -192,6 +192,12 @@ public static partial class CSharpSyntaxTreeTheory
         return (default, -1);
     }
 
+    private static readonly IChildrenProvider<SyntaxNodeOrToken> s_syntaxNodeOrTokenChildProvider =
+        new AdHocChildrenProvider<SyntaxNodeOrToken>
+        (
+            static a => a.ChildNodesAndTokens()
+        );
+
     public static bool
     TrySeparateComplexArgumentExpressions
     (
@@ -204,15 +210,15 @@ public static partial class CSharpSyntaxTreeTheory
         success =
         TreeNodeAggregatingTheory.TryAggregateAsRoot
         (
-            contextFromRootAggregator: new IndexedRoseTreeNodesFromRootAggregator<SyntaxNodeOrToken>(),
-            treeNodeAggregator: new AdHocRoseTreeNodeAggregator<SyntaxNodeOrToken, ImmutableList<RoseTreeNode<IndexSequenceAndSyntaxNode>>>
+            contextFromRootAggregator: new IndexedTreeNodesFromRootAggregator<SyntaxNodeOrToken>(),
+            treeNodeAggregator: new AdHocTreeNodeAggregator<SyntaxNodeOrToken, ImmutableList<RoseTreeNode<IndexSequenceAndSyntaxNode>>>
             (
                 defaultSeedProvider: static () => [],
                 optionalAggregator: static (context, siblingsAggregated, childrenAggregated, source) =>
                 {
                     if
                     (
-                        source.Value.AsNode() is { } node1 &&
+                        source.AsNode() is { } node1 &&
                         (
                             node1.IsArgumentSyntaxAndHasComplexExpression() ||
                             node1 is BlockSyntax ||
@@ -231,8 +237,8 @@ public static partial class CSharpSyntaxTreeTheory
                     return (siblingsAggregated.AddRange(childrenAggregated), true);
                 }
             ),
-            childrenProvider: new RoseTreeNodeChildrenProvider<SyntaxNodeOrToken>(),
-            treeNode: new RoseTreeNode<SyntaxNodeOrToken>(originalNode),
+            childrenProvider: s_syntaxNodeOrTokenChildProvider,
+            treeNode: originalNode,
             aggregated: out ImmutableList<RoseTreeNode<IndexSequenceAndSyntaxNode>>? aggregated
         );
 
@@ -279,12 +285,6 @@ public static partial class CSharpSyntaxTreeTheory
         result = default;
         return false;
     }
-
-    private static readonly IChildrenProvider<SyntaxNodeOrToken> s_syntaxNodeOrTokenChildProvider =
-        new AdHocChildrenProvider<SyntaxNodeOrToken>
-        (
-            static a => a.ChildNodesAndTokens()
-        );
 
     internal static CSharpSyntaxNode CreateComplexArgumentExpressionsSeparatedSyntaxNode
     (

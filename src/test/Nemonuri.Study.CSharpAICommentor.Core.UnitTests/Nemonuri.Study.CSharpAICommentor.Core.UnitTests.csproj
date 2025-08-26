@@ -6,8 +6,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Nemonuri.Study.CSharpAICommentor.Core.UnitTests</RootNamespace>
     <TargetFramework>net9.0</TargetFramework>
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>false</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
     <!--
     To enable the Microsoft Testing Platform 'dotnet test' experience, add property:
       <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
