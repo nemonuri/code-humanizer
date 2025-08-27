@@ -19,7 +19,7 @@ if ($Build) {
     if ($LASTEXITCODE -ne 0) { exit 1 }
 }
 
-[string]$targetPath = & dotnet msbuild -getProperty:TargetPath
+[string]$targetPath = & dotnet msbuild $projectFile -getProperty:TargetPath
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
 & dotnet $targetPath @ToolArguments
