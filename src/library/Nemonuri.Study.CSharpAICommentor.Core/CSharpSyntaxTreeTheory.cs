@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Nemonuri.Failures;
 using Nemonuri.Study.CSharpAICommentor.Logging;
 using Sf = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using Rw = Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeRewriters;
 
 namespace Nemonuri.Study.CSharpAICommentor;
 
@@ -39,26 +40,13 @@ public static partial class CSharpSyntaxTreeTheory
             }
 
             logger.LogMessageWithCaller("Invoke CSharpSyntaxTree.ParseText");
-            var parsed = CreateCSharpSyntaxTreeFromText(text, cancellationToken);
+            var parsed = Rw.CSharpSyntaxNodeTheory.CreateCSharpSyntaxTreeFromText(text, cancellationToken);
             return CreateCSharpSyntaxTreeFromFileResult.CreateAsValue(parsed);
         }
         catch (OperationCanceledException e)
         {
             return CreateCSharpSyntaxTreeFromFileResult.CreateAsCanceled(e.Message);
         }
-    }
-
-    public static CSharpSyntaxTree
-    CreateCSharpSyntaxTreeFromText
-    (
-        string text,
-        CancellationToken cancellationToken = default
-    )
-    {
-        Guard.IsNotNull(text);
-
-        var parsed = CSharpSyntaxTree.ParseText(text, cancellationToken: cancellationToken);
-        return (CSharpSyntaxTree)parsed;
     }
 
     internal static bool IsReadAllTextException(Exception e)
@@ -74,32 +62,6 @@ public static partial class CSharpSyntaxTreeTheory
             NotSupportedException or
             System.Security.SecurityException
             ;
-    }
-
-    public static bool ContainsMissingNodeOrToken(SyntaxNodeOrToken syntaxNodeOrToken)
-    {
-        bool success =
-        TreeNodeAggregatingTheory.TryAggregateAsRoot
-        (
-            contextFromRootAggregator: new IndexedTreeNodesFromRootAggregator<SyntaxNodeOrToken>(),
-            treeNodeAggregator: new AdHocTreeNodeAggregator<SyntaxNodeOrToken, bool>
-            (
-                defaultSeedProvider: static () => false,
-                optionalAggregator: static (context, siblings, children, source) =>
-                {
-                    if (siblings || children) { return (true, true); }
-                    else { return (source.IsMissing, true); }
-                }
-            ),
-            childrenProvider: new AdHocChildrenProvider<SyntaxNodeOrToken>
-            (
-                static s => s.ChildNodesAndTokens()
-            ),
-            treeNode: syntaxNodeOrToken,
-            out var aggregated
-        );
-
-        return success ? aggregated : false;
     }
 
     public static async Task<CreateCompilationUnitRootedCSharpSyntaxTreeInfoResult>
@@ -148,8 +110,8 @@ public static partial class CSharpSyntaxTreeTheory
             }
             logger.LogMessageWithCaller($"Confirm root is CompilationUnitSyntax.");
 
-            bool isMissing = ContainsMissingNodeOrToken(compilationUnitSyntax);
-            logger.LogMessageAndMemberWithCaller($"{nameof(ContainsMissingNodeOrToken)} invoked.", isMissing);
+            bool isMissing = Rw.CSharpSyntaxNodeTheory.ContainsMissingNodeOrToken(compilationUnitSyntax);
+            logger.LogMessageAndMemberWithCaller($"{nameof(Rw.CSharpSyntaxNodeTheory.ContainsMissingNodeOrToken)} invoked.", isMissing);
 
             return CreateCompilationUnitRootedCSharpSyntaxTreeInfoResult.CreateAsValue
             (
@@ -241,7 +203,7 @@ public static partial class CSharpSyntaxTreeTheory
                     {
                         RoseTreeNode<IndexSequenceAndSyntaxNode> newNode = new
                         (
-                            new IndexSequenceAndSyntaxNode(context.ToIndexSequence<object>(), node1),
+                            new IndexSequenceAndSyntaxNode(context.ToIndexSequence(), node1),
                             [.. childrenAggregated]
                         );
                         return (siblingsAggregated.Add(newNode), true);

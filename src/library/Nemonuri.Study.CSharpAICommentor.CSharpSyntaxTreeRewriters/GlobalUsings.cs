@@ -1,0 +1,8 @@
+global using CommunityToolkit.Diagnostics;
+global using System.Diagnostics;
+global using Nemonuri.Trees;
+global using Nemonuri.Trees.Indexes;
+global using System.Collections.Immutable;
+global using Microsoft.CodeAnalysis;
+global using Microsoft.CodeAnalysis.CSharp;
+global using Microsoft.CodeAnalysis.CSharp.Syntax;

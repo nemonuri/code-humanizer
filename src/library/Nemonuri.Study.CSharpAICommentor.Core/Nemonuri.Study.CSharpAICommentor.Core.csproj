@@ -10,14 +10,11 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="CommunityToolkit.Diagnostics" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Nemonuri.Trees" />
-    <PackageReference Include="Nemonuri.Trees.Indexes" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Nemonuri.Failures\Nemonuri.Failures.csproj" />
+    <ProjectReference Include="..\Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeRewriters\Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeRewriters.csproj" />
   </ItemGroup>
 
 </Project>
