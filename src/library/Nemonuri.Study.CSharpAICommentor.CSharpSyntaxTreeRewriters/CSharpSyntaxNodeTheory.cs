@@ -1,3 +1,4 @@
+
 namespace Nemonuri.Study.CSharpAICommentor.CSharpSyntaxTreeRewriters;
 
 public static partial class CSharpSyntaxNodeTheory
@@ -29,27 +30,42 @@ public static partial class CSharpSyntaxNodeTheory
 
         return success ? aggregated : false;
     }
-}
 
-internal static partial class Constants
-{
-    internal static readonly IndexedTreeNodesFromRootAggregator<SyntaxNodeOrToken>
-    s_syntaxNodeOrTokenTypedIndexedTreeNodesFromRootAggregator = new();
+    public static bool IsArgumentSyntaxAndHasComplexExpression
+    (this SyntaxNode syntaxNode)
+    {
+        return
+            (syntaxNode is ArgumentSyntax argument) &&
+            (!(
+                argument.Expression is
+                IdentifierNameSyntax or
+                LiteralExpressionSyntax or
+                RangeExpressionSyntax or
+                RefExpressionSyntax or
+                DefaultExpressionSyntax or
+                DeclarationExpressionSyntax
+            ));
+    }
 
-    internal static readonly IChildrenProvider<SyntaxNodeOrToken>
-    s_syntaxNodeOrTokenChildrenProvider = new AdHocChildrenProvider<SyntaxNodeOrToken>
+    public static (SyntaxNode?, int) FindAncestorOrSelf
     (
-        static s => s.ChildNodesAndTokens()
-    );
+        this SyntaxNode syntaxNode,
+        Func<SyntaxNode, bool> predicate
+    )
+    {
+        Debug.Assert(syntaxNode is not null);
+        Debug.Assert(predicate is not null);
 
-    internal static readonly AdHocTreeNodeAggregator<SyntaxNodeOrToken, bool>
-    s_isMissingExistAdHocTreeNodeAggregator = new
-    (
-        defaultSeedProvider: static () => false,
-        optionalAggregator: static (context, siblings, children, source) =>
+        int distanceFromSelf = 0;
+        for (SyntaxNode? node = syntaxNode; node is not null; node = node.Parent)
         {
-            if (siblings || children) { return (true, true); }
-            else { return (source.IsMissing, true); }
+            if (predicate(node))
+            {
+                return (node, distanceFromSelf);
+            }
+            distanceFromSelf++;
         }
-    );
+
+        return (default, -1);
+    }
 }
