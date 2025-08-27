@@ -39,13 +39,26 @@ public static partial class CSharpSyntaxTreeTheory
             }
 
             logger.LogMessageWithCaller("Invoke CSharpSyntaxTree.ParseText");
-            var parsed = CSharpSyntaxTree.ParseText(text, cancellationToken: cancellationToken);
-            return CreateCSharpSyntaxTreeFromFileResult.CreateAsValue((CSharpSyntaxTree)parsed);
+            var parsed = CreateCSharpSyntaxTreeFromText(text, cancellationToken);
+            return CreateCSharpSyntaxTreeFromFileResult.CreateAsValue(parsed);
         }
         catch (OperationCanceledException e)
         {
             return CreateCSharpSyntaxTreeFromFileResult.CreateAsCanceled(e.Message);
         }
+    }
+
+    public static CSharpSyntaxTree
+    CreateCSharpSyntaxTreeFromText
+    (
+        string text,
+        CancellationToken cancellationToken = default
+    )
+    {
+        Guard.IsNotNull(text);
+
+        var parsed = CSharpSyntaxTree.ParseText(text, cancellationToken: cancellationToken);
+        return (CSharpSyntaxTree)parsed;
     }
 
     internal static bool IsReadAllTextException(Exception e)
